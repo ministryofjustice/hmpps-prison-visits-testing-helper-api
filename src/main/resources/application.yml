@@ -1,12 +1,53 @@
 info.app:
   name: Hmpps Prison Visits Testing Helper Api
   version: 1.0
+  description: API providing service to help QA prison visits
+  contact:
+    name: Visit Someone in Prison
+    email: prisonvisitsbooking@digital.justice.gov.uk
 
 spring:
   application:
     name: hmpps-prison-visits-testing-helper-api
   codec:
     max-in-memory-size: 10MB
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${hmpps.auth.url}/.well-known/jwks.json
+      client:
+        registration:
+          hmpps-apis:
+            provider: hmpps-auth
+            client-id: ${system.client.id}
+            client-secret: ${system.client.secret}
+            authorization-grant-type: client_credentials
+            scope: read
+        provider:
+          hmpps-auth:
+            token-uri: ${hmpps.auth.url}/oauth/token
+
+  jpa:
+    open-in-view: false
+    show-sql: false
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+
+  flyway:
+    enabled: false
+
+  datasource:
+    url: jdbc:postgresql://${DATABASE_ENDPOINT}/${DATABASE_NAME}?sslmode=verify-full
+    hikari:
+      pool-name: VisitScheduler-CP
+      connectionTimeout: 1000
+      validationTimeout: 500
+
+  sql:
+    init:
+      continue-on-error: true
 
   jackson:
     date-format: "yyyy-MM-dd HH:mm:ss"
@@ -49,3 +90,54 @@ management:
     info:
       cache:
         time-to-live: 2000ms
+prison:
+  api:
+    timeout: 10s
+
+prisoner:
+  offender:
+    search:
+      timeout: 10s
+
+non-associations:
+  api:
+    timeout: 10s
+
+policy:
+  session:
+    non-association:
+      filter: true
+      whole-day: true
+    double-booking:
+      filter: false
+    booking-notice-period:
+      minimum-days: 2
+      maximum-days: ${BOOKING_NOTICE_PERIOD_MAXIMUM_DAYS:#{28}}
+
+task:
+  expired-visit:
+    enabled: true
+    cron: 0 0/5 * * * * #frequency of delete expired reserved visits cron job - every 5 minutes
+    validity-minutes: 10 #delete reserved visits older than 10 minutes
+  log-non-associations:
+    enabled: true
+    cron: "0 0 3 * * ?" #every day at 3 AM
+    number-of-days-ahead: 30
+  reporting:
+    visit-counts-report:
+      enabled: true
+      cron: "0 0 1 * * ?" #every day at 1 AM
+
+feature:
+  events:
+    sns:
+      enabled: true
+
+visit:
+  cancel:
+    day-limit: 28
+
+cache:
+  evict:
+    support-types:
+      cron: "0 0 */12 * * ?" #every 12 hours

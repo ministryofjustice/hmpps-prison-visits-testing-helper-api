@@ -8,9 +8,22 @@ generic-service:
     host: hmpps-prison-visits-testing-helper-api-dev.hmpps.service.justice.gov.uk
 
   env:
+    HMPPS_AUTH_URL: https://sign-in-dev.hmpps.service.justice.gov.uk/auth
+    VISIT-SCHEDULER_API_URL: https://visit-scheduler-dev.prison.service.justice.gov.uk
+    PRISON_API_URL: https://prison-api-dev.prison.service.justice.gov.uk
+    PRISONER_SEARCH_URL: https://prisoner-search-dev.prison.service.justice.gov.uk
+    PRISONER-CONTACT_REGISTRY_URL: https://prisoner-contact-registry-dev.prison.service.justice.gov.uk
+    PRISON-REGISTER_API_URL: https://prison-register-dev.hmpps.service.justice.gov.uk
+    WHEREABOUTS_API_URL: https://whereabouts-api-dev.service.justice.gov.uk
     APPLICATIONINSIGHTS_CONFIGURATION_FILE: applicationinsights.dev.json
 
 # CloudPlatform AlertManager receiver to route prometheus alerts to slack
 # See https://user-guide.cloud-platform.service.justice.gov.uk/documentation/monitoring-an-app/how-to-create-alarms.html#creating-your-own-custom-alerts
 generic-prometheus-alerts:
-  alertSeverity: digital-prison-service-dev
+  alertSeverity: prison-visit-booking-alerts-nonprod
+  sqsAlertsQueueNames:
+    - "book-a-prison-visit-dev-hmpps_prison_visits_event_queue"
+    - "book-a-prison-visit-dev-hmpps_prison_visits_event_dlq"
+  sqsAlertsOldestThreshold: 1
+  sqsAlertsTotalMessagesThreshold: 1
+

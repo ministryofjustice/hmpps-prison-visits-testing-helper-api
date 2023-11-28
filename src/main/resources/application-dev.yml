@@ -45,4 +45,3 @@ cache:
   evict:
     support-types:
       cron: "0 */15 * * * ?"
-

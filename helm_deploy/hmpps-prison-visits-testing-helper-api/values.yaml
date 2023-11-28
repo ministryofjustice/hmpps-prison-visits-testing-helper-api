@@ -1,8 +1,8 @@
 generic-service:
   nameOverride: hmpps-prison-visits-testing-helper-api
-  productId: "UNASSIGNED" # productId for the product that this belongs too, i.e. DPS001, see README.md for details
-
-  replicaCount: 4
+  serviceAccountName: visit-someone-in-prison
+  productId: "DPS035"
+  replicaCount: 1
 
   image:
     repository: quay.io/hmpps/hmpps-prison-visits-testing-helper-api
@@ -28,8 +28,21 @@ generic-service:
   #     [name of environment variable as seen by app]: [key of kubernetes secret to load]
 
   namespace_secrets:
-    hmpps-prison-visits-testing-helper-api:
+    visit-scheduler:
       APPINSIGHTS_INSTRUMENTATIONKEY: "APPINSIGHTS_INSTRUMENTATIONKEY"
+      SYSTEM_CLIENT_ID: "SYSTEM_CLIENT_ID"
+      SYSTEM_CLIENT_SECRET: "SYSTEM_CLIENT_SECRET"
+    visit-scheduler-rds:
+      SPRING_DATASOURCE_USERNAME: "database_username"
+      SPRING_DATASOURCE_PASSWORD: "database_password"
+      DATABASE_NAME: "database_name"
+      DATABASE_ENDPOINT: "rds_instance_endpoint"
+    hmpps-domain-events-topic:
+      HMPPS_SQS_TOPICS_DOMAINEVENTS_ARN: "topic_arn"
+    sqs-hmpps-prison-visits-event-secret:
+      HMPPS_SQS_QUEUES_PRISONVISITSEVENTS_QUEUE_NAME: "sqs_queue_name"
+    sqs-hmpps-prison-visits-event-dlq-secret:
+      HMPPS_SQS_QUEUES_PRISONVISITSEVENTS_DLQ_NAME: "sqs_queue_name"
 
   allowlist:
     groups:
