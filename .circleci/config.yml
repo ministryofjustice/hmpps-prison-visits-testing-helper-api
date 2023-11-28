@@ -36,6 +36,9 @@ jobs:
 workflows:
   version: 2
   build-test-and-deploy:
+    when:
+      and:
+        - equal: [ << pipeline.git.branch >> ]
     jobs:
       - validate:
           filters:
@@ -45,10 +48,6 @@ workflows:
           name: helm_lint
       - hmpps/build_multiplatform_docker:
           name: build_docker
-          filters:
-            branches:
-              only:
-                - main
       - hmpps/deploy_env:
           name: deploy_dev
           env: "dev"
