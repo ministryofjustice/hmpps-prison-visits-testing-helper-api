@@ -29,19 +29,3 @@ non-associations:
     url: http://localhost:8094
     timeout: 10s
 
-policy:
-  session:
-    booking-notice-period:
-      minimum-days: 2
-      maximum-days: 28
-
-task:
-  expired-visit:
-    enabled: true
-    cron: 0 0/10 * * * ?
-    validity-minutes: 20
-
-cache:
-  evict:
-    support-types:
-      cron: "0 */15 * * * ?"

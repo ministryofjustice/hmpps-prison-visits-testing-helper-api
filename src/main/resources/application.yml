@@ -110,23 +110,7 @@ policy:
       whole-day: true
     double-booking:
       filter: false
-    booking-notice-period:
-      minimum-days: 2
-      maximum-days: ${BOOKING_NOTICE_PERIOD_MAXIMUM_DAYS:#{28}}
 
-task:
-  expired-visit:
-    enabled: true
-    cron: 0 0/5 * * * * #frequency of delete expired reserved visits cron job - every 5 minutes
-    validity-minutes: 10 #delete reserved visits older than 10 minutes
-  log-non-associations:
-    enabled: true
-    cron: "0 0 3 * * ?" #every day at 3 AM
-    number-of-days-ahead: 30
-  reporting:
-    visit-counts-report:
-      enabled: true
-      cron: "0 0 1 * * ?" #every day at 1 AM
 
 feature:
   events:
