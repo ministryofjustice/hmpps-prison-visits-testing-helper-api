@@ -24,6 +24,12 @@ spring:
             client-secret: ${system.client.secret}
             authorization-grant-type: client_credentials
             scope: read
+          visit-scheduler:
+            provider: hmpps-auth
+            client-id: ${system.client.id}
+            client-secret: ${system.client.secret}
+            authorization-grant-type: client_credentials
+            scope: read, write
         provider:
           hmpps-auth:
             token-uri: ${hmpps.auth.url}/oauth/token
@@ -90,38 +96,12 @@ management:
     info:
       cache:
         time-to-live: 2000ms
-prison:
+
+visit-scheduler:
   api:
     timeout: 10s
 
-prisoner:
-  offender:
-    search:
-      timeout: 10s
-
-non-associations:
-  api:
-    timeout: 10s
-
-policy:
-  session:
-    non-association:
-      filter: true
-      whole-day: true
-    double-booking:
-      filter: false
 
 
-feature:
-  events:
-    sns:
-      enabled: true
 
-visit:
-  cancel:
-    day-limit: 28
 
-cache:
-  evict:
-    support-types:
-      cron: "0 0 */12 * * ?" #every 12 hours

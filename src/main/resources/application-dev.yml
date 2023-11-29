@@ -13,19 +13,8 @@ spring:
 
 hmpps.auth.url: http://localhost:8090/auth
 
-prison:
+visit-scheduler:
   api:
-    url: http://localhost:8091
     timeout: 10s
-
-prisoner:
-  offender:
-    search:
-      url: http://localhost:8092
-      timeout: 10s
-
-non-associations:
-  api:
-    url: http://localhost:8094
-    timeout: 10s
+    url: http://localhost:8081
 

@@ -2,6 +2,7 @@ plugins {
   id("uk.gov.justice.hmpps.gradle-spring-boot") version "5.8.0"
   kotlin("plugin.spring") version "1.9.20"
   id("org.jetbrains.kotlin.plugin.noarg") version "1.9.10"
+  kotlin("plugin.jpa") version "1.9.21"
 }
 
 configurations {
@@ -14,7 +15,7 @@ repositories {
 }
 
 dependencies {
-  implementation("org.springframework.boot:spring-boot-starter-webflux")
+
   implementation("org.springframework.boot:spring-boot-starter-webflux")
   implementation("org.springframework.boot:spring-boot-starter-security")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
@@ -34,6 +35,9 @@ dependencies {
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-api:2.2.0")
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
   implementation("org.springdoc:springdoc-openapi-starter-common:2.2.0")
+
+  implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+  runtimeOnly("org.postgresql:postgresql:42.7.0")
 
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
