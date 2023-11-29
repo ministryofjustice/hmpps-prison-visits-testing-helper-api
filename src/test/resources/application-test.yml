@@ -1,3 +1,23 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/visit_scheduler
+    username: visit_scheduler
+    password: visit_scheduler
+    hikari:
+      maximum-pool-size: 2
+
+  jpa:
+    show-sql: true
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          public-key-location: classpath:local-public-key.pub
+
 server:
   shutdown: immediate
 
@@ -5,19 +25,33 @@ management.endpoint:
   health.cache.time-to-live: 0
   info.cache.time-to-live: 0
 
-spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/visit_scheduler
-    username: visit_scheduler
-    password: visit_scheduler
+
+visit-scheduler:
+  api:
+    url: http://localhost:8092
+    timeout: 10s
 
 hmpps.auth.url: http://localhost:8090/auth
 
 
-visit-scheduler:
-  api:
+hmpps:
+  auth:
+    url: http://localhost:8090/auth
     timeout: 10s
-    url: http://localhost:8081
+  sqs:
+    enabled: true
+    provider: localstack
+    queues:
+      prisonvisitsevents:
+        queueName: ${random.uuid}
+        dlqName: ${random.uuid}
+        subscribeTopicId: domainevents
+        dlqMaxReceiveCount: 1
+        visibilityTimeout: 1
+    topics:
+      domainevents:
+        arn: arn:aws:sns:eu-west-2:000000000000:${random.uuid}
+
 
 
 
