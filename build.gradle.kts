@@ -41,7 +41,7 @@ dependencies {
 
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
-  testImplementation("io.swagger.parser.v3:swagger-parser:2.1.18")
+  testImplementation("io.swagger.parser.v3:swagger-parser:2.1.19")
   testImplementation("com.github.tomakehurst:wiremock-jre8-standalone:3.0.1")
   testImplementation("org.mockito:mockito-inline:5.2.0")
   testImplementation("org.testcontainers:localstack:1.19.1")
@@ -49,6 +49,11 @@ dependencies {
   testImplementation("javax.xml.bind:jaxb-api:2.4.0-b180830.0359")
   testImplementation("org.springframework.boot:spring-boot-starter-test")
   testImplementation("io.jsonwebtoken:jjwt:0.12.3")
+  testImplementation("org.springframework.security:spring-security-test")
+  testImplementation("org.testcontainers:postgresql:1.19.3")
+  testImplementation("org.testcontainers:localstack:1.19.3")
+  testImplementation("com.amazonaws:aws-java-sdk-s3:1.12.596")
+  testImplementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.0")
 }
 
 kotlin {
