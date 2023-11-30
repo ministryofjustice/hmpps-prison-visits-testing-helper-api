@@ -18,6 +18,7 @@ jobs:
       jdk_tag: "21.0"
       localstack_tag: "0.14.0"
       services: "sns,sqs"
+      # Because we have no fly way here to create a DB and tables tests on the DB and tables in local host is not possible
       postgres_tag: "14"
       postgres_username: "visit_scheduler"
       postgres_password: "visit_scheduler"

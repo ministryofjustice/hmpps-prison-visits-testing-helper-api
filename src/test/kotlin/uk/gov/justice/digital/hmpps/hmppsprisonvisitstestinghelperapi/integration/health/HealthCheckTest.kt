@@ -10,11 +10,6 @@ import java.util.function.Consumer
 class HealthCheckTest : IntegrationTestBase() {
 
   @Test
-  fun `Can connect to DB`() {
-    visitRepository.isVisitBooked("JustToTestConnection")
-  }
-
-  @Test
   fun `Health page reports ok`() {
     webTestClient.get()
       .uri("/health")
