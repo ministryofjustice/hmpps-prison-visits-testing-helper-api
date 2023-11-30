@@ -55,7 +55,7 @@ workflows:
   build-test-and-deploy:
     when:
       and:
-        - equal: [ << pipeline.git.branch >> ]
+        - equal: [ main,<< pipeline.git.branch >> ]
     jobs:
       - validate:
           filters:
@@ -65,6 +65,8 @@ workflows:
           name: helm_lint
       - hmpps/build_multiplatform_docker:
           name: build_docker
+      - request-dev-approval:
+          type: approval
       - hmpps/deploy_env:
           name: deploy_dev
           env: "dev"
@@ -80,6 +82,7 @@ workflows:
             - validate
             - build_docker
             - helm_lint
+            - request-dev-approval
           helm_timeout: 5m
 
 
