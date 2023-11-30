@@ -6,22 +6,34 @@ orbs:
 parameters:
   alerts-slack-channel:
     type: string
-    default: dps_alerts_security
+    default: prison-visit-booking-alerts
   releases-slack-channel:
     type: string
-    default: dps-releases
+    default: prison-visit-booking-alerts
 
 jobs:
   validate:
     executor:
-      name: hmpps/java
-      tag: "21.0"
+      name: hmpps/java_localstack_postgres
+      jdk_tag: "21.0"
+      localstack_tag: "0.14.0"
+      services: "sns,sqs"
+      # Because we have no fly way here to create a DB and tables tests on the DB and tables in local host is not possible
+      postgres_tag: "14"
+      postgres_username: "visit_scheduler"
+      postgres_password: "visit_scheduler"
+    environment:
+      _JAVA_OPTIONS: -Xmx500m -XX:ParallelGCThreads=2 -XX:ConcGCThreads=2 -Djava.util.concurrent.ForkJoinPool.common.parallelism=2 -Dorg.gradle.daemon=false -Dkotlin.compiler.execution.strategy=in-process
     steps:
       - checkout
+      - run:
+          name: Wait for Postgres to be ready
+          command: ./postgres-check.sh
       - restore_cache:
           keys:
             - gradle-{{ checksum "build.gradle.kts" }}
             - gradle-
+      - hmpps/wait_till_ready_postgres
       - run:
           command: ./gradlew check
       - save_cache:
@@ -32,10 +44,18 @@ jobs:
           path: build/test-results
       - store_artifacts:
           path: build/reports/tests
+      - persist_to_workspace:
+          root: .
+          paths:
+            - build/libs
+            - build.gradle.kts
 
 workflows:
   version: 2
   build-test-and-deploy:
+    when:
+      and:
+        - equal: [ << pipeline.git.branch >> ]
     jobs:
       - validate:
           filters:
@@ -45,10 +65,8 @@ workflows:
           name: helm_lint
       - hmpps/build_multiplatform_docker:
           name: build_docker
-          filters:
-            branches:
-              only:
-                - main
+      - request-dev-approval:
+          type: approval
       - hmpps/deploy_env:
           name: deploy_dev
           env: "dev"
@@ -59,48 +77,14 @@ workflows:
           filters:
             branches:
               only:
-                - main
+                - << pipeline.git.branch >>
           requires:
             - validate
             - build_docker
             - helm_lint
+            - request-dev-approval
           helm_timeout: 5m
-#      - request-preprod-approval:
-#          type: approval
-#          requires:
-#            - deploy_dev
-#      - hmpps/deploy_env:
-#          name: deploy_preprod
-#          env: "preprod"
-#          jira_update: true
-#          jira_env_type: staging
-#          pipeline_id: <<pipeline.id>>
-#          pipeline_number: <<pipeline.number>>
-#          context:
-#            - hmpps-common-vars
-#            - hmpps-prison-visits-testing-helper-api-preprod
-#          requires:
-#            - request-preprod-approval
-#          helm_timeout: 5m
-#      - request-prod-approval:
-#          type: approval
-#          requires:
-#            - deploy_preprod
-#      - hmpps/deploy_env:
-#          name: deploy_prod
-#          env: "prod"
-#          jira_update: true
-#          jira_env_type: production
-#          pipeline_id: <<pipeline.id>>
-#          pipeline_number: <<pipeline.number>>
-#          slack_notification: true
-#          slack_channel_name: << pipeline.parameters.releases-slack-channel >>
-#          context:
-#            - hmpps-common-vars
-#            - hmpps-prison-visits-testing-helper-api-prod
-#          requires:
-#            - request-prod-approval
-#          helm_timeout: 5m
+
 
   security:
     triggers:
