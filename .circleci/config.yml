@@ -55,7 +55,7 @@ workflows:
   build-test-and-deploy:
     when:
       and:
-        - equal: [ main,<< pipeline.git.branch >> ]
+        - equal: [ << pipeline.git.branch >> ]
     jobs:
       - validate:
           filters:
