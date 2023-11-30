@@ -11,10 +11,9 @@ import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.repository
 @ActiveProfiles("test")
 abstract class IntegrationTestBase {
 
-  @Suppress("SpringJavaInjectionPointsAutowiringInspection")
   @Autowired
   lateinit var webTestClient: WebTestClient
 
   @Autowired
-  lateinit var visitRepository : VisitRepository
+  lateinit var visitRepository: VisitRepository
 }

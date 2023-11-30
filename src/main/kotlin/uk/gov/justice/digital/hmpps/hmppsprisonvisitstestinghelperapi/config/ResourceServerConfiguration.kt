@@ -16,11 +16,11 @@ import org.springframework.security.web.SecurityFilterChain
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true, proxyTargetClass = true)
-open class ResourceServerConfiguration {
+class ResourceServerConfiguration {
 
   @Bean
   @Throws(Exception::class)
-  open fun filterChain(http: HttpSecurity): SecurityFilterChain {
+  fun filterChain(http: HttpSecurity): SecurityFilterChain {
     http {
       headers { frameOptions { sameOrigin = true } }
       sessionManagement { sessionCreationPolicy = SessionCreationPolicy.STATELESS }
@@ -29,6 +29,8 @@ open class ResourceServerConfiguration {
       authorizeHttpRequests {
         listOf(
           "/health/**",
+          "/ping/db",
+          "/ping/web",
           "/info",
           "/v3/api-docs/**",
           "/swagger-ui/**",
@@ -45,7 +47,7 @@ open class ResourceServerConfiguration {
   }
 
   @Bean
-  open fun locallyCachedJwtDecoder(
+  fun locallyCachedJwtDecoder(
     @Value("\${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}") jwkSetUri: String,
     cacheManager: CacheManager,
   ): JwtDecoder = NimbusJwtDecoder.withJwkSetUri(jwkSetUri).cache(cacheManager.getCache("jwks")).build()
