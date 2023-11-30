@@ -11,7 +11,7 @@ class VisitRepository {
   private lateinit var entityManager: EntityManager
 
   fun isVisitBooked(bookingReference: String): Boolean {
-    val sql = "SELECT COUNT(*) > 0 From visit Where reference = ? AND v.visit_status = 'BOOKED' "
+    val sql = "SELECT COUNT(*) > 0 From visit Where reference = ? AND visit_status = 'BOOKED' "
 
     val query = entityManager.createNativeQuery(sql)
     query.setParameter(1, bookingReference)
