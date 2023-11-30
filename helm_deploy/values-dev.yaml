@@ -8,6 +8,7 @@ generic-service:
     host: hmpps-prison-visits-testing-helper-api-dev.hmpps.service.justice.gov.uk
 
   env:
+    SPRING_PROFILES_ACTIVE: "stdout"
     HMPPS_AUTH_URL: https://sign-in-dev.hmpps.service.justice.gov.uk/auth
     VISIT-SCHEDULER_API_URL: https://visit-scheduler-dev.prison.service.justice.gov.uk
     APPLICATIONINSIGHTS_CONFIGURATION_FILE: applicationinsights.dev.json
