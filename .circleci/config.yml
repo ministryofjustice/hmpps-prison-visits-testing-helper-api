@@ -77,7 +77,7 @@ workflows:
           filters:
             branches:
               only:
-                - main
+                - << pipeline.git.branch >>
           requires:
             - validate
             - build_docker
