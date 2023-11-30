@@ -13,7 +13,7 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 @Configuration
-open class SwaggerConfig {
+class SwaggerConfig {
   init {
     val schema = io.swagger.v3.oas.models.media.Schema<LocalTime>()
     schema.example(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"))).type("string").format("HH:mm").example("13:45")
@@ -22,7 +22,7 @@ open class SwaggerConfig {
 }
 
 @Configuration
-open class OpenApiConfiguration(buildProperties: BuildProperties) {
+class OpenApiConfiguration(buildProperties: BuildProperties) {
   private val buildName: String = buildProperties.name
   private val buildVersion: String = buildProperties.version
 
@@ -36,12 +36,12 @@ open class OpenApiConfiguration(buildProperties: BuildProperties) {
   private val contactEmail: String = "prisonvisitsbooking@digital.justice.gov.uk"
 
   @Bean
-  open fun customOpenAPI(): OpenAPI = OpenAPI()
+  fun customOpenAPI(): OpenAPI = OpenAPI()
     .servers(
       listOf(
-        Server().url("https://visit-scheduler-staging.prison.service.justice.gov.uk").description("Staging"),
-        Server().url("https://visit-scheduler-dev.prison.service.justice.gov.uk").description("Development"),
         Server().url("http://localhost:8080").description("Local"),
+        Server().url("https://hmpps-prison-visits-testing-helper-api-dev.prison.service.justice.gov.uk").description("Development"),
+        Server().url("https://hmpps-prison-visits-testing-helper-api-staging.prison.service.justice.gov.uk").description("Staging"),
       ),
     )
     .info(
