@@ -37,8 +37,7 @@ class OpenApiConfiguration(buildProperties: BuildProperties) {
 
   @Bean
   fun customOpenAPI(): OpenAPI {
-
-    val getUrl : (String) -> String =  { "hmpps-prison-visits-testing-helper-api-$it.prison.service.justice.gov.uk" }
+    val getUrl: (String) -> String = { "hmpps-prison-visits-testing-helper-api-$it.prison.service.justice.gov.uk" }
 
     return OpenAPI()
       .servers(
@@ -55,5 +54,4 @@ class OpenApiConfiguration(buildProperties: BuildProperties) {
           .contact(Contact().name(contactName).email(contactEmail)),
       )
   }
-
 }
