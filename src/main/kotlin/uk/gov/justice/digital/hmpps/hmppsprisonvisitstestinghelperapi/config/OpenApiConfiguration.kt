@@ -36,18 +36,24 @@ class OpenApiConfiguration(buildProperties: BuildProperties) {
   private val contactEmail: String = "prisonvisitsbooking@digital.justice.gov.uk"
 
   @Bean
-  fun customOpenAPI(): OpenAPI = OpenAPI()
-    .servers(
-      listOf(
-        Server().url("http://localhost:8080").description("Local"),
-        Server().url("https://hmpps-prison-visits-testing-helper-api-dev.prison.service.justice.gov.uk").description("Development"),
-        Server().url("https://hmpps-prison-visits-testing-helper-api-staging.prison.service.justice.gov.uk").description("Staging"),
-      ),
-    )
-    .info(
-      Info().title(buildName)
-        .version(buildVersion)
-        .description(description)
-        .contact(Contact().name(contactName).email(contactEmail)),
-    )
+  fun customOpenAPI(): OpenAPI {
+
+    val getUrl : (String) -> String =  { "hmpps-prison-visits-testing-helper-api-$it.prison.service.justice.gov.uk" }
+
+    return OpenAPI()
+      .servers(
+        listOf(
+          Server().url("http://localhost:8080").description("Local"),
+          Server().url(getUrl.invoke("dev")).description("Development"),
+          Server().url(getUrl.invoke("staging")).description("Staging"),
+        ),
+      )
+      .info(
+        Info().title(buildName)
+          .version(buildVersion)
+          .description(description)
+          .contact(Contact().name(contactName).email(contactEmail)),
+      )
+  }
+
 }

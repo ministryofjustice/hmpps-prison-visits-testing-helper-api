@@ -5,7 +5,7 @@ generic-service:
   replicaCount: 2
 
   ingress:
-    host: hmpps-prison-visits-testing-helper-api-staging.hmpps.service.justice.gov.uk
+    host: hmpps-prison-visits-testing-helper-api-staging.prison.service.justice.gov.uk
 
   env:
     HMPPS_AUTH_URL: https://sign-in-dev.hmpps.service.justice.gov.uk/auth
