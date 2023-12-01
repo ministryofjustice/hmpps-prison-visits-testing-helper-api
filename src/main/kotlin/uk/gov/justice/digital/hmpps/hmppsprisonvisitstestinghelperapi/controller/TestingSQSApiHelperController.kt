@@ -29,7 +29,6 @@ class TestingSQSApiHelperController {
   lateinit var visitRepository: VisitRepository
 
   @PreAuthorize("hasAnyRole('VISIT_SCHEDULER','VISIT_SCHEDULER_CONFIG','TEST_VISIT_SCHEDULER')")
-
   @GetMapping(
     SQS_RELEASED,
     produces = [MediaType.TEXT_PLAIN_VALUE],
