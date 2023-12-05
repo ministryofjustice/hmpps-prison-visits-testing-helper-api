@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.repository.VisitRepository
 
-const val CONTROLLER_PATH: String = "/ping"
+const val PING_CONTROLLER_PATH: String = "/ping"
 
 @RestController
 class HealthPingController {
@@ -15,7 +15,7 @@ class HealthPingController {
   @Autowired
   lateinit var visitRepository: VisitRepository
 
-  @GetMapping("$CONTROLLER_PATH/web")
+  @GetMapping("$PING_CONTROLLER_PATH/web")
   @Operation(
     summary = "Dummy rest endpoint",
     description = "Get a response",
@@ -30,7 +30,7 @@ class HealthPingController {
     return "Connected to Web"
   }
 
-  @GetMapping("$CONTROLLER_PATH/db")
+  @GetMapping("$PING_CONTROLLER_PATH/db")
   @Operation(
     summary = "Test db connection",
     description = "This test connects to DB to see if it's setup correctly",
