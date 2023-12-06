@@ -20,14 +20,14 @@ spring:
         registration:
           hmpps-apis:
             provider: hmpps-auth
-            client-id: ${system.client.id}
-            client-secret: ${system.client.secret}
+            client-id: visit-scheduler-1
+            client-secret: i0I6PR0zQF8eTFVW5I-HY3=0L$W16&$xMi&$MiMQGTlQhizlB8p>h6Brb-EO
             authorization-grant-type: client_credentials
             scope: read
           visit-scheduler:
             provider: hmpps-auth
-            client-id: ${system.client.id}
-            client-secret: ${system.client.secret}
+            client-id: visit-scheduler-1
+            client-secret: i0I6PR0zQF8eTFVW5I-HY3=0L$W16&$xMi&$MiMQGTlQhizlB8p>h6Brb-EO
             authorization-grant-type: client_credentials
             scope: read, write
         provider:
@@ -66,7 +66,7 @@ spring:
         - "stdout"
 
 server:
-  port: 8080
+  port: 8082
   servlet:
     context-path: /
   forward-headers-strategy: native

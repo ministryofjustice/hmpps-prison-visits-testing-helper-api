@@ -11,7 +11,7 @@ spring:
     username: visit_scheduler
     password: visit_scheduler
 
-hmpps.auth.url: http://localhost:8090/auth
+hmpps.auth.url: https://sign-in-dev.hmpps.service.justice.gov.uk/auth
 
 visit-scheduler:
   api:

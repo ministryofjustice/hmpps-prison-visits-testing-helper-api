@@ -24,6 +24,7 @@ dependencies {
   implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:2.0.1")
   implementation("com.hazelcast:hazelcast:5.3.5")
   implementation("com.hazelcast:hazelcast-spring:5.3.5")
+  implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.6.RELEASE")
 
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.2")
   implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
