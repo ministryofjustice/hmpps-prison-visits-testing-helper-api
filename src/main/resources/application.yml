@@ -107,8 +107,3 @@ sqs:
     events:
       endpoint:
         region: eu-west-2
-
-
-
-
-

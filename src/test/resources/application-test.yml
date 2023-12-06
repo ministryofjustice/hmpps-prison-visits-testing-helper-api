@@ -61,5 +61,3 @@ sqs:
       endpoint:
         url: http://localhost:4566
         region: eu-west-2
-
-
