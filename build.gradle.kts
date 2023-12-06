@@ -22,6 +22,7 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
   implementation("org.springframework.boot:spring-boot-starter-cache")
   implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:2.0.1")
+  implementation("com.amazonaws:aws-java-sdk-sts:1.12.603")
   implementation("com.hazelcast:hazelcast:5.3.5")
   implementation("com.hazelcast:hazelcast-spring:5.3.5")
   implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.6.RELEASE")
