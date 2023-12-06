@@ -20,7 +20,7 @@ visit-scheduler:
 
 
 sqs:
-  provider: aws
+  provider: localstack
   prison:
     events:
       queue:
