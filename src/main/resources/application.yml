@@ -102,7 +102,7 @@ visit-scheduler:
     timeout: 10s
 
 sqs:
-  provider: localstack
+  provider: aws
   prison:
     events:
       endpoint:
