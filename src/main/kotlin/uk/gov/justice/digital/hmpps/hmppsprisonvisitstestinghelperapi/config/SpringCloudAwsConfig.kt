@@ -17,9 +17,11 @@ class SpringCloudAwsConfig {
   fun awsSqsClient(
     @Value("\${sqs.prison.events.endpoint.region}") region: String,
   ): AmazonSQSAsync {
-    return AmazonSQSAsyncClientBuilder.standard()
+    val amazonSQSAsync = AmazonSQSAsyncClientBuilder.standard()
       .withCredentials(DefaultAWSCredentialsProviderChain())
       .withRegion(region)
       .build()
+
+    return amazonSQSAsync
   }
 }

@@ -101,6 +101,13 @@ visit-scheduler:
   api:
     timeout: 10s
 
+sqs:
+  provider: localstack
+  prison:
+    events:
+      endpoint:
+        region: eu-west-2
+
 
 
 

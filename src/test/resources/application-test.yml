@@ -58,10 +58,6 @@ sqs:
     events:
       queue:
         url: http://localhost:4566/sqs_hmpps_prison_visits_event_queue
-        name: sqs_hmpps_prison_visits_event_dlq
-      dlq:
-        queue:
-          name:sample_queue_dlq
       endpoint:
         url: http://localhost:4566
         region: eu-west-2

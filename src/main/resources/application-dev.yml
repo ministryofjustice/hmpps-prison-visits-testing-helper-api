@@ -18,3 +18,13 @@ visit-scheduler:
     timeout: 10s
     url: http://localhost:8081
 
+
+sqs:
+  provider: aws
+  prison:
+    events:
+      queue:
+        url: http://localhost:4566/sqs_hmpps_prison_visits_event_queue
+      endpoint:
+        url: http://localhost:4566
+        region: eu-west-2
