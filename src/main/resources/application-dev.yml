@@ -11,10 +11,20 @@ spring:
     username: visit_scheduler
     password: visit_scheduler
 
-hmpps.auth.url: http://localhost:8090/auth
+hmpps.auth.url: https://sign-in-dev.hmpps.service.justice.gov.uk/auth
 
 visit-scheduler:
   api:
     timeout: 10s
     url: http://localhost:8081
 
+hmpps:
+  sqs:
+    provider: localstack
+    queues:
+      prisonvisitsevents:
+        queue:
+          url: http://localhost:4566/sqs_hmpps_prison_visits_event_queue
+        endpoint:
+          url: http://localhost:4566
+          region: eu-west-2

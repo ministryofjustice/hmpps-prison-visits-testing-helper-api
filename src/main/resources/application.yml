@@ -101,7 +101,10 @@ visit-scheduler:
   api:
     timeout: 10s
 
-
-
-
-
+hmpps:
+  sqs:
+    provider: aws
+    queues:
+      prisonvisitsevents:
+        endpoint:
+          region: eu-west-2
