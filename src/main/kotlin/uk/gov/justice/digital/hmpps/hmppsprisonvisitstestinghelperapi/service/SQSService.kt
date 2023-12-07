@@ -20,7 +20,7 @@ import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.SQSMes
 @Service
 class SQSService(
   @Qualifier("awsSqsClient") amazonSqs: AmazonSQSAsync,
-  @Value("\${sqs.prison.events.queue.url}") queueUrl: String,
+  @Value("\${hmpps.sqs.queues.prisonvisitsevents.queue.url}") queueUrl: String,
 ) {
   companion object {
     val LOG: Logger = LoggerFactory.getLogger(this::class.java)

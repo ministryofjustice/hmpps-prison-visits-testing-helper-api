@@ -48,16 +48,11 @@ hmpps:
         subscribeTopicId: domainevents
         dlqMaxReceiveCount: 1
         visibilityTimeout: 1
-    topics:
-      domainevents:
-        arn: arn:aws:sns:eu-west-2:000000000000:${random.uuid}
-
-sqs:
-  provider: localstack
-  prison:
-    events:
       queue:
         url: http://localhost:4566/sqs_hmpps_prison_visits_event_queue
       endpoint:
         url: http://localhost:4566
         region: eu-west-2
+    topics:
+      domainevents:
+        arn: arn:aws:sns:eu-west-2:000000000000:${random.uuid}

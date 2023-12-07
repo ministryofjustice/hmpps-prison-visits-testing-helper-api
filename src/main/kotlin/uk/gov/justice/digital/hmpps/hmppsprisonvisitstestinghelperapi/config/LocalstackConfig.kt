@@ -14,11 +14,11 @@ import org.springframework.context.annotation.Primary
 @Configuration
 class LocalstackConfig {
   @Bean("awsSqsClient")
-  @ConditionalOnProperty(name = ["sqs.provider"], havingValue = "localstack")
+  @ConditionalOnProperty(name = ["hmpps.sqs.provider"], havingValue = "localstack")
   @Primary
   fun awsSqsClient(
-    @Value("\${sqs.prison.events.endpoint.url}") serviceEndpoint: String?,
-    @Value("\${sqs.prison.events.endpoint.region}") region: String?,
+    @Value("\${hmpps.sqs.queues.prisonvisitsevents.endpoint.url}") serviceEndpoint: String?,
+    @Value("\${hmpps.sqs.queues.prisonvisitsevents.endpoint.region}") region: String?,
   ): AmazonSQSAsync {
     val creds = AnonymousAWSCredentials()
     return AmazonSQSAsyncClientBuilder.standard()

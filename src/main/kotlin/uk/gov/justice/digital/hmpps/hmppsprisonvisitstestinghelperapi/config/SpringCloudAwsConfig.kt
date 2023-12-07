@@ -12,10 +12,10 @@ import org.springframework.context.annotation.Primary
 @Configuration
 class SpringCloudAwsConfig {
   @Bean
-  @ConditionalOnProperty(name = ["sqs.provider"], havingValue = "aws")
+  @ConditionalOnProperty(name = ["hmpps.sqs.provider"], havingValue = "aws")
   @Primary
   fun awsSqsClient(
-    @Value("\${sqs.prison.events.endpoint.region}") region: String,
+    @Value("\${hmpps.sqs.queues.prisonvisitsevents.endpoint.region}") region: String,
   ): AmazonSQSAsync {
     val amazonSQSAsync = AmazonSQSAsyncClientBuilder.standard()
       .withCredentials(DefaultAWSCredentialsProviderChain())
