@@ -1,30 +1,28 @@
 package uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.controller
 
 import io.swagger.v3.oas.annotations.Operation
-import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import jakarta.validation.Valid
-import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.NonAssociationEventDto
+import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.PrisonerEventDto
+import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.PrisonerRestrictionEventDto
+import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.VisitorRestrictionEventDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.repository.VisitRepository
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.service.EventHandlerService
-import java.time.LocalDate
 
-const val SQS_RELEASED: String = "/test/prison/{prisonCode}/prisoner/{prisonerCode}/released"
-const val SQS_RECEIVED: String = "/test/prison/{prisonCode}/prisoner/{prisonerCode}/received"
+const val SQS_RELEASED: String = "/test/prisoner/released"
+const val SQS_RECEIVED: String = "/test/prisoner/received"
 const val SQS_NON_ASSOCIATION: String = "/test/prisoner/non-association"
-const val SQS_VISITOR_RESTRICTION: String = "/test/visitor/{visitorId}/restriction/start/{startDate}/end/{endDate}"
-const val SQS_PRISONER_RESTRICTION: String = "/test/prisoner/{prisonerCode}/restriction/start/{startDate}/end/{endDate}"
+const val SQS_VISITOR_RESTRICTION: String = "/test/visitor/restriction"
+const val SQS_PRISONER_RESTRICTION: String = "/test/prisoner/restriction"
 
 @RestController
 class TestingSQSApiHelperController(
@@ -32,9 +30,10 @@ class TestingSQSApiHelperController(
   private val eventHandlerService: EventHandlerService,
 ) {
   @PreAuthorize("hasAnyRole('VISIT_SCHEDULER','VISIT_SCHEDULER_CONFIG','TEST_VISIT_SCHEDULER')")
-  @GetMapping(
+  @PutMapping(
     SQS_RELEASED,
     produces = [MediaType.TEXT_PLAIN_VALUE],
+    consumes = [MediaType.APPLICATION_JSON_VALUE],
   )
   @Operation(
     summary = "Kick's off the SQS process of prisoner released",
@@ -46,20 +45,19 @@ class TestingSQSApiHelperController(
     ],
   )
   fun sqsReleased(
-    @Schema(description = "prisonCode", example = "BRI", required = true)
-    @PathVariable
-    prisonCode: String,
-    @Schema(description = "prisonerCode", example = "G8006UQ", required = true)
-    @PathVariable
-    prisonerCode: String,
+    @Schema(description = "Prisoner Event Dto - prison code and prisoner code", required = true)
+    @RequestBody
+    prisonEventDto: PrisonerEventDto,
   ): ResponseEntity<HttpStatus> {
+    eventHandlerService.handlePrisonerReleaseEvent(prisonEventDto)
     return ResponseEntity(HttpStatus.CREATED)
   }
 
   @PreAuthorize("hasAnyRole('VISIT_SCHEDULER','VISIT_SCHEDULER_CONFIG','TEST_VISIT_SCHEDULER')")
-  @GetMapping(
+  @PutMapping(
     SQS_RECEIVED,
     produces = [MediaType.TEXT_PLAIN_VALUE],
+    consumes = [MediaType.APPLICATION_JSON_VALUE],
   )
   @Operation(
     summary = "Kick's off the SQS process of prisoner received",
@@ -71,13 +69,11 @@ class TestingSQSApiHelperController(
     ],
   )
   fun sqsReceived(
-    @Schema(description = "prisonCode", example = "BRI", required = true)
-    @PathVariable
-    prisonCode: String,
-    @Schema(description = "prisonerCode", example = "G8006UQ", required = true)
-    @PathVariable
-    prisonerCode: String,
+    @Schema(description = "Prisoner Event Dto - prison code and prisoner code", required = true)
+    @RequestBody
+    prisonEventDto: PrisonerEventDto,
   ): ResponseEntity<HttpStatus> {
+    eventHandlerService.handlePrisonerReceivedEvent(prisonEventDto)
     return ResponseEntity(HttpStatus.CREATED)
   }
 
@@ -107,9 +103,10 @@ class TestingSQSApiHelperController(
   }
 
   @PreAuthorize("hasAnyRole('VISIT_SCHEDULER','VISIT_SCHEDULER_CONFIG','TEST_VISIT_SCHEDULER')")
-  @GetMapping(
+  @PutMapping(
     SQS_VISITOR_RESTRICTION,
     produces = [MediaType.TEXT_PLAIN_VALUE],
+    consumes = [MediaType.APPLICATION_JSON_VALUE],
   )
   @Operation(
     summary = "Kick's off the SQS process of visitor restriction",
@@ -121,31 +118,20 @@ class TestingSQSApiHelperController(
     ],
   )
   fun sqsVisitorRestriction(
-    @Schema(description = "visitorId", example = "1232442", required = true)
-    @PathVariable
-    visitorId: String,
-    @PathVariable(value = "startDate", required = true)
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    @Parameter(
-      description = "start date",
-      example = "2021-11-03",
-    )
-    startDate: LocalDate,
-    @PathVariable(value = "endDate", required = true)
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    @Parameter(
-      description = "start date",
-      example = "2021-12-03",
-    )
-    endDate: LocalDate,
+    @Schema(description = "Prisoner Restriction Dto", required = true)
+    @RequestBody
+    visitorRestrictionEventDto: VisitorRestrictionEventDto,
+
   ): ResponseEntity<HttpStatus> {
+    eventHandlerService.handleVisitorRestrictionChangeEvent(visitorRestrictionEventDto)
     return ResponseEntity(HttpStatus.CREATED)
   }
 
   @PreAuthorize("hasAnyRole('VISIT_SCHEDULER','VISIT_SCHEDULER_CONFIG','TEST_VISIT_SCHEDULER')")
-  @GetMapping(
+  @PutMapping(
     SQS_PRISONER_RESTRICTION,
     produces = [MediaType.TEXT_PLAIN_VALUE],
+    consumes = [MediaType.APPLICATION_JSON_VALUE],
   )
   @Operation(
     summary = "Kick's off the SQS process of prisoner restriction",
@@ -157,24 +143,11 @@ class TestingSQSApiHelperController(
     ],
   )
   fun sqsPrisonerRestriction(
-    @Schema(description = "prisonerCode", example = "G8006UQ", required = true)
-    @PathVariable
-    prisonerCode: String,
-    @PathVariable(value = "startDate", required = true)
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    @Parameter(
-      description = "start date",
-      example = "2021-11-03",
-    )
-    startDate: LocalDate,
-    @PathVariable(value = "endDate", required = true)
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    @Parameter(
-      description = "start date",
-      example = "2021-12-03",
-    )
-    endDate: LocalDate,
+    @Schema(description = "Prisoner Restriction Dto", required = true)
+    @RequestBody
+    prisonerRestrictionEventDto: PrisonerRestrictionEventDto,
   ): ResponseEntity<HttpStatus> {
+    eventHandlerService.handlePrisonerRestrictionChangeEvent(prisonerRestrictionEventDto)
     return ResponseEntity(HttpStatus.CREATED)
   }
 }
