@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.controller
 
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import jakarta.validation.Valid
@@ -37,6 +38,14 @@ class TestingSQSApiHelperController(
   )
   @Operation(
     summary = "Kick's off the SQS process of prisoner released",
+    requestBody = io.swagger.v3.oas.annotations.parameters.RequestBody(
+      content = [
+        Content(
+          mediaType = "application/json",
+          schema = Schema(implementation = PrisonerEventDto::class),
+        ),
+      ],
+    ),
     responses = [
       ApiResponse(
         responseCode = "200",
@@ -61,6 +70,14 @@ class TestingSQSApiHelperController(
   )
   @Operation(
     summary = "Kick's off the SQS process of prisoner received",
+    requestBody = io.swagger.v3.oas.annotations.parameters.RequestBody(
+      content = [
+        Content(
+          mediaType = "application/json",
+          schema = Schema(implementation = PrisonerEventDto::class),
+        ),
+      ],
+    ),
     responses = [
       ApiResponse(
         responseCode = "200",
@@ -85,6 +102,14 @@ class TestingSQSApiHelperController(
   )
   @Operation(
     summary = "Kick's off the SQS process of non association",
+    requestBody = io.swagger.v3.oas.annotations.parameters.RequestBody(
+      content = [
+        Content(
+          mediaType = "application/json",
+          schema = Schema(implementation = NonAssociationEventDto::class),
+        ),
+      ],
+    ),
     responses = [
       ApiResponse(
         responseCode = "200",
@@ -110,6 +135,14 @@ class TestingSQSApiHelperController(
   )
   @Operation(
     summary = "Kick's off the SQS process of visitor restriction",
+    requestBody = io.swagger.v3.oas.annotations.parameters.RequestBody(
+      content = [
+        Content(
+          mediaType = "application/json",
+          schema = Schema(implementation = VisitorRestrictionEventDto::class),
+        ),
+      ],
+    ),
     responses = [
       ApiResponse(
         responseCode = "200",
@@ -121,7 +154,6 @@ class TestingSQSApiHelperController(
     @Schema(description = "Prisoner Restriction Dto", required = true)
     @RequestBody
     visitorRestrictionEventDto: VisitorRestrictionEventDto,
-
   ): ResponseEntity<HttpStatus> {
     eventHandlerService.handleVisitorRestrictionChangeEvent(visitorRestrictionEventDto)
     return ResponseEntity(HttpStatus.CREATED)
@@ -135,6 +167,14 @@ class TestingSQSApiHelperController(
   )
   @Operation(
     summary = "Kick's off the SQS process of prisoner restriction",
+    requestBody = io.swagger.v3.oas.annotations.parameters.RequestBody(
+      content = [
+        Content(
+          mediaType = "application/json",
+          schema = Schema(implementation = PrisonerRestrictionEventDto::class),
+        ),
+      ],
+    ),
     responses = [
       ApiResponse(
         responseCode = "200",
