@@ -92,6 +92,7 @@ workflows:
           env: "staging"
           context:
             - hmpps-common-vars
+            - hmpps-prison-visits-testing-helper-api-stage
           requires:
             - request-staging-approval
 
