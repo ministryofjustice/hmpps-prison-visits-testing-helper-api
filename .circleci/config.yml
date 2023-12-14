@@ -83,7 +83,17 @@ workflows:
             - build_docker
             - helm_lint
             - request-dev-approval
-          helm_timeout: 5m
+      - request-staging-approval:
+          type: approval
+          requires:
+            - deploy_dev
+      - hmpps/deploy_env:
+          name: deploy_staging
+          env: "staging"
+          context:
+            - hmpps-common-vars
+          requires:
+            - request-staging-approval
 
 
   security:
