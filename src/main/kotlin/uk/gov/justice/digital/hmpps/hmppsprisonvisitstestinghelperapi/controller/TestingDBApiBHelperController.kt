@@ -10,8 +10,8 @@ import org.springframework.http.HttpStatus.OK
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.VisitStatus
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.repository.VisitRepository
@@ -25,7 +25,7 @@ class TestingDBApiHelperController {
   lateinit var visitRepository: VisitRepository
 
   @PreAuthorize("hasAnyRole('VISIT_SCHEDULER','VISIT_SCHEDULER_CONFIG','TEST_VISIT_SCHEDULER')")
-  @GetMapping(
+  @PutMapping(
     CHANGE_STATUS_URI,
     produces = [MediaType.TEXT_PLAIN_VALUE],
   )
