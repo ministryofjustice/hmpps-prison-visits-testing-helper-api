@@ -7,9 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatus.CREATED
 import org.springframework.http.HttpStatus.NOT_FOUND
+import org.springframework.http.HttpStatus.OK
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RestController
@@ -25,7 +27,7 @@ class TestingDBApiHelperController {
   lateinit var visitRepository: VisitRepository
 
   @PreAuthorize("hasAnyRole('VISIT_SCHEDULER','VISIT_SCHEDULER_CONFIG','TEST_VISIT_SCHEDULER')")
-  @PutMapping(
+  @GetMapping(
     CHANGE_STATUS_URI,
     produces = [MediaType.TEXT_PLAIN_VALUE],
   )
@@ -51,7 +53,7 @@ class TestingDBApiHelperController {
     status: VisitStatus,
   ): ResponseEntity<HttpStatus> {
     return if (visitRepository.setVisitStatus(reference, status)) {
-      ResponseEntity(CREATED)
+      ResponseEntity(OK)
     } else {
       ResponseEntity(NOT_FOUND)
     }
