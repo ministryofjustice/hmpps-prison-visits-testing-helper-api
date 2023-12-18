@@ -43,7 +43,7 @@ class TestingDBApiHelperController {
     ],
   )
   fun changeVisitStatus(
-    @Schema(description = "reference", example = "BRI", required = true)
+    @Schema(description = "reference", example = "v9-d7-ed-7u", required = true)
     @PathVariable
     reference: String,
     @Schema(description = "status", example = "BOOKED", required = true)
