@@ -50,5 +50,7 @@ generic-service:
   allowlist:
     groups:
       - internal
+      - circleci
+
 generic-prometheus-alerts:
   targetApplication: hmpps-prison-visits-testing-helper-api
