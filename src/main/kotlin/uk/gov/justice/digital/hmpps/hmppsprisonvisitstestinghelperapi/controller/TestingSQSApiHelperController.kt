@@ -16,7 +16,6 @@ import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.NonAss
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.PrisonerEventDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.PrisonerRestrictionEventDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.VisitorRestrictionEventDto
-import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.repository.VisitRepository
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.service.EventHandlerService
 
 const val SQS_RELEASED: String = "/test/prisoner/released"
@@ -27,7 +26,6 @@ const val SQS_PRISONER_RESTRICTION: String = "/test/prisoner/restriction"
 
 @RestController
 class TestingSQSApiHelperController(
-  private val visitRepository: VisitRepository,
   private val eventHandlerService: EventHandlerService,
 ) {
   @PreAuthorize("hasAnyRole('VISIT_SCHEDULER','VISIT_SCHEDULER_CONFIG','TEST_VISIT_SCHEDULER')")

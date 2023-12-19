@@ -53,7 +53,7 @@ spring:
 
   sql:
     init:
-      continue-on-error: true
+      continue-on-error: false
 
   jackson:
     date-format: "yyyy-MM-dd HH:mm:ss"
