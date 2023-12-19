@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
-import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.repository.VisitRepository
+import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.service.DBService
 
 const val PING_CONTROLLER_PATH: String = "/ping"
 
@@ -13,7 +13,7 @@ const val PING_CONTROLLER_PATH: String = "/ping"
 class HealthPingController {
 
   @Autowired
-  lateinit var visitRepository: VisitRepository
+  lateinit var dBService: DBService
 
   @GetMapping("$PING_CONTROLLER_PATH/web")
   @Operation(
@@ -42,7 +42,7 @@ class HealthPingController {
     ],
   )
   fun pingDB(): String {
-    visitRepository.isVisitBooked("haveIGotConnectionToADB")
+    dBService.isVisitBooked("haveIGotConnectionToADB")
     return "Connected to DB"
   }
 }

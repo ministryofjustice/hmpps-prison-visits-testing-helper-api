@@ -1,31 +1,39 @@
 package uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.repository
 
-import jakarta.persistence.EntityManager
-import jakarta.persistence.PersistenceContext
+import jakarta.persistence.Entity
+import jakarta.persistence.Id
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Modifying
+import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
-import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.VisitStatus
+import org.springframework.transaction.annotation.Propagation.REQUIRES_NEW
+import org.springframework.transaction.annotation.Transactional
+
+/**
+ * NotUsedEntity Dummy entity to allow us to use JpaRepository
+ */
+@Entity
+class NotUsedEntity {
+  @Id private var id: Long = 0
+}
 
 @Repository
-class VisitRepository {
+interface VisitRepository : JpaRepository<NotUsedEntity, Long> {
 
-  @PersistenceContext
-  private lateinit var entityManager: EntityManager
+  @Transactional(propagation = REQUIRES_NEW)
+  @Modifying(clearAutomatically = true, flushAutomatically = true)
+  @Query(
+    "UPDATE visit SET visit_status = :status  WHERE reference = :bookingReference",
+    nativeQuery = true,
+  )
+  fun setVisitStatus(
+    bookingReference: String,
+    status: String,
+  ): Int
 
-  fun isVisitBooked(bookingReference: String): Boolean {
-    val sql = "SELECT COUNT(*) > 0 From visit Where reference = ? AND visit_status = 'BOOKED' "
-
-    val query = entityManager.createNativeQuery(sql)
-    query.setParameter(1, bookingReference)
-    return query.singleResult as Boolean
-  }
-
-  fun setVisitStatus(bookingReference: String, status: VisitStatus): Boolean {
-    val sql = "UPDATE visit SET visit_status = ?  WHERE reference = ? "
-
-    val query = entityManager.createNativeQuery(sql)
-    query.setParameter(1, bookingReference)
-    query.setParameter(2, status)
-
-    return query.executeUpdate() > 0
-  }
+  @Query(
+    "SELECT COUNT(*) > 0 From visit Where reference = :bookingReference AND visit_status = 'BOOKED'",
+    nativeQuery = true,
+  )
+  fun isVisitBooked(bookingReference: String): Boolean
 }

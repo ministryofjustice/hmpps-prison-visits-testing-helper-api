@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.VisitStatus
-import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.repository.VisitRepository
+import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.service.DBService
 
 const val CHANGE_STATUS_URI: String = "/test/visit/{reference}/status/{status}"
 
@@ -22,7 +22,7 @@ const val CHANGE_STATUS_URI: String = "/test/visit/{reference}/status/{status}"
 class TestingDBApiHelperController {
 
   @Autowired
-  lateinit var visitRepository: VisitRepository
+  lateinit var dBService: DBService
 
   @PreAuthorize("hasAnyRole('VISIT_SCHEDULER','VISIT_SCHEDULER_CONFIG','TEST_VISIT_SCHEDULER')")
   @PutMapping(
@@ -50,7 +50,7 @@ class TestingDBApiHelperController {
     @PathVariable
     status: VisitStatus,
   ): ResponseEntity<HttpStatus> {
-    return if (visitRepository.setVisitStatus(reference, status)) {
+    return if (dBService.setVisitStatus(reference, status)) {
       ResponseEntity(OK)
     } else {
       ResponseEntity(NOT_FOUND)
