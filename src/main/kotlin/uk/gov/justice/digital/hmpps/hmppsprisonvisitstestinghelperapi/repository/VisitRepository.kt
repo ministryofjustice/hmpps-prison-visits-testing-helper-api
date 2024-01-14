@@ -36,4 +36,11 @@ interface VisitRepository : JpaRepository<NotUsedEntity, Long> {
     nativeQuery = true,
   )
   fun isVisitBooked(bookingReference: String): Boolean
+
+  @Modifying
+  @Query(
+    "delete from visit_notification_event where booking_reference = :bookingReference",
+    nativeQuery = true,
+  )
+  fun deleteVisitNotificationEvents(bookingReference: String): Int
 }
