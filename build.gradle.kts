@@ -27,6 +27,8 @@ dependencies {
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.2")
   implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:1.32.0")
 
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-api:2.3.0")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
   implementation("org.springdoc:springdoc-openapi-starter-common:2.3.0")
 
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
