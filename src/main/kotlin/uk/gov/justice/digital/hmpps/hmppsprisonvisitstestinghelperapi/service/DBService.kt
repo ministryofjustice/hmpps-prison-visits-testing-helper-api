@@ -28,4 +28,11 @@ class DBService(
     LOG.debug("isVisitBooked result: $result")
     return result
   }
+
+  fun deleteVisitNotificationEvents(bookingReference: String): Int {
+    LOG.debug("Delete visit notification events for booking reference - $bookingReference")
+    val result = visitRepository.deleteVisitNotificationEvents(bookingReference)
+    LOG.debug("Deleted $result visit notification events for booking reference -  $bookingReference")
+    return result
+  }
 }
