@@ -18,23 +18,23 @@ class DBService(
   private val logger: Logger = LoggerFactory.getLogger(VisitRepository::class.java)
 
   fun setVisitStatus(reference: String, status: VisitStatus): Boolean {
-    logger.debug("Enter setVisitStatus $reference $status")
+    logger.debug("Enter setVisitStatus {} {} ", reference, status)
     val result = visitRepository.setVisitStatus(reference, status.name)
-    logger.debug("setVisitStatus result: $result")
+    logger.debug("setVisitStatus result: {}", result)
     return result > 0
   }
 
   fun isVisitBooked(reference: String): Boolean {
-    logger.debug("Enter setVisitStatus $reference $reference")
+    logger.debug("Enter isVisitBooked, {}", reference)
     val result = visitRepository.isVisitBooked(reference)
-    logger.debug("isVisitBooked result: $result")
+    logger.debug("isVisitBooked result: {}", result)
     return result
   }
 
   fun deleteVisitNotificationEvents(bookingReference: String): Int {
     logger.debug("Delete visit notification events for booking reference - {}", bookingReference)
     val result = visitRepository.deleteVisitNotificationEvents(bookingReference)
-    logger.debug("Deleted {} visit notification events for booking reference -  {}", result, bookingReference)
+    logger.debug("Deleted {} visit notification events for booking reference - {}", result, bookingReference)
     return result
   }
 
