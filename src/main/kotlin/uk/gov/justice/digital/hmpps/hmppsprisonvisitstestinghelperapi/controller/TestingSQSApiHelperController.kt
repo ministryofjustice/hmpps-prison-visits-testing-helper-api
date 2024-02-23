@@ -60,7 +60,7 @@ class TestingSQSApiHelperController(
     return ResponseEntity(HttpStatus.CREATED)
   }
 
-  @PreAuthorize("hasAnyRole('TEST_VISIT_SCHEDULER')")
+  @PreAuthorize("hasAnyRole('VISIT_SCHEDULER','TEST_VISIT_SCHEDULER')")
   @PutMapping(
     SQS_RECEIVED,
     produces = [MediaType.TEXT_PLAIN_VALUE],
