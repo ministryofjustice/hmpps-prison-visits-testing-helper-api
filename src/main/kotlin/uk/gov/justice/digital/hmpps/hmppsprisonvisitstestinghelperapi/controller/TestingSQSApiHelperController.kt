@@ -28,7 +28,7 @@ const val SQS_PRISONER_RESTRICTION: String = "/test/prisoner/restriction"
 class TestingSQSApiHelperController(
   private val eventHandlerService: EventHandlerService,
 ) {
-  @PreAuthorize("hasAnyRole('TEST_VISIT_SCHEDULER')")
+  @PreAuthorize("hasAnyRole('VISIT_SCHEDULER','VISIT_SCHEDULER_CONFIG','TEST_VISIT_SCHEDULER')")
   @PutMapping(
     SQS_RELEASED,
     produces = [MediaType.TEXT_PLAIN_VALUE],
@@ -60,7 +60,7 @@ class TestingSQSApiHelperController(
     return ResponseEntity(HttpStatus.CREATED)
   }
 
-  @PreAuthorize("hasAnyRole('VISIT_SCHEDULER','TEST_VISIT_SCHEDULER')")
+  @PreAuthorize("hasAnyRole('VISIT_SCHEDULER','VISIT_SCHEDULER_CONFIG','TEST_VISIT_SCHEDULER')")
   @PutMapping(
     SQS_RECEIVED,
     produces = [MediaType.TEXT_PLAIN_VALUE],
@@ -92,7 +92,7 @@ class TestingSQSApiHelperController(
     return ResponseEntity(HttpStatus.CREATED)
   }
 
-  @PreAuthorize("hasAnyRole('TEST_VISIT_SCHEDULER')")
+  @PreAuthorize("hasAnyRole('VISIT_SCHEDULER','VISIT_SCHEDULER_CONFIG','TEST_VISIT_SCHEDULER')")
   @PutMapping(
     SQS_NON_ASSOCIATION,
     produces = [MediaType.TEXT_PLAIN_VALUE],
@@ -125,7 +125,7 @@ class TestingSQSApiHelperController(
     return ResponseEntity(HttpStatus.CREATED)
   }
 
-  @PreAuthorize("hasAnyRole('TEST_VISIT_SCHEDULER')")
+  @PreAuthorize("hasAnyRole('VISIT_SCHEDULER','VISIT_SCHEDULER_CONFIG','TEST_VISIT_SCHEDULER')")
   @PutMapping(
     SQS_VISITOR_RESTRICTION,
     produces = [MediaType.TEXT_PLAIN_VALUE],
@@ -157,7 +157,7 @@ class TestingSQSApiHelperController(
     return ResponseEntity(HttpStatus.CREATED)
   }
 
-  @PreAuthorize("hasAnyRole('TEST_VISIT_SCHEDULER')")
+  @PreAuthorize("hasAnyRole('VISIT_SCHEDULER','VISIT_SCHEDULER_CONFIG','TEST_VISIT_SCHEDULER')")
   @PutMapping(
     SQS_PRISONER_RESTRICTION,
     produces = [MediaType.TEXT_PLAIN_VALUE],
