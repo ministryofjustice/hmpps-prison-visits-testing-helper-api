@@ -43,4 +43,11 @@ interface VisitRepository : JpaRepository<NotUsedEntity, Long> {
     nativeQuery = true,
   )
   fun deleteVisitNotificationEvents(bookingReference: String): Int
+
+  @Modifying
+  @Query(
+    "insert into visit_notification_event(booking_reference, type, reference) values (:bookingReference, :notificationType, :reference)",
+    nativeQuery = true,
+  )
+  fun createVisitNotificationEvents(bookingReference: String, notificationType: String, reference: String): Int
 }
