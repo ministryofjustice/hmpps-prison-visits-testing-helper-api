@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto
 
-import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.enums.DBNotificationEventType
+import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.enums.TestDBNotificationEventTypes
 
 class CreateNotificationEventDto(
-  val notificationEvent: DBNotificationEventType,
+  val notificationEvent: TestDBNotificationEventTypes,
 )

@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.VisitStatus
-import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.enums.DBNotificationEventType
+import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.enums.TestDBNotificationEventTypes
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.repository.VisitRepository
 import java.util.UUID
 
@@ -38,7 +38,7 @@ class DBService(
     return result
   }
 
-  fun createVisitNotificationEvents(bookingReference: String, notificationType: DBNotificationEventType) {
+  fun createVisitNotificationEvents(bookingReference: String, notificationType: TestDBNotificationEventTypes) {
     logger.debug("Create visit notification event {} for booking reference - {}", notificationType, bookingReference)
     val reference = UUID.randomUUID().toString()
     visitRepository.createVisitNotificationEvents(bookingReference, notificationType.toString(), reference)
