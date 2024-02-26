@@ -30,7 +30,7 @@ class TestingDBApiHelperController {
   @Autowired
   lateinit var dBService: DBService
 
-  @PreAuthorize("hasAnyRole('VISIT_SCHEDULER','VISIT_SCHEDULER_CONFIG','TEST_VISIT_SCHEDULER')")
+  @PreAuthorize("hasAnyRole('TEST_VISIT_SCHEDULER')")
   @PutMapping(
     CHANGE_STATUS_URI,
     produces = [MediaType.TEXT_PLAIN_VALUE],
@@ -63,7 +63,7 @@ class TestingDBApiHelperController {
     }
   }
 
-  @PreAuthorize("hasAnyRole('VISIT_SCHEDULER','VISIT_SCHEDULER_CONFIG','TEST_VISIT_SCHEDULER')")
+  @PreAuthorize("hasAnyRole('TEST_VISIT_SCHEDULER')")
   @DeleteMapping(
     VISIT_NOTIFICATIONS_URI,
     produces = [MediaType.APPLICATION_JSON_VALUE],
@@ -86,7 +86,7 @@ class TestingDBApiHelperController {
     return ResponseEntity(recordsDeleted, OK)
   }
 
-  @PreAuthorize("hasAnyRole('VISIT_SCHEDULER','VISIT_SCHEDULER_CONFIG','TEST_VISIT_SCHEDULER')")
+  @PreAuthorize("hasAnyRole('TEST_VISIT_SCHEDULER')")
   @PutMapping(
     VISIT_NOTIFICATIONS_URI,
     produces = [MediaType.TEXT_PLAIN_VALUE],
