@@ -28,7 +28,6 @@ class TestingAdminApiHelperController {
   @PutMapping(
     ADD_PRISON_EXCLUDE_DATE,
     produces = [MediaType.TEXT_PLAIN_VALUE],
-    consumes = [MediaType.APPLICATION_JSON_VALUE],
   )
   @ResponseStatus(CREATED)
   @Operation(
@@ -56,7 +55,6 @@ class TestingAdminApiHelperController {
   @PutMapping(
     REMOVE_PRISON_EXCLUDE_DATE,
     produces = [MediaType.TEXT_PLAIN_VALUE],
-    consumes = [MediaType.APPLICATION_JSON_VALUE],
   )
   @ResponseStatus(CREATED)
   @Operation(

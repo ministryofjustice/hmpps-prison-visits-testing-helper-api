@@ -28,6 +28,7 @@ class VisitSchedulerClient(
       .body(BodyInserters.fromValue(PrisonExcludeDateDto(excludeDate)))
       .retrieve()
       .toBodilessEntity()
+      .doOnError { e -> LOG.error("Could not add exclude date :", e) }
       .block(apiTimeout)
     LOG.info("Finished calling addExcludeDate for prison - $prisonCode, excluded date - $excludeDate")
   }
@@ -40,6 +41,7 @@ class VisitSchedulerClient(
       .body(BodyInserters.fromValue(PrisonExcludeDateDto(excludeDate)))
       .retrieve()
       .toBodilessEntity()
+      .doOnError { e -> LOG.error("Could not remove exclude date :", e) }
       .block(apiTimeout)
 
     LOG.info("Finished calling remove exclude date for prison - $prisonCode, excluded date - $excludeDate")
