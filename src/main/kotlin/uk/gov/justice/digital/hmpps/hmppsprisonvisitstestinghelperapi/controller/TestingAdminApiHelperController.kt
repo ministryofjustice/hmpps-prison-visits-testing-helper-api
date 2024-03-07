@@ -24,7 +24,7 @@ class TestingAdminApiHelperController {
   @Autowired
   lateinit var visitSchedulerClient: VisitSchedulerClient
 
-  @PreAuthorize("hasAnyRole('VISIT_SCHEDULER','VISIT_SCHEDULER_CONFIG','TEST_VISIT_SCHEDULER')")
+  @PreAuthorize("hasAnyRole('TEST_VISIT_SCHEDULER')")
   @PutMapping(
     ADD_PRISON_EXCLUDE_DATE,
     produces = [MediaType.TEXT_PLAIN_VALUE],
@@ -51,7 +51,7 @@ class TestingAdminApiHelperController {
     return ResponseEntity(CREATED)
   }
 
-  @PreAuthorize("hasAnyRole('VISIT_SCHEDULER','VISIT_SCHEDULER_CONFIG','TEST_VISIT_SCHEDULER')")
+  @PreAuthorize("hasAnyRole('TEST_VISIT_SCHEDULER')")
   @PutMapping(
     REMOVE_PRISON_EXCLUDE_DATE,
     produces = [MediaType.TEXT_PLAIN_VALUE],
