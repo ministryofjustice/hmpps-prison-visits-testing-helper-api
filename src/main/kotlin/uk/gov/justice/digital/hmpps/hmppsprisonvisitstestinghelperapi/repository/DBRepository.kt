@@ -85,7 +85,7 @@ interface DBRepository : JpaRepository<NotUsedEntity, Long> {
   fun deleteVisitLegacy(id: Long): Int
 
   @Query(
-    "Select id from application where visit_id = :visitId litmit 1",
+    "Select id from application where visit_id = :visitId limit 1",
     nativeQuery = true,
   )
   fun getApplicationIdByVisitId(visitId: Long): Long?

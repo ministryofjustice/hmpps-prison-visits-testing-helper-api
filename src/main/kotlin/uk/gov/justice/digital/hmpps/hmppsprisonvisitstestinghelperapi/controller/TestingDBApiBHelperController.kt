@@ -33,7 +33,7 @@ class TestingDBApiHelperController {
   lateinit var dBService: DBService
 
   @PreAuthorize("hasAnyRole('TEST_VISIT_SCHEDULER')")
-  @PutMapping(
+  @DeleteMapping(
     BASE_VISIT_URI,
   )
   @ResponseStatus(OK)
@@ -59,7 +59,7 @@ class TestingDBApiHelperController {
   }
 
   @PreAuthorize("hasAnyRole('TEST_VISIT_SCHEDULER')")
-  @PutMapping(
+  @DeleteMapping(
     BASE_APPLICATION_URI,
   )
   @ResponseStatus(OK)
