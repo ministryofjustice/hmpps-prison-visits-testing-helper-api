@@ -21,14 +21,68 @@ import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.Create
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.VisitStatus
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.service.DBService
 
-const val CHANGE_STATUS_URI: String = "/test/visit/{reference}/status/{status}"
-const val VISIT_NOTIFICATIONS_URI: String = "/test/visit/{reference}/notifications"
+const val BASE_VISIT_URI: String = "/test/visit/{reference}"
+const val BASE_APPLICATION_URI: String = "/test/application/{reference}"
+const val CHANGE_STATUS_URI: String = "$BASE_VISIT_URI/status/{status}"
+const val VISIT_NOTIFICATIONS_URI: String = "$BASE_VISIT_URI/notifications"
 
 @RestController
 class TestingDBApiHelperController {
 
   @Autowired
   lateinit var dBService: DBService
+
+  @PreAuthorize("hasAnyRole('TEST_VISIT_SCHEDULER')")
+  @DeleteMapping(
+    BASE_VISIT_URI,
+  )
+  @ResponseStatus(OK)
+  @Operation(
+    summary = "Delete visit and children by reference",
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        description = "Status changed process started",
+      ),
+      ApiResponse(
+        responseCode = "404",
+        description = "Count not find visit for given reference",
+      ),
+    ],
+  )
+  fun deleteVisitAndAllChildren(
+    @Schema(description = "visit reference", example = "v9-d7-ed-7u", required = true)
+    @PathVariable
+    reference: String,
+  ) {
+    dBService.deleteVisitAndChildren(reference)
+  }
+
+  @PreAuthorize("hasAnyRole('TEST_VISIT_SCHEDULER')")
+  @DeleteMapping(
+    BASE_APPLICATION_URI,
+  )
+  @ResponseStatus(OK)
+  @Operation(
+    summary = "Delete application and children by reference",
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        description = "Status changed process started",
+      ),
+      ApiResponse(
+        responseCode = "404",
+        description = "Count not find visit for given reference",
+      ),
+    ],
+  )
+  fun deleteApplicationAndAllChildren(
+    @Schema(description = "application reference", example = "v9-d7-ed-7u", required = true)
+    @PathVariable
+    reference: String,
+  ) {
+    dBService.deleteApplicationAndChildren(reference)
+  }
 
   @PreAuthorize("hasAnyRole('TEST_VISIT_SCHEDULER')")
   @PutMapping(
