@@ -35,7 +35,6 @@ interface DBRepository : JpaRepository<NotUsedEntity, Long> {
   )
   fun isVisitBooked(bookingReference: String): Boolean
 
-  @Modifying
   @Query(
     "Select id from visit where reference = :bookingReference",
     nativeQuery = true,
