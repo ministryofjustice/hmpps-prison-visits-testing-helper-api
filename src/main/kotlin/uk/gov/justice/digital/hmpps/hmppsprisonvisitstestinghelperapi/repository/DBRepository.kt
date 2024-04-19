@@ -64,7 +64,7 @@ interface DBRepository : JpaRepository<NotUsedEntity, Long> {
 
   @Modifying
   @Query(
-    "delete from visit_visitors where visit_id = :id",
+    "delete from visit_visitor where visit_id = :id",
     nativeQuery = true,
   )
   fun deleteVisitVisitors(id: Long): Int
@@ -117,7 +117,7 @@ interface DBRepository : JpaRepository<NotUsedEntity, Long> {
 
   @Modifying
   @Query(
-    "delete from application_visitors where application_id = :id",
+    "delete from application_visitor where application_id = :id",
     nativeQuery = true,
   )
   fun deleteApplicationVisitors(id: Long): Int
