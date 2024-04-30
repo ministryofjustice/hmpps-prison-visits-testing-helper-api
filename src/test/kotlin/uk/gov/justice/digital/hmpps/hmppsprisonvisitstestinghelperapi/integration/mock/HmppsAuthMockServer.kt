@@ -1,12 +1,8 @@
 package uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.integration.mock
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
-import com.github.tomakehurst.wiremock.client.WireMock.get
 import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.http.HttpHeader
 import com.github.tomakehurst.wiremock.http.HttpHeaders
@@ -14,8 +10,6 @@ import org.junit.jupiter.api.extension.AfterAllCallback
 import org.junit.jupiter.api.extension.BeforeAllCallback
 import org.junit.jupiter.api.extension.BeforeEachCallback
 import org.junit.jupiter.api.extension.ExtensionContext
-import org.springframework.http.HttpStatus
-import org.springframework.http.MediaType
 
 class HmppsAuthExtension : BeforeAllCallback, AfterAllCallback, BeforeEachCallback {
 
@@ -27,9 +21,6 @@ class HmppsAuthExtension : BeforeAllCallback, AfterAllCallback, BeforeEachCallba
   override fun beforeAll(context: ExtensionContext) {
     hmppsAuthApi.start()
     hmppsAuthApi.stubGrantToken()
-    hmppsAuthApi.stubGetUserDetails("created-user")
-    hmppsAuthApi.stubGetUserDetails("updated-user")
-    hmppsAuthApi.stubGetUserDetails("cancelled-user")
   }
 
   override fun beforeEach(context: ExtensionContext) {
@@ -63,34 +54,4 @@ class HmppsAuthMockServer : WireMockServer(WIREMOCK_PORT) {
         ),
     )
   }
-
-  fun stubGetUserDetails(userId: String, fullName: String? = "$userId-name") {
-    val responseBuilder = aResponse()
-      .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-
-    stubFor(
-      get("/auth/api/user/$userId")
-        .willReturn(
-          responseBuilder
-            .withStatus(HttpStatus.OK.value())
-            .withBody(
-              """
-              {
-                 "username": "$userId",
-                 "name": "$fullName"
-                }
-              """.trimIndent(),
-            ),
-        ),
-    )
-  }
-}
-
-fun getJsonString(obj: Any): String {
-  return ObjectMapper()
-    .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-    .registerModule(JavaTimeModule())
-    .writer()
-    .withDefaultPrettyPrinter()
-    .writeValueAsString(obj)
 }

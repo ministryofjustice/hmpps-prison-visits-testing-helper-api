@@ -19,9 +19,14 @@ import java.time.LocalTime
 
 @DisplayName("Testing Admin API helper Controller")
 class TestingDBApiHelperControllerTest : IntegrationTestBase() {
-  companion object {
-    const val PRISON_CODE = "HEI"
-  }
+  val prisonCode = "HEI"
+  val sessionTemplateReference = "session-1"
+  val sessionSlotReference = "session-slot-1"
+  val sessionTimeSlot = SessionTimeSlot(LocalTime.of(9, 0), LocalTime.of(10, 0))
+  val existingStatus = BOOKED
+  val visitDate: LocalDate = LocalDate.now()
+  val visitReference = "aa-bb-cc-dd"
+
   fun callChangeVisitStatus(
     webTestClient: WebTestClient,
     authHttpHeaders: (HttpHeaders) -> Unit,
@@ -65,6 +70,10 @@ class TestingDBApiHelperControllerTest : IntegrationTestBase() {
   @BeforeEach
   fun setup() {
     clearDb()
+
+    dBRepository.createPrison(prisonCode)
+    dBRepository.createSessionTemplate(prisonCode, "room", "SOCIAL", 10, 1, sessionTimeSlot.startTime, sessionTimeSlot.endTime, LocalDate.now(), LocalDate.now().dayOfWeek, sessionTemplateReference, sessionTemplateReference)
+    dBRepository.createSessionSlot("session-slot-1", visitDate, visitDate.atTime(sessionTimeSlot.startTime), visitDate.atTime(sessionTimeSlot.endTime), sessionTemplateReference)
   }
 
   @AfterEach
@@ -75,18 +84,9 @@ class TestingDBApiHelperControllerTest : IntegrationTestBase() {
   @Test
   fun `when visit status change called visit status is updated`() {
     // Given
-    val visitReference = "aa-bb-cc-dd"
-    val visitDate = LocalDate.now()
-    val sessionTemplateReference = "session-1"
-    val sessionSlotReference = "session-slot-1"
-    val sessionTimeSlot = SessionTimeSlot(LocalTime.of(9, 0), LocalTime.of(10, 0))
-
     val existingStatus = BOOKED
     val newStatus = CANCELLED
 
-    dBRepository.createPrison(PRISON_CODE)
-    dBRepository.createSessionTemplate(PRISON_CODE, "room", "SOCIAL", 10, 1, sessionTimeSlot.startTime, sessionTimeSlot.endTime, LocalDate.now(), LocalDate.now().dayOfWeek, sessionTemplateReference, sessionTemplateReference)
-    dBRepository.createSessionSlot("session-slot-1", visitDate, visitDate.atTime(sessionTimeSlot.startTime), visitDate.atTime(sessionTimeSlot.endTime), sessionTemplateReference)
     dBRepository.createVisit("AA123", visitReference, "SOCIAL", "ROOM-1", existingStatus, "OPEN", sessionSlotReference)
     val responseSpec = callChangeVisitStatus(webTestClient, setAuthorisation(roles = listOf("ROLE_TEST_VISIT_SCHEDULER")), visitReference, newStatus)
 
@@ -99,17 +99,7 @@ class TestingDBApiHelperControllerTest : IntegrationTestBase() {
   @Test
   fun `when delete visit notification event called all visit notifications are deleted`() {
     // Given
-    val visitReference = "aa-bb-cc-dd"
-    val visitDate = LocalDate.now()
-    val sessionTemplateReference = "session-1"
-    val sessionSlotReference = "session-slot-1"
-    val sessionTimeSlot = SessionTimeSlot(LocalTime.of(9, 0), LocalTime.of(10, 0))
     val visitNotificationReference = "aa-11-bb-22"
-    val existingStatus = BOOKED
-
-    dBRepository.createPrison(PRISON_CODE)
-    dBRepository.createSessionTemplate(PRISON_CODE, "room", "SOCIAL", 10, 1, sessionTimeSlot.startTime, sessionTimeSlot.endTime, LocalDate.now(), LocalDate.now().dayOfWeek, sessionTemplateReference, sessionTemplateReference)
-    dBRepository.createSessionSlot("session-slot-1", visitDate, visitDate.atTime(sessionTimeSlot.startTime), visitDate.atTime(sessionTimeSlot.endTime), sessionTemplateReference)
     dBRepository.createVisit("AA123", visitReference, "SOCIAL", "ROOM-1", existingStatus, "OPEN", sessionSlotReference)
     dBRepository.createVisitNotification("PRISON_VISITS_BLOCKED_FOR_DATE", visitNotificationReference, visitReference)
 
@@ -127,16 +117,6 @@ class TestingDBApiHelperControllerTest : IntegrationTestBase() {
   @Test
   fun `when create visit notification event called visit notification events are created`() {
     // Given
-    val visitReference = "aa-bb-cc-dd"
-    val visitDate = LocalDate.now()
-    val sessionTemplateReference = "session-1"
-    val sessionSlotReference = "session-slot-1"
-    val sessionTimeSlot = SessionTimeSlot(LocalTime.of(9, 0), LocalTime.of(10, 0))
-    val existingStatus = BOOKED
-
-    dBRepository.createPrison(PRISON_CODE)
-    dBRepository.createSessionTemplate(PRISON_CODE, "room", "SOCIAL", 10, 1, sessionTimeSlot.startTime, sessionTimeSlot.endTime, LocalDate.now(), LocalDate.now().dayOfWeek, sessionTemplateReference, sessionTemplateReference)
-    dBRepository.createSessionSlot("session-slot-1", visitDate, visitDate.atTime(sessionTimeSlot.startTime), visitDate.atTime(sessionTimeSlot.endTime), sessionTemplateReference)
     dBRepository.createVisit("AA123", visitReference, "SOCIAL", "ROOM-1", existingStatus, "OPEN", sessionSlotReference)
 
     var hasVisitNotifications = dBRepository.hasVisitNotifications(visitReference)
