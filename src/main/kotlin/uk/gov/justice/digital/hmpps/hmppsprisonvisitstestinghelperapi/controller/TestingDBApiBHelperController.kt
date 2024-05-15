@@ -25,7 +25,7 @@ import java.time.LocalDateTime
 const val BASE_VISIT_URI: String = "/test/visit/{reference}"
 const val BASE_APPLICATION_URI: String = "/test/application/{reference}"
 const val CHANGE_STATUS_URI: String = "$BASE_VISIT_URI/status/{status}"
-const val UPDATE_MODIFIED_DATE_URI: String = "$BASE_APPLICATION_URI/modified-date/{modifiedDate}"
+const val UPDATE_MODIFIED_DATE_URI: String = "$BASE_APPLICATION_URI/modifiedTimestamp/{modifiedTimestamp}"
 const val VISIT_NOTIFICATIONS_URI: String = "$BASE_VISIT_URI/notifications"
 
 @RestController
@@ -141,11 +141,11 @@ class TestingDBApiHelperController {
     @Schema(description = "reference", example = "v9-d7-ed-7u", required = true)
     @PathVariable
     reference: String,
-    @Schema(description = "Updated modified date", example = "2007-12-28T10:15:30", required = true)
+    @Schema(description = "Updated modified timestamp", example = "2007-12-28T10:15:30", required = true)
     @PathVariable
-    modifiedDate: LocalDateTime,
+    modifiedTimestamp: LocalDateTime,
   ): ResponseEntity<HttpStatus> {
-    return if (dBService.updateModifiedDateApplication(reference, modifiedDate)) {
+    return if (dBService.updateApplicationModifyTimestamp(reference, modifiedTimestamp)) {
       ResponseEntity(OK)
     } else {
       ResponseEntity(NOT_FOUND)

@@ -36,7 +36,7 @@ interface DBRepository : JpaRepository<NotUsedEntity, Long> {
     "UPDATE application SET modifyTimestamp = :updatedModifiedDate  WHERE reference = :applicationReference",
     nativeQuery = true,
   )
-  fun updateModifiedDateApplication(
+  fun updateApplicationModifyTimestamp(
     applicationReference: String,
     updatedModifiedDate: LocalDateTime,
   ): Int

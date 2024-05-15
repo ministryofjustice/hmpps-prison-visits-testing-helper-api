@@ -25,9 +25,9 @@ class DBService(
     return result > 0
   }
 
-  fun updateModifiedDateApplication(reference: String, updatedModifiedDate: LocalDateTime): Boolean {
-    logger.debug("Enter updateModifiedDateApplication {} {} ", reference, updatedModifiedDate)
-    val result = dBRepository.updateModifiedDateApplication(reference, updatedModifiedDate)
+  fun updateApplicationModifyTimestamp(reference: String, updatedModifiedTimeStamp: LocalDateTime): Boolean {
+    logger.debug("Enter updateModifiedDateApplication {} {} ", reference, updatedModifiedTimeStamp)
+    val result = dBRepository.updateApplicationModifyTimestamp(reference, updatedModifiedTimeStamp)
     logger.debug("updateModifiedDateApplication result: {}", result)
     return result > 0
   }
