@@ -20,10 +20,12 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.CreateNotificationEventDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.VisitStatus
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.service.DBService
+import java.time.LocalDateTime
 
 const val BASE_VISIT_URI: String = "/test/visit/{reference}"
 const val BASE_APPLICATION_URI: String = "/test/application/{reference}"
 const val CHANGE_STATUS_URI: String = "$BASE_VISIT_URI/status/{status}"
+const val UPDATE_MODIFIED_DATE_URI: String = "$BASE_APPLICATION_URI/modified-date/{modifiedDate}"
 const val VISIT_NOTIFICATIONS_URI: String = "$BASE_VISIT_URI/notifications"
 
 @RestController
@@ -111,6 +113,39 @@ class TestingDBApiHelperController {
     status: VisitStatus,
   ): ResponseEntity<HttpStatus> {
     return if (dBService.setVisitStatus(reference, status)) {
+      ResponseEntity(OK)
+    } else {
+      ResponseEntity(NOT_FOUND)
+    }
+  }
+
+  @PreAuthorize("hasAnyRole('TEST_VISIT_SCHEDULER')")
+  @PutMapping(
+    UPDATE_MODIFIED_DATE_URI,
+    produces = [MediaType.TEXT_PLAIN_VALUE],
+  )
+  @Operation(
+    summary = "Change modified date of an application",
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        description = "Modified date changed",
+      ),
+      ApiResponse(
+        responseCode = "404",
+        description = "Could not find application for given reference",
+      ),
+    ],
+  )
+  fun updateApplicationModifiedDate(
+    @Schema(description = "reference", example = "v9-d7-ed-7u", required = true)
+    @PathVariable
+    reference: String,
+    @Schema(description = "Updated modified date", example = "2007-12-28T10:15:30", required = true)
+    @PathVariable
+    modifiedDate: LocalDateTime,
+  ): ResponseEntity<HttpStatus> {
+    return if (dBService.updateModifiedDateApplication(reference, modifiedDate)) {
       ResponseEntity(OK)
     } else {
       ResponseEntity(NOT_FOUND)
