@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.CreateNotificationEventDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.VisitStatus
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.service.DBService
-import java.sql.Timestamp
 import java.time.LocalDateTime
 
 const val BASE_VISIT_URI: String = "/test/visit/{reference}"
