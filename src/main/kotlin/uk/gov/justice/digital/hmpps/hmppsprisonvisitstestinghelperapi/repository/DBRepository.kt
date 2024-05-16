@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Propagation.REQUIRES_NEW
 import org.springframework.transaction.annotation.Transactional
-import java.time.LocalDateTime
+import java.sql.Timestamp
 
 @Entity
 class NotUsedEntity {
@@ -33,12 +33,12 @@ interface DBRepository : JpaRepository<NotUsedEntity, Long> {
   @Transactional(propagation = REQUIRES_NEW)
   @Modifying(clearAutomatically = true, flushAutomatically = true)
   @Query(
-    "UPDATE application SET modifyTimestamp = :updatedModifiedDate  WHERE reference = :applicationReference",
+    "UPDATE application SET modify_timestamp = :updatedModifiedTimestamp  WHERE reference = :applicationReference",
     nativeQuery = true,
   )
   fun updateApplicationModifyTimestamp(
     applicationReference: String,
-    updatedModifiedDate: LocalDateTime,
+    updatedModifiedTimestamp: Timestamp,
   ): Int
 
   @Query(
