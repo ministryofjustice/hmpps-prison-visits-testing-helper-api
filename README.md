@@ -2,7 +2,7 @@
 
 [![CircleCI](https://circleci.com/gh/ministryofjustice/hmpps-prison-visits-testing-helper-api/tree/main.svg?style=shield)](https://app.circleci.com/pipelines/github/ministryofjustice/hmpps-prison-visits-testing-helper-api)
 
-This is a Spring Boot application, written in Kotlin. It is a testing helper API for automated tests. Used by [Visits UI](https://github.com/ministryofjustice/hmpps-vsip-ui-tests).
+This is a Spring Boot application, written in Kotlin. It is a testing helper API for automated tests. Used by [Visits UI Tests](https://github.com/ministryofjustice/hmpps-vsip-ui-tests).
 
 
 ## Building
@@ -25,9 +25,9 @@ Create a Spring Boot run configuration with active profile of 'dev'. Run the ser
 
 Ports
 
-| Service                                | Port   |  
-|----------------------------------------|--------|
-| hmpps-prison-visits-testing-helper-api | 8080   |
+| Service                                | Port |  
+|----------------------------------------|------|
+| hmpps-prison-visits-testing-helper-api | 8089 |
 
 
 ### Auth token retrieval
@@ -48,18 +48,18 @@ Client Authentication: "Send as Basic Auth Header"
 
 Call info endpoint:
 ```
-$ curl 'http://localhost:8083/info' -i -X GET
+$ curl 'http://localhost:8089/info' -i -X GET
 ```
 
 ## Swagger v3
 Prison Visits Testing Helper API
 ```
-http://localhost:8080/swagger-ui/index.html
+http://localhost:8089/swagger-ui/index.html
 ```
 
 Export Spec
 ```
-http://localhost:8080/v3/api-docs?group=full-api
+http://localhost:8089/v3/api-docs?group=full-api
 ```
 
 ## Common gradle tasks
@@ -122,18 +122,18 @@ Although the testing helper API is primarily used by hmpps-vsip-ui-tests it can 
 
 For local envs - 
 1. Get orchestration service and visit scheduler running locally.
-2. Get the hmpps-prison-visits-testing-helper-api running locally (might need to change port if port clashes with the orchestration service).
-3. Get the local queue name using the below command.
+2. Get hmpps-prison-visits-testing-helper-api running locally.
+3. Get local queue name using the below command.
 ```
 aws --endpoint-url=http://localhost:4566 sqs list-queues | grep sqs_hmpps_prison_visits_event_queue
 ```
 
 4. Update the hmpps.sqs.queues.prisonvisitsevents.queue.url value to match the above queue name (if not the same).
-5. Connect POSTMAN to your local hmpps-prison-visits-testing-helper-api and create an AuthToken using Client credentials
+5. Connect POSTMAN to your local hmpps-prison-visits-testing-helper-api and create an AuthToken using Client credentials (as described in Auth token retrieval section)
 6. Create requests using the below sample requests for each event type.
 
 For dev / staging env - 
-1. Connect POSTMAN to your dev / staging hmpps-prison-visits-testing-helper-api and create an AuthToken using Client credentials 
+1. Connect POSTMAN to your dev / staging hmpps-prison-visits-testing-helper-api and create an AuthToken using Client credentials (as described in Auth token retrieval section)
 2. Create requests using the below sample requests for each event type.
 
 #### Sample requests
