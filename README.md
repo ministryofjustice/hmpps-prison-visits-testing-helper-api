@@ -121,14 +121,14 @@ To register pre-commit check to run Ktlint format:
 Although the testing helper API is primarily used by hmpps-vsip-ui-tests it can also be used as a quick way to create SQS events for local testing.
 
 For local envs - 
-1. Get orchestration service and visit scheduler running locally.
-2. Get hmpps-prison-visits-testing-helper-api running locally.
-3. Get local queue name using the below command.
+1. Get orchestration service and visit scheduler running locally. 
+2. Get local queue name using the below command.
 ```
 aws --endpoint-url=http://localhost:4566 sqs list-queues | grep sqs_hmpps_prison_visits_event_queue
 ```
 
-4. Update the hmpps.sqs.queues.prisonvisitsevents.queue.url value to match the above queue name (if not the same).
+3. Update the hmpps.sqs.queues.prisonvisitsevents.queue.url value to match the above queue name (if not the same).
+4. Get hmpps-prison-visits-testing-helper-api running locally.
 5. Connect POSTMAN to your local hmpps-prison-visits-testing-helper-api and create an AuthToken using Client credentials (as described in Auth token retrieval section)
 6. Create requests using the below sample requests for each event type.
 
