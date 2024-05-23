@@ -7,7 +7,9 @@ import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.VisitStatus
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.enums.TestDBNotificationEventTypes
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.repository.DBRepository
-import java.util.UUID
+import java.sql.Timestamp
+import java.time.LocalDateTime
+import java.util.*
 
 @Service
 @Transactional
@@ -21,6 +23,13 @@ class DBService(
     logger.debug("Enter setVisitStatus {} {} ", reference, status)
     val result = dBRepository.setVisitStatus(reference, status.name)
     logger.debug("setVisitStatus result: {}", result)
+    return result > 0
+  }
+
+  fun updateApplicationModifyTimestamp(reference: String, updatedModifiedTimeStamp: LocalDateTime): Boolean {
+    logger.debug("Enter updateModifiedDateApplication {} {} ", reference, updatedModifiedTimeStamp)
+    val result = dBRepository.updateApplicationModifyTimestamp(reference, Timestamp.valueOf(updatedModifiedTimeStamp))
+    logger.debug("updateModifiedDateApplication result: {}", result)
     return result > 0
   }
 

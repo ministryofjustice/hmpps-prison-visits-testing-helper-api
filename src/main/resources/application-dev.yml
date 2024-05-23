@@ -1,9 +1,5 @@
 server:
-  shutdown: immediate
-
-management.endpoint:
-  health.cache.time-to-live: 0
-  info.cache.time-to-live: 0
+  port: 8089
 
 spring:
   datasource:
@@ -24,7 +20,7 @@ hmpps:
     queues:
       prisonvisitsevents:
         queue:
-          url: http://localhost:4566/sqs_hmpps_prison_visits_event_queue
+          url: http://sqs.eu-west-2.localhost.localstack.cloud:4566/000000000000/sqs_hmpps_prison_visits_event_queue
         endpoint:
           url: http://localhost:4566
           region: eu-west-2

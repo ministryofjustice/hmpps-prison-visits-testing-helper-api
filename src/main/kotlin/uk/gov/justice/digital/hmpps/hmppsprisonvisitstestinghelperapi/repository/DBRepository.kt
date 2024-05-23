@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Propagation.REQUIRES_NEW
 import org.springframework.transaction.annotation.Transactional
+import java.sql.Timestamp
 
 @Entity
 class NotUsedEntity {
@@ -27,6 +28,17 @@ interface DBRepository : JpaRepository<NotUsedEntity, Long> {
   fun setVisitStatus(
     bookingReference: String,
     status: String,
+  ): Int
+
+  @Transactional(propagation = REQUIRES_NEW)
+  @Modifying(clearAutomatically = true, flushAutomatically = true)
+  @Query(
+    "UPDATE application SET modify_timestamp = :updatedModifiedTimestamp  WHERE reference = :applicationReference",
+    nativeQuery = true,
+  )
+  fun updateApplicationModifyTimestamp(
+    applicationReference: String,
+    updatedModifiedTimestamp: Timestamp,
   ): Int
 
   @Query(
