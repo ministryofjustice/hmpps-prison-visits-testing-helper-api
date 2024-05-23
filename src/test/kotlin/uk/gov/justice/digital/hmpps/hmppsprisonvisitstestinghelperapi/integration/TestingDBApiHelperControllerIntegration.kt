@@ -18,7 +18,7 @@ import java.time.LocalDate
 import java.time.LocalTime
 
 @DisplayName("Testing Admin API helper Controller")
-class TestingDBApiHelperControllerTest : IntegrationTestBase() {
+class TestingDBApiHelperControllerIntegration : IntegrationTestBase() {
   val prisonCode = "HEI"
   val sessionTemplateReference = "session-1"
   val sessionSlotReference = "session-slot-1"

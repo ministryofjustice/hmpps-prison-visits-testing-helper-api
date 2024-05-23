@@ -53,4 +53,17 @@ tasks {
       jvmTarget = "21"
     }
   }
+
+//  test {
+//    exclude("**/**integration")
+//  }
+
+  withType<Test> {
+    val includeIntegrationTests = System.getProperty("include.integration.tests")?.toBoolean() ?: false
+    if (includeIntegrationTests) {
+      include("**/*Integration*")
+    } else {
+      exclude("**/*Integration*")
+    }
+  }
 }

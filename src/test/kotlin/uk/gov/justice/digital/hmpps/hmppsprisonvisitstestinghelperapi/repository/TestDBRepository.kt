@@ -129,6 +129,14 @@ interface TestDBRepository : JpaRepository<NotUsedEntity, Long> {
   @Transactional(propagation = REQUIRES_NEW)
   @Modifying
   @Query(
+    "delete from session_to_location_group",
+    nativeQuery = true,
+  )
+  fun truncateSessionToLocationGroup()
+
+  @Transactional(propagation = REQUIRES_NEW)
+  @Modifying
+  @Query(
     "delete from session_slot",
     nativeQuery = true,
   )
