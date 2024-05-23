@@ -32,6 +32,7 @@ abstract class IntegrationTestBase {
 
   protected fun clearDb() {
     dBRepository.truncateVisitNotificationEvent()
+    dBRepository.truncateApplication()
     dBRepository.truncateVisit()
     dBRepository.truncateSessionToLocationGroup()
     dBRepository.truncateSessionSlot()

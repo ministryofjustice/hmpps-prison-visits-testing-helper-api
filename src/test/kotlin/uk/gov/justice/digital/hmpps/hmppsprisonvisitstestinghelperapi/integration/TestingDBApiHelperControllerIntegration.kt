@@ -14,7 +14,9 @@ import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.VisitS
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.enums.TestDBNotificationEventTypes.PRISON_VISITS_BLOCKED_FOR_DATE
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.helper.callDelete
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.helper.callPut
+import java.sql.Timestamp
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 
 @DisplayName("Testing Admin API helper Controller")
@@ -37,6 +39,20 @@ class TestingDBApiHelperControllerIntegration : IntegrationTestBase() {
       null,
       webTestClient,
       "test/visit/$reference/status/$status",
+      authHttpHeaders,
+    )
+  }
+
+  fun callUpdateApplicationModifiedTimestamp(
+    webTestClient: WebTestClient,
+    authHttpHeaders: (HttpHeaders) -> Unit,
+    reference: String,
+    timestamp: LocalDateTime,
+  ): WebTestClient.ResponseSpec {
+    return callPut(
+      null,
+      webTestClient,
+      "/test/application/$reference/modifiedTimestamp/$timestamp",
       authHttpHeaders,
     )
   }
@@ -82,12 +98,46 @@ class TestingDBApiHelperControllerIntegration : IntegrationTestBase() {
   }
 
   @Test
+  fun `when update application modified date change called visit modified date is updated`() {
+
+    // Given
+    val newTimestamp = LocalDateTime.now().plusMinutes(20)
+    val applicationReference = "abc-fgh-cbv"
+
+    val prisonId = dBRepository.getPrisonIdFromSessionTemplate(sessionTemplateReference)
+
+    dBRepository.createApplication(
+      prisonId,
+      "AA123",
+      1,
+      true,
+      applicationReference,
+      "SOCIAL",
+      "OPEN",
+      false,
+      "TEST",
+      Timestamp.valueOf(LocalDateTime.now()),
+      "STAFF",
+    )
+
+    // When
+    val responseSpec = callUpdateApplicationModifiedTimestamp(webTestClient, setAuthorisation(roles = listOf("ROLE_TEST_VISIT_SCHEDULER")), applicationReference, newTimestamp)
+
+    // Then
+    responseSpec.expectStatus().isOk
+    val updatedTimestamp = dBRepository.getApplicationModifiedTimestamp(applicationReference)
+    Assertions.assertThat(updatedTimestamp).isEqualTo(Timestamp.valueOf(newTimestamp))
+  }
+
+  @Test
   fun `when visit status change called visit status is updated`() {
     // Given
     val existingStatus = BOOKED
     val newStatus = CANCELLED
 
     dBRepository.createVisit("AA123", visitReference, "SOCIAL", "ROOM-1", existingStatus, "OPEN", sessionSlotReference)
+
+    // When
     val responseSpec = callChangeVisitStatus(webTestClient, setAuthorisation(roles = listOf("ROLE_TEST_VISIT_SCHEDULER")), visitReference, newStatus)
 
     // Then

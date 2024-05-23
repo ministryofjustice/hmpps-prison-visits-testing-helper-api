@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Propagation.REQUIRES_NEW
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.VisitStatus
+import java.sql.Timestamp
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -88,6 +89,27 @@ interface TestDBRepository : JpaRepository<NotUsedEntity, Long> {
   @Transactional(propagation = REQUIRES_NEW)
   @Modifying
   @Query(
+    "insert into application(prison_id, prisoner_id, session_slot_id, reserved_slot, reference, visit_type, restriction, completed, created_by, create_timestamp, modify_timestamp, user_type) " +
+      "values (:prisonId, :prisonerId, :sessionSlotId, :reservedSlot, :reference, :visitType, :restriction, :completed, :createdBy, :createdTimestamp, :createdTimestamp, :userType)",
+    nativeQuery = true,
+  )
+  fun createApplication(
+    prisonId: Int,
+    prisonerId: String,
+    sessionSlotId: Int,
+    reservedSlot: Boolean,
+    reference: String,
+    visitType: String,
+    restriction: String,
+    completed: Boolean,
+    createdBy: String,
+    createdTimestamp: Timestamp,
+    userType: String,
+  )
+
+  @Transactional(propagation = REQUIRES_NEW)
+  @Modifying
+  @Query(
     "insert into visit_notification_event(booking_reference, type, reference) " +
       "values (:visitReference, :type, :reference)",
     nativeQuery = true,
@@ -103,6 +125,18 @@ interface TestDBRepository : JpaRepository<NotUsedEntity, Long> {
     nativeQuery = true,
   )
   fun getVisitStatus(reference: String): String
+
+  @Query(
+    "SELECT modify_timestamp from application where reference = :reference",
+    nativeQuery = true,
+  )
+  fun getApplicationModifiedTimestamp(reference: String): Timestamp
+
+  @Query(
+    "select prison_id from session_template where reference = :reference",
+    nativeQuery = true,
+  )
+  fun getPrisonIdFromSessionTemplate(reference: String): Int
 
   @Query(
     "SELECT count(*) > 0 from visit_notification_event where booking_reference = :reference",
@@ -125,6 +159,14 @@ interface TestDBRepository : JpaRepository<NotUsedEntity, Long> {
     nativeQuery = true,
   )
   fun truncateVisit()
+
+  @Transactional(propagation = REQUIRES_NEW)
+  @Modifying
+  @Query(
+    "delete from application",
+    nativeQuery = true,
+  )
+  fun truncateApplication()
 
   @Transactional(propagation = REQUIRES_NEW)
   @Modifying
