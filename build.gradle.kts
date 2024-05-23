@@ -54,10 +54,6 @@ tasks {
     }
   }
 
-//  test {
-//    exclude("**/**integration")
-//  }
-
   withType<Test> {
     val includeIntegrationTests = System.getProperty("include.integration.tests")?.toBoolean() ?: false
     if (includeIntegrationTests) {
