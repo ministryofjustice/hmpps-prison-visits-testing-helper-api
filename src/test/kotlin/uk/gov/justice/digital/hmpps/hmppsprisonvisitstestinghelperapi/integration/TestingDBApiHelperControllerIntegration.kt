@@ -99,7 +99,6 @@ class TestingDBApiHelperControllerIntegration : IntegrationTestBase() {
 
   @Test
   fun `when update application modified date change called visit modified date is updated`() {
-
     // Given
     val newTimestamp = LocalDateTime.now().plusMinutes(20)
     val applicationReference = "abc-fgh-cbv"
