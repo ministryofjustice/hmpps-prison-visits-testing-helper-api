@@ -36,6 +36,11 @@ dependencies {
   runtimeOnly("org.postgresql:postgresql:42.7.3")
 
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+
+  testImplementation("org.springframework.boot:spring-boot-starter-test")
+  testImplementation("io.jsonwebtoken:jjwt:0.12.5")
+  testImplementation("org.springframework.security:spring-security-test")
+  testImplementation("com.github.tomakehurst:wiremock-jre8-standalone:3.0.1")
 }
 
 kotlin {
@@ -46,6 +51,15 @@ tasks {
   withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     kotlinOptions {
       jvmTarget = "21"
+    }
+  }
+
+  withType<Test> {
+    val includeIntegrationTests = System.getProperty("include.integration.tests")?.toBoolean() ?: false
+    if (includeIntegrationTests) {
+      include("**/*Integration*")
+    } else {
+      exclude("**/*Integration*")
     }
   }
 }
