@@ -29,6 +29,7 @@ class TestingDBApiHelperControllerIntegration : IntegrationTestBase() {
   val existingStatus = BOOKED
   val visitDate: LocalDate = LocalDate.now()
   val visitReference = "aa-bb-cc-dd"
+  val applicationReference = "abc-fgh-cbv"
 
   fun callDeleteVisitAndAllChildren(
     webTestClient: WebTestClient,
@@ -38,6 +39,18 @@ class TestingDBApiHelperControllerIntegration : IntegrationTestBase() {
     return callDelete(
       webTestClient,
       "test/visit/$reference",
+      authHttpHeaders,
+    )
+  }
+
+  fun callDeleteApplicationAndAllChildren(
+    webTestClient: WebTestClient,
+    authHttpHeaders: (HttpHeaders) -> Unit,
+    reference: String,
+  ): WebTestClient.ResponseSpec {
+    return callDelete(
+      webTestClient,
+      "test/application/$reference",
       authHttpHeaders,
     )
   }
@@ -114,8 +127,6 @@ class TestingDBApiHelperControllerIntegration : IntegrationTestBase() {
   fun `when update application modified date change called visit modified date is updated`() {
     // Given
     val newTimestamp = LocalDateTime.now().plusMinutes(20)
-    val applicationReference = "abc-fgh-cbv"
-
     val prisonId = dBRepository.getPrisonIdFromSessionTemplate(sessionTemplateReference)
 
     dBRepository.createApplication(
@@ -139,6 +150,37 @@ class TestingDBApiHelperControllerIntegration : IntegrationTestBase() {
     responseSpec.expectStatus().isOk
     val updatedTimestamp = dBRepository.getApplicationModifiedTimestamp(applicationReference)
     Assertions.assertThat(updatedTimestamp).isEqualTo(Timestamp.valueOf(newTimestamp))
+  }
+
+  @Test
+  fun `when delete application and children called then application and children are deleted`() {
+    // Given
+    val prisonId = dBRepository.getPrisonIdFromSessionTemplate(sessionTemplateReference)
+
+    dBRepository.createApplication(
+      prisonId,
+      "AA123",
+      1,
+      true,
+      applicationReference,
+      "SOCIAL",
+      "OPEN",
+      false,
+      "TEST",
+      Timestamp.valueOf(LocalDateTime.now()),
+      "STAFF",
+    )
+    dBRepository.createApplicationVisitors(applicationReference, 4776543, true)
+    dBRepository.createApplicationSupport(applicationReference, "application support description")
+    dBRepository.createApplicationContact(applicationReference, "John", "07777777777")
+
+    // When
+    val responseSpec = callDeleteApplicationAndAllChildren(webTestClient, setAuthorisation(roles = listOf("ROLE_TEST_VISIT_SCHEDULER")), applicationReference)
+
+    // Then
+    responseSpec.expectStatus().isOk
+    val hasApplicationWithReference = dBRepository.hasApplicationWithReference(applicationReference)
+    Assertions.assertThat(hasApplicationWithReference).isFalse()
   }
 
   @Test

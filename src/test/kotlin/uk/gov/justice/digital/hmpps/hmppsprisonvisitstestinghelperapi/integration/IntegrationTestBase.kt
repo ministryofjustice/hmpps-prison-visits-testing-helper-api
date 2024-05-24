@@ -32,10 +32,17 @@ abstract class IntegrationTestBase {
 
   protected fun clearDb() {
     dBRepository.truncateVisitNotificationEvent()
-    dBRepository.truncateApplication()
+    clearApplication()
     clearVisit()
     clearSession()
     dBRepository.truncatePrison()
+  }
+
+  protected fun clearApplication() {
+    dBRepository.truncateApplicationVisitors()
+    dBRepository.truncateApplicationSupport()
+    dBRepository.truncateApplicationContact()
+    dBRepository.truncateApplication()
   }
 
   protected fun clearVisit() {

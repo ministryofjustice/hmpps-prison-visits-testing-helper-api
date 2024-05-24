@@ -141,6 +141,44 @@ interface TestDBRepository : JpaRepository<NotUsedEntity, Long> {
   @Transactional(propagation = REQUIRES_NEW)
   @Modifying
   @Query(
+    "insert into application_visitor(application_id, nomis_person_id, visit_contact) " +
+      "select id, :visitorId, :visitContact from application where reference = :applicationReference",
+    nativeQuery = true,
+  )
+  fun createApplicationVisitors(
+    applicationReference: String,
+    visitorId: Int,
+    visitContact: Boolean,
+  )
+
+  @Transactional(propagation = REQUIRES_NEW)
+  @Modifying
+  @Query(
+    "insert into application_support(application_id, description) " +
+      "select id, :description from application where reference = :applicationReference",
+    nativeQuery = true,
+  )
+  fun createApplicationSupport(
+    applicationReference: String,
+    description: String,
+  )
+
+  @Transactional(propagation = REQUIRES_NEW)
+  @Modifying
+  @Query(
+    "insert into application_contact(application_id, contact_name, contact_phone) " +
+      "select id, :contactName, :contactPhone from application where reference = :applicationReference",
+    nativeQuery = true,
+  )
+  fun createApplicationContact(
+    applicationReference: String,
+    contactName: String,
+    contactPhone: String,
+  )
+
+  @Transactional(propagation = REQUIRES_NEW)
+  @Modifying
+  @Query(
     "insert into application(prison_id, prisoner_id, session_slot_id, reserved_slot, reference, visit_type, restriction, completed, created_by, create_timestamp, modify_timestamp, user_type) " +
       "values (:prisonId, :prisonerId, :sessionSlotId, :reservedSlot, :reference, :visitType, :restriction, :completed, :createdBy, :createdTimestamp, :createdTimestamp, :userType)",
     nativeQuery = true,
@@ -202,6 +240,12 @@ interface TestDBRepository : JpaRepository<NotUsedEntity, Long> {
   )
   fun hasVisitWithReference(reference: String): Boolean
 
+  @Query(
+    "SELECT count(*) > 0 from application where reference = :reference",
+    nativeQuery = true,
+  )
+  fun hasApplicationWithReference(reference: String): Boolean
+
   @Transactional(propagation = REQUIRES_NEW)
   @Modifying
   @Query(
@@ -249,6 +293,30 @@ interface TestDBRepository : JpaRepository<NotUsedEntity, Long> {
     nativeQuery = true,
   )
   fun truncateVisit()
+
+  @Transactional(propagation = REQUIRES_NEW)
+  @Modifying
+  @Query(
+    "delete from application_visitor",
+    nativeQuery = true,
+  )
+  fun truncateApplicationVisitors()
+
+  @Transactional(propagation = REQUIRES_NEW)
+  @Modifying
+  @Query(
+    "delete from application_support",
+    nativeQuery = true,
+  )
+  fun truncateApplicationSupport()
+
+  @Transactional(propagation = REQUIRES_NEW)
+  @Modifying
+  @Query(
+    "delete from application_contact",
+    nativeQuery = true,
+  )
+  fun truncateApplicationContact()
 
   @Transactional(propagation = REQUIRES_NEW)
   @Modifying
