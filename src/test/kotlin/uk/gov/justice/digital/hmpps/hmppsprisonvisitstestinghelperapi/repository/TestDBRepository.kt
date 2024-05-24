@@ -8,7 +8,8 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Propagation.REQUIRES_NEW
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.VisitStatus
+import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.enums.VisitNoteType
+import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.enums.VisitStatus
 import java.sql.Timestamp
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -89,6 +90,57 @@ interface TestDBRepository : JpaRepository<NotUsedEntity, Long> {
   @Transactional(propagation = REQUIRES_NEW)
   @Modifying
   @Query(
+    "insert into visit_visitor(visit_id, nomis_person_id, visit_contact) " +
+      "select id, :visitorId, :visitContact from visit where reference = :visitReference",
+    nativeQuery = true,
+  )
+  fun createVisitVisitor(
+    visitReference: String,
+    visitorId: Int,
+    visitContact: Boolean,
+  )
+
+  @Transactional(propagation = REQUIRES_NEW)
+  @Modifying
+  @Query(
+    "insert into visit_support(visit_id, description) " +
+      "select id, :description from visit where reference = :visitReference",
+    nativeQuery = true,
+  )
+  fun createVisitSupport(
+    visitReference: String,
+    description: String,
+  )
+
+  @Transactional(propagation = REQUIRES_NEW)
+  @Modifying
+  @Query(
+    "insert into visit_notes(visit_id, type, text) " +
+      "select id, :visitNoteType, :description from visit where reference = :visitReference",
+    nativeQuery = true,
+  )
+  fun createVisitNote(
+    visitReference: String,
+    visitNoteType: VisitNoteType,
+    description: String,
+  )
+
+  @Transactional(propagation = REQUIRES_NEW)
+  @Modifying
+  @Query(
+    "insert into visit_contact(visit_id, contact_name, contact_phone) " +
+      "select id, :contactName, :contactPhone from visit where reference = :visitReference",
+    nativeQuery = true,
+  )
+  fun createVisitContact(
+    visitReference: String,
+    contactName: String,
+    contactPhone: String,
+  )
+
+  @Transactional(propagation = REQUIRES_NEW)
+  @Modifying
+  @Query(
     "insert into application(prison_id, prisoner_id, session_slot_id, reserved_slot, reference, visit_type, restriction, completed, created_by, create_timestamp, modify_timestamp, user_type) " +
       "values (:prisonId, :prisonerId, :sessionSlotId, :reservedSlot, :reference, :visitType, :restriction, :completed, :createdBy, :createdTimestamp, :createdTimestamp, :userType)",
     nativeQuery = true,
@@ -144,6 +196,12 @@ interface TestDBRepository : JpaRepository<NotUsedEntity, Long> {
   )
   fun hasVisitNotifications(reference: String): Boolean
 
+  @Query(
+    "SELECT count(*) > 0 from visit where reference = :reference",
+    nativeQuery = true,
+  )
+  fun hasVisitWithReference(reference: String): Boolean
+
   @Transactional(propagation = REQUIRES_NEW)
   @Modifying
   @Query(
@@ -151,6 +209,38 @@ interface TestDBRepository : JpaRepository<NotUsedEntity, Long> {
     nativeQuery = true,
   )
   fun truncateVisitNotificationEvent()
+
+  @Transactional(propagation = REQUIRES_NEW)
+  @Modifying
+  @Query(
+    "delete from visit_visitor",
+    nativeQuery = true,
+  )
+  fun truncateVisitVisitor()
+
+  @Transactional(propagation = REQUIRES_NEW)
+  @Modifying
+  @Query(
+    "delete from visit_support",
+    nativeQuery = true,
+  )
+  fun truncateVisitSupport()
+
+  @Transactional(propagation = REQUIRES_NEW)
+  @Modifying
+  @Query(
+    "delete from visit_notes",
+    nativeQuery = true,
+  )
+  fun truncateVisitNotes()
+
+  @Transactional(propagation = REQUIRES_NEW)
+  @Modifying
+  @Query(
+    "delete from visit_contact",
+    nativeQuery = true,
+  )
+  fun truncateVisitContact()
 
   @Transactional(propagation = REQUIRES_NEW)
   @Modifying

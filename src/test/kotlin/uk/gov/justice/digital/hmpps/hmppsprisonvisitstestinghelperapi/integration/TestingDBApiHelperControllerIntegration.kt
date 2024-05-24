@@ -8,10 +8,11 @@ import org.junit.jupiter.api.Test
 import org.springframework.http.HttpHeaders
 import org.springframework.test.web.reactive.server.WebTestClient
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.CreateNotificationEventDto
-import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.VisitStatus
-import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.VisitStatus.BOOKED
-import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.VisitStatus.CANCELLED
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.enums.TestDBNotificationEventTypes.PRISON_VISITS_BLOCKED_FOR_DATE
+import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.enums.VisitNoteType
+import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.enums.VisitStatus
+import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.enums.VisitStatus.BOOKED
+import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.enums.VisitStatus.CANCELLED
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.helper.callDelete
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.helper.callPut
 import java.sql.Timestamp
@@ -28,6 +29,18 @@ class TestingDBApiHelperControllerIntegration : IntegrationTestBase() {
   val existingStatus = BOOKED
   val visitDate: LocalDate = LocalDate.now()
   val visitReference = "aa-bb-cc-dd"
+
+  fun callDeleteVisitAndAllChildren(
+    webTestClient: WebTestClient,
+    authHttpHeaders: (HttpHeaders) -> Unit,
+    reference: String,
+  ): WebTestClient.ResponseSpec {
+    return callDelete(
+      webTestClient,
+      "test/visit/$reference",
+      authHttpHeaders,
+    )
+  }
 
   fun callChangeVisitStatus(
     webTestClient: WebTestClient,
@@ -131,9 +144,7 @@ class TestingDBApiHelperControllerIntegration : IntegrationTestBase() {
   @Test
   fun `when visit status change called visit status is updated`() {
     // Given
-    val existingStatus = BOOKED
     val newStatus = CANCELLED
-
     dBRepository.createVisit("AA123", visitReference, "SOCIAL", "ROOM-1", existingStatus, "OPEN", sessionSlotReference)
 
     // When
@@ -143,6 +154,24 @@ class TestingDBApiHelperControllerIntegration : IntegrationTestBase() {
     responseSpec.expectStatus().isOk
     val updatedStatus = dBRepository.getVisitStatus(visitReference)
     Assertions.assertThat(updatedStatus).isEqualTo(CANCELLED.toString())
+  }
+
+  @Test
+  fun `when delete visit and children called then visit and all children related are deleted`() {
+    // Given
+    dBRepository.createVisit("AA123", visitReference, "SOCIAL", "ROOM-1", existingStatus, "OPEN", sessionSlotReference)
+    dBRepository.createVisitVisitor(visitReference, 4776543, true)
+    dBRepository.createVisitSupport(visitReference, "visit support description")
+    dBRepository.createVisitNote(visitReference, VisitNoteType.VISIT_COMMENT, "visit note description")
+    dBRepository.createVisitContact(visitReference, "John", "07777777777")
+
+    // When
+    val responseSpec = callDeleteVisitAndAllChildren(webTestClient, setAuthorisation(roles = listOf("ROLE_TEST_VISIT_SCHEDULER")), visitReference)
+
+    // Then
+    responseSpec.expectStatus().isOk
+    val hasVisitWithReference = dBRepository.hasVisitWithReference(visitReference)
+    Assertions.assertThat(hasVisitWithReference).isFalse()
   }
 
   @Test

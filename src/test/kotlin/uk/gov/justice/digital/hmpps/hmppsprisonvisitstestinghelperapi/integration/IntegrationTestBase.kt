@@ -33,10 +33,22 @@ abstract class IntegrationTestBase {
   protected fun clearDb() {
     dBRepository.truncateVisitNotificationEvent()
     dBRepository.truncateApplication()
+    clearVisit()
+    clearSession()
+    dBRepository.truncatePrison()
+  }
+
+  protected fun clearVisit() {
+    dBRepository.truncateVisitVisitor()
+    dBRepository.truncateVisitSupport()
+    dBRepository.truncateVisitNotes()
+    dBRepository.truncateVisitContact()
     dBRepository.truncateVisit()
+  }
+
+  protected fun clearSession() {
     dBRepository.truncateSessionToLocationGroup()
     dBRepository.truncateSessionSlot()
     dBRepository.truncateSessionTemplate()
-    dBRepository.truncatePrison()
   }
 }
