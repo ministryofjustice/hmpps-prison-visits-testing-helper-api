@@ -1,12 +1,14 @@
 package uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.integration
 
 import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpHeaders
 import org.springframework.test.web.reactive.server.WebTestClient
+import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.CreateNotificationEventDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.enums.TestDBNotificationEventTypes.PRISON_VISITS_BLOCKED_FOR_DATE
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.enums.VisitNoteType
@@ -21,7 +23,7 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 
 @DisplayName("Testing DB API helper Controller")
-class TestingDBApiHelperControllerIntegration : IntegrationTestBase() {
+class DBApiHelperControllerIntegrationTest : IntegrationTestBase() {
   val prisonCode = "HEI"
   val sessionTemplateReference = "session-1"
   val sessionSlotReference = "session-slot-1"
@@ -149,7 +151,7 @@ class TestingDBApiHelperControllerIntegration : IntegrationTestBase() {
     // Then
     responseSpec.expectStatus().isOk
     val updatedTimestamp = dBRepository.getApplicationModifiedTimestamp(applicationReference)
-    Assertions.assertThat(updatedTimestamp).isEqualTo(Timestamp.valueOf(newTimestamp))
+    assertThat(updatedTimestamp).isEqualTo(Timestamp.valueOf(newTimestamp))
   }
 
   @Test
@@ -174,13 +176,13 @@ class TestingDBApiHelperControllerIntegration : IntegrationTestBase() {
     dBRepository.createApplicationSupport(applicationReference, "application support description")
     dBRepository.createApplicationContact(applicationReference, "John", "07777777777")
 
+    val applicationId = dBRepository.getApplicationIdByReference(applicationReference)
+
     // When
     val responseSpec = callDeleteApplicationAndAllChildren(webTestClient, setAuthorisation(roles = listOf("ROLE_TEST_VISIT_SCHEDULER")), applicationReference)
 
     // Then
-    responseSpec.expectStatus().isOk
-    val hasApplicationWithReference = dBRepository.hasApplicationWithReference(applicationReference)
-    Assertions.assertThat(hasApplicationWithReference).isFalse()
+    assertDeleteApplicationAndAssociatedObjectsHaveBeenDeleted(responseSpec, applicationReference, applicationId)
   }
 
   @Test
@@ -195,25 +197,28 @@ class TestingDBApiHelperControllerIntegration : IntegrationTestBase() {
     // Then
     responseSpec.expectStatus().isOk
     val updatedStatus = dBRepository.getVisitStatus(visitReference)
-    Assertions.assertThat(updatedStatus).isEqualTo(CANCELLED.toString())
+    assertThat(updatedStatus).isEqualTo(CANCELLED.toString())
   }
 
   @Test
   fun `when delete visit and children called then visit and all children related are deleted`() {
     // Given
+    val visitNotificationReference = "aa-11-bb-22-aa"
+
     dBRepository.createVisit("AA123", visitReference, "SOCIAL", "ROOM-1", existingStatus, "OPEN", sessionSlotReference)
     dBRepository.createVisitVisitor(visitReference, 4776543, true)
     dBRepository.createVisitSupport(visitReference, "visit support description")
     dBRepository.createVisitNote(visitReference, VisitNoteType.VISIT_COMMENT, "visit note description")
     dBRepository.createVisitContact(visitReference, "John", "07777777777")
+    dBRepository.createVisitNotification("PRISON_VISITS_BLOCKED_FOR_DATE", visitNotificationReference, visitReference)
+
+    val visitId = dBRepository.getVisitIdByReference(visitReference)
 
     // When
     val responseSpec = callDeleteVisitAndAllChildren(webTestClient, setAuthorisation(roles = listOf("ROLE_TEST_VISIT_SCHEDULER")), visitReference)
 
     // Then
-    responseSpec.expectStatus().isOk
-    val hasVisitWithReference = dBRepository.hasVisitWithReference(visitReference)
-    Assertions.assertThat(hasVisitWithReference).isFalse()
+    assertDeletedVisitAndAssociatedObjectsHaveBeenDeleted(responseSpec, visitReference, visitId)
   }
 
   @Test
@@ -223,15 +228,16 @@ class TestingDBApiHelperControllerIntegration : IntegrationTestBase() {
     dBRepository.createVisit("AA123", visitReference, "SOCIAL", "ROOM-1", existingStatus, "OPEN", sessionSlotReference)
     dBRepository.createVisitNotification("PRISON_VISITS_BLOCKED_FOR_DATE", visitNotificationReference, visitReference)
 
-    var hasVisitNotifications = dBRepository.hasVisitNotifications(visitReference)
-    Assertions.assertThat(hasVisitNotifications).isTrue()
+    var hasVisitNotificationsBeforeCall = dBRepository.hasVisitNotificationsByBookingReference(visitReference)
 
     val responseSpec = callDeleteVisitNotificationEvents(webTestClient, setAuthorisation(roles = listOf("ROLE_TEST_VISIT_SCHEDULER")), visitReference)
 
     // Then
     responseSpec.expectStatus().isOk
-    hasVisitNotifications = dBRepository.hasVisitNotifications(visitReference)
-    Assertions.assertThat(hasVisitNotifications).isFalse()
+
+    assertThat(hasVisitNotificationsBeforeCall).isTrue()
+    var hasVisitNotifications = dBRepository.hasVisitNotificationsByBookingReference(visitReference)
+    assertThat(hasVisitNotifications).isFalse()
   }
 
   @Test
@@ -239,15 +245,33 @@ class TestingDBApiHelperControllerIntegration : IntegrationTestBase() {
     // Given
     dBRepository.createVisit("AA123", visitReference, "SOCIAL", "ROOM-1", existingStatus, "OPEN", sessionSlotReference)
 
-    var hasVisitNotifications = dBRepository.hasVisitNotifications(visitReference)
-    Assertions.assertThat(hasVisitNotifications).isFalse()
+    var hasVisitNotificationsBeforeCall = dBRepository.hasVisitNotificationsByBookingReference(visitReference)
 
     val responseSpec = callCreateVisitNotificationEvents(webTestClient, setAuthorisation(roles = listOf("ROLE_TEST_VISIT_SCHEDULER")), visitReference, CreateNotificationEventDto(PRISON_VISITS_BLOCKED_FOR_DATE))
 
     // Then
     responseSpec.expectStatus().isCreated
-    hasVisitNotifications = dBRepository.hasVisitNotifications(visitReference)
-    Assertions.assertThat(hasVisitNotifications).isTrue()
+    assertThat(hasVisitNotificationsBeforeCall).isFalse()
+    var hasVisitNotifications = dBRepository.hasVisitNotificationsByBookingReference(visitReference)
+    assertThat(hasVisitNotifications).isTrue()
+  }
+
+  fun assertDeletedVisitAndAssociatedObjectsHaveBeenDeleted(responseSpec: ResponseSpec, visitReference: String, visitId: Long) {
+    responseSpec.expectStatus().isOk
+    assertThat(dBRepository.hasVisitWithReference(visitReference)).isFalse()
+    assertThat(dBRepository.hasVisitVisitor(visitId)).isFalse()
+    assertThat(dBRepository.hasVisitSupport(visitId)).isFalse()
+    assertThat(dBRepository.hasVisitContact(visitId)).isFalse()
+    assertThat(dBRepository.hasVisitNotes(visitId)).isFalse()
+    assertThat(dBRepository.hasVisitNotificationsByBookingReference(visitReference)).isFalse()
+  }
+
+  fun assertDeleteApplicationAndAssociatedObjectsHaveBeenDeleted(responseSpec: ResponseSpec, applicationReference: String, applicationId: Long) {
+    responseSpec.expectStatus().isOk
+    assertThat(dBRepository.hasApplicationWithReference(applicationReference)).isFalse()
+    assertThat(dBRepository.hasApplicationVisitor(applicationId)).isFalse()
+    assertThat(dBRepository.hasApplicationSupport(applicationId)).isFalse()
+    assertThat(dBRepository.hasApplicationContact(applicationId)).isFalse()
   }
 }
 
