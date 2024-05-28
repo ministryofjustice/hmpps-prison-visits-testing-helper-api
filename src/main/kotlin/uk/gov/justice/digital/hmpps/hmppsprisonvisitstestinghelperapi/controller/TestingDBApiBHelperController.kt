@@ -171,7 +171,7 @@ class TestingDBApiHelperController {
     @PathVariable
     reference: String,
   ): ResponseEntity<Int> {
-    val recordsDeleted = dBService.deleteVisitNotificationEvents(reference)
+    val recordsDeleted = dBService.deleteVisitNotificationEventsByBookingReference(reference)
     return ResponseEntity(recordsDeleted, OK)
   }
 

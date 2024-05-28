@@ -40,9 +40,9 @@ class DBService(
     return result
   }
 
-  fun deleteVisitNotificationEvents(bookingReference: String): Int {
+  fun deleteVisitNotificationEventsByBookingReference(bookingReference: String): Int {
     logger.debug("Delete visit notification events for booking reference - {}", bookingReference)
-    val result = dBRepository.deleteVisitNotificationEvents(bookingReference)
+    val result = dBRepository.deleteVisitNotificationEventsByBookingReference(bookingReference)
     logger.debug("Deleted {} visit notification events for booking reference - {}", result, bookingReference)
     return result
   }
@@ -63,6 +63,8 @@ class DBService(
       dBRepository.deleteVisitContact(it)
       dBRepository.deleteVisitLegacy(it)
       dBRepository.deleteVisit(it)
+
+      dBRepository.deleteVisitNotificationEventsByBookingReference(bookingReference)
 
       val applicationId = dBRepository.getApplicationIdByVisitId(it)
       deleteApplicationAndChildren(applicationId)

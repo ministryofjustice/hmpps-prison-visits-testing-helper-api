@@ -229,12 +229,6 @@ interface TestDBRepository : JpaRepository<NotUsedEntity, Long> {
   fun getPrisonIdFromSessionTemplate(reference: String): Int
 
   @Query(
-    "SELECT count(*) > 0 from visit_notification_event where booking_reference = :reference",
-    nativeQuery = true,
-  )
-  fun hasVisitNotifications(reference: String): Boolean
-
-  @Query(
     "SELECT count(*) > 0 from visit where reference = :reference",
     nativeQuery = true,
   )
@@ -245,6 +239,54 @@ interface TestDBRepository : JpaRepository<NotUsedEntity, Long> {
     nativeQuery = true,
   )
   fun hasApplicationWithReference(reference: String): Boolean
+
+  @Query(
+    "SELECT count(*) > 0 from visit_notification_event where booking_reference = :bookingReference",
+    nativeQuery = true,
+  )
+  fun hasVisitNotificationsByBookingReference(bookingReference: String): Boolean
+
+  @Query(
+    "SELECT count(*) > 0 from visit_visitor where visit_id = :visitId",
+    nativeQuery = true,
+  )
+  fun hasVisitVisitor(visitId: Long): Boolean
+
+  @Query(
+    "SELECT count(*) > 0 from visit_support where  visit_id = :visitId",
+    nativeQuery = true,
+  )
+  fun hasVisitSupport(visitId: Long): Boolean
+
+  @Query(
+    "SELECT count(*) > 0 from visit_notes where visit_id = :visitId",
+    nativeQuery = true,
+  )
+  fun hasVisitNotes(visitId: Long): Boolean
+
+  @Query(
+    "SELECT count(*) > 0 from visit_contact where  visit_id = :visitId",
+    nativeQuery = true,
+  )
+  fun hasVisitContact(visitId: Long): Boolean
+
+  @Query(
+    "SELECT count(*) > 0 from application_visitor where application_id = :applicationId",
+    nativeQuery = true,
+  )
+  fun hasApplicationVisitor(applicationId: Long): Boolean
+
+  @Query(
+    "SELECT count(*) > 0 from application_support where application_id = :applicationId",
+    nativeQuery = true,
+  )
+  fun hasApplicationSupport(applicationId: Long): Boolean
+
+  @Query(
+    "SELECT count(*) > 0 from application_contact where application_id = :applicationId",
+    nativeQuery = true,
+  )
+  fun hasApplicationContact(applicationId: Long): Boolean
 
   @Transactional(propagation = REQUIRES_NEW)
   @Modifying
@@ -357,4 +399,16 @@ interface TestDBRepository : JpaRepository<NotUsedEntity, Long> {
     nativeQuery = true,
   )
   fun truncatePrison()
+
+  @Query(
+    "SELECT id from visit where reference = :visitReference",
+    nativeQuery = true,
+  )
+  fun getVisitIdByReference(visitReference: String): Long
+
+  @Query(
+    "SELECT id from application where reference = :applicationReference",
+    nativeQuery = true,
+  )
+  fun getApplicationIdByReference(applicationReference: String): Long
 }

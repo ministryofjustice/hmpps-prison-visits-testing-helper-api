@@ -146,7 +146,7 @@ interface DBRepository : JpaRepository<NotUsedEntity, Long> {
     "delete from visit_notification_event where booking_reference = :bookingReference",
     nativeQuery = true,
   )
-  fun deleteVisitNotificationEvents(bookingReference: String): Int
+  fun deleteVisitNotificationEventsByBookingReference(bookingReference: String): Int
 
   @Modifying
   @Query(
