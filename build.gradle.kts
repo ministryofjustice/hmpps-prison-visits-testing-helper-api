@@ -21,9 +21,9 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
   implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:3.1.3")
-  implementation("com.amazonaws:aws-java-sdk-sts:1.12.730")
+  implementation("com.amazonaws:aws-java-sdk-sts:1.12.731")
   implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.6.RELEASE")
-  implementation("com.amazonaws:aws-java-sdk-s3:1.12.730")
+  implementation("com.amazonaws:aws-java-sdk-s3:1.12.731")
 
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.17.1")
   implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.4.0")
