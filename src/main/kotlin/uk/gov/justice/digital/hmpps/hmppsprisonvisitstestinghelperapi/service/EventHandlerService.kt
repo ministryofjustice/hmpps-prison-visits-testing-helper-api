@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.DomainEvent
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.NonAssociationEventDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.PrisonerEventDto
+import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.PrisonerReceivedEventDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.PrisonerRestrictionEventDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.SQSMessage
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.VisitorRestrictionEventDto
@@ -32,7 +33,7 @@ class EventHandlerService(
   }
 
   fun handleNonAssociationEvent(nonAssociationEventDto: NonAssociationEventDto) {
-    LOG.info("received non association event with details - $nonAssociationEventDto")
+    LOG.info("Received non association event with details - $nonAssociationEventDto")
     val values = mutableMapOf<String, String>()
     values["nsPrisonerNumber1"] = nonAssociationEventDto.prisonerCode
     values["nsPrisonerNumber2"] = nonAssociationEventDto.nonAssociationPrisonerCode
@@ -42,7 +43,7 @@ class EventHandlerService(
   }
 
   fun handlePrisonerReleaseEvent(prisonerEventDto: PrisonerEventDto) {
-    LOG.info("received prisoner release event with details - $prisonerEventDto")
+    LOG.info("Received prisoner release event with details - $prisonerEventDto")
     val values = mutableMapOf<String, String>()
     values["prisonId"] = prisonerEventDto.prisonCode
     values["nomsNumber"] = prisonerEventDto.prisonerCode
@@ -52,18 +53,19 @@ class EventHandlerService(
     LOG.info("processed prisoner release event with details - $prisonerEventDto")
   }
 
-  fun handlePrisonerReceivedEvent(prisonerEventDto: PrisonerEventDto) {
-    LOG.info("received prisoner receive event with details - $prisonerEventDto")
+  fun handlePrisonerReceivedEvent(prisonerEventDto: PrisonerReceivedEventDto) {
+    LOG.info("Received prisoner receive event with details - $prisonerEventDto")
     val values = mutableMapOf<String, String>()
     values["prisonId"] = prisonerEventDto.prisonCode
     values["nomsNumber"] = prisonerEventDto.prisonerCode
+    values["reason"] = prisonerEventDto.reason
 
     sqsService.sendDomainEvent(SQSMessage(NOTIFICATION_TYPE, objectMapper.writeValueAsString(DomainEvent(EVENTS.PRISONER_RECEIVE_EVENT.eventType, values)), UUID.randomUUID().toString()))
     LOG.info("processed prisoner receive event with details - $prisonerEventDto")
   }
 
   fun handlePrisonerRestrictionChangeEvent(prisonerRestrictionEventDto: PrisonerRestrictionEventDto) {
-    LOG.info("received prisoner restriction change event with details - $prisonerRestrictionEventDto")
+    LOG.info("Received prisoner restriction change event with details - $prisonerRestrictionEventDto")
     val values = mutableMapOf<String, String>()
     values["nomsNumber"] = prisonerRestrictionEventDto.prisonerCode
     values["effectiveDate"] = prisonerRestrictionEventDto.startDate.toString()
@@ -76,7 +78,7 @@ class EventHandlerService(
   }
 
   fun handleVisitorRestrictionChangeEvent(visitorRestrictionEventDto: VisitorRestrictionEventDto) {
-    LOG.info("received visitor restriction change event with details - $visitorRestrictionEventDto")
+    LOG.info("Received visitor restriction change event with details - $visitorRestrictionEventDto")
     val values = mutableMapOf<String, String>()
     values["personId"] = visitorRestrictionEventDto.visitorId
     values["effectiveDate"] = visitorRestrictionEventDto.startDate.toString()
