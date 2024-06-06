@@ -13,16 +13,21 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.NonAssociationEventDto
+import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.PrisonerAlertCreatedUpdatedEventDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.PrisonerEventDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.PrisonerRestrictionEventDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.VisitorRestrictionEventDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.service.EventHandlerService
 
-const val SQS_RELEASED: String = "/test/prisoner/released"
-const val SQS_RECEIVED: String = "/test/prisoner/received"
-const val SQS_NON_ASSOCIATION: String = "/test/prisoner/non-association"
-const val SQS_VISITOR_RESTRICTION: String = "/test/visitor/restriction"
-const val SQS_PRISONER_RESTRICTION: String = "/test/prisoner/restriction"
+const val SQS_BASE_PRISONER_URL: String = "/test/prisoner"
+const val SQS_PRISONER_RELEASED: String = "$SQS_BASE_PRISONER_URL/released"
+const val SQS_PRISONER_RECEIVED: String = "$SQS_BASE_PRISONER_URL/received"
+const val SQS_PRISONER_NON_ASSOCIATION: String = "$SQS_BASE_PRISONER_URL/non-association"
+const val SQS_PRISONER_RESTRICTION: String = "$SQS_BASE_PRISONER_URL/restriction"
+const val SQS_PRISONER_ALERT_UPDATED: String = "$SQS_BASE_PRISONER_URL/alerts/updated"
+
+const val SQS_BASE_VISITOR_URL: String = "/test/visitor"
+const val SQS_VISITOR_RESTRICTION: String = "$SQS_BASE_VISITOR_URL/restriction"
 
 @RestController
 class TestingSQSApiHelperController(
@@ -30,7 +35,7 @@ class TestingSQSApiHelperController(
 ) {
   @PreAuthorize("hasAnyRole('TEST_VISIT_SCHEDULER')")
   @PutMapping(
-    SQS_RELEASED,
+    SQS_PRISONER_RELEASED,
     produces = [MediaType.TEXT_PLAIN_VALUE],
     consumes = [MediaType.APPLICATION_JSON_VALUE],
   )
@@ -62,7 +67,7 @@ class TestingSQSApiHelperController(
 
   @PreAuthorize("hasAnyRole('TEST_VISIT_SCHEDULER')")
   @PutMapping(
-    SQS_RECEIVED,
+    SQS_PRISONER_RECEIVED,
     produces = [MediaType.TEXT_PLAIN_VALUE],
     consumes = [MediaType.APPLICATION_JSON_VALUE],
   )
@@ -94,7 +99,7 @@ class TestingSQSApiHelperController(
 
   @PreAuthorize("hasAnyRole('TEST_VISIT_SCHEDULER')")
   @PutMapping(
-    SQS_NON_ASSOCIATION,
+    SQS_PRISONER_NON_ASSOCIATION,
     produces = [MediaType.TEXT_PLAIN_VALUE],
     consumes = [MediaType.APPLICATION_JSON_VALUE],
   )
@@ -186,6 +191,38 @@ class TestingSQSApiHelperController(
     prisonerRestrictionEventDto: PrisonerRestrictionEventDto,
   ): ResponseEntity<HttpStatus> {
     eventHandlerService.handlePrisonerRestrictionChangeEvent(prisonerRestrictionEventDto)
+    return ResponseEntity(HttpStatus.CREATED)
+  }
+
+  @PreAuthorize("hasAnyRole('TEST_VISIT_SCHEDULER')")
+  @PutMapping(
+    SQS_PRISONER_ALERT_UPDATED,
+    produces = [MediaType.TEXT_PLAIN_VALUE],
+    consumes = [MediaType.APPLICATION_JSON_VALUE],
+  )
+  @Operation(
+    summary = "Kick's off the SQS process of prisoner alert created / updated",
+    requestBody = io.swagger.v3.oas.annotations.parameters.RequestBody(
+      content = [
+        Content(
+          mediaType = "application/json",
+          schema = Schema(implementation = PrisonerAlertCreatedUpdatedEventDto::class),
+        ),
+      ],
+    ),
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        description = "SQS process started",
+      ),
+    ],
+  )
+  fun sqsPrisonerAlertCreatedUpdated(
+    @Schema(description = "Prisoner Alert Created Updated Dto", required = true)
+    @RequestBody
+    prisonerAlertCreatedUpdatedEventDto: PrisonerAlertCreatedUpdatedEventDto,
+  ): ResponseEntity<HttpStatus> {
+    eventHandlerService.handlePrisonerAlertCreatedUpdatedEvent(prisonerAlertCreatedUpdatedEventDto)
     return ResponseEntity(HttpStatus.CREATED)
   }
 }

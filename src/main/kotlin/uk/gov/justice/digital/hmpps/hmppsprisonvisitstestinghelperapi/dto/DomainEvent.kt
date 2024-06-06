@@ -7,5 +7,5 @@ data class DomainEvent(
   val eventType: String,
 
   @JsonProperty("additionalInformation")
-  val additionalInformation: Map<String, String>,
+  val additionalInformation: Map<String, Any>,
 )
