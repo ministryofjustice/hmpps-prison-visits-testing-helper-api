@@ -14,9 +14,14 @@ To build the project (without tests):
 
 ## Testing
 
-Run:
+To run all tests including integration you will first need to get the visit-scheduler running locally and then run:
 ```
-./gradlew test 
+./gradlew test -Dinclude.integration.tests=true
+```
+
+To run only the unit tests without the integration, run:
+```
+./gradlew test
 ```
 
 ## Running
@@ -158,5 +163,14 @@ For dev / staging env -
 {
     "prisonCode": "<PrisonCode>",
     "prisonerCode": "<PrisonerCode>"
+}
+```
+
+{{visit_testing_helper_api_url}}/test/prisoner/alerts/updated
+```
+{
+    "prisonerCode": "AA123456",
+    "description": "A prisoner had their alerts updated (1)",
+    "alertsAdded": ["OHCO", "SC", "C1"]
 }
 ```

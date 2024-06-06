@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.DomainEvent
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.NonAssociationEventDto
+import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.PrisonerAlertCreatedUpdatedEventDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.PrisonerEventDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.PrisonerRestrictionEventDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.SQSMessage
@@ -22,6 +23,7 @@ class EventHandlerService(
     PRISONER_RELEASE_EVENT("prison-offender-events.prisoner.released"),
     PRISONER_RECEIVE_EVENT("prison-offender-events.prisoner.received"),
     PRISONER_RESTRICTION_CHANGE_EVENT("prison-offender-events.prisoner.restriction.changed"),
+    PRISONER_ALERT_UPDATED_EVENT("prisoner-offender-search.prisoner.alerts-updated"),
     VISITOR_RESTRICTION_CHANGE_EVENT("prison-offender-events.visitor.restriction.changed"),
   }
 
@@ -73,6 +75,18 @@ class EventHandlerService(
 
     sqsService.sendDomainEvent(SQSMessage(NOTIFICATION_TYPE, objectMapper.writeValueAsString(DomainEvent(EVENTS.PRISONER_RESTRICTION_CHANGE_EVENT.eventType, values)), UUID.randomUUID().toString()))
     LOG.info("processed prisoner restriction change event with details - $prisonerRestrictionEventDto")
+  }
+
+  fun handlePrisonerAlertCreatedUpdatedEvent(prisonerAlertCreatedUpdatedEventDto: PrisonerAlertCreatedUpdatedEventDto) {
+    LOG.info("received prisoner alert updated event with details - $prisonerAlertCreatedUpdatedEventDto")
+
+    val values = mutableMapOf<String, Any>()
+    values["nomsNumber"] = prisonerAlertCreatedUpdatedEventDto.prisonerCode
+    values["description"] = prisonerAlertCreatedUpdatedEventDto.description
+    values["alertsAdded"] = prisonerAlertCreatedUpdatedEventDto.alertsAdded
+
+    sqsService.sendDomainEvent(SQSMessage(NOTIFICATION_TYPE, objectMapper.writeValueAsString(DomainEvent(EVENTS.PRISONER_ALERT_UPDATED_EVENT.eventType, values)), UUID.randomUUID().toString()))
+    LOG.info("processed prisoner alert updated event with details - $prisonerAlertCreatedUpdatedEventDto")
   }
 
   fun handleVisitorRestrictionChangeEvent(visitorRestrictionEventDto: VisitorRestrictionEventDto) {

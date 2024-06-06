@@ -19,32 +19,29 @@ import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.SQSMes
 
 @Service
 class SQSService(
-  @Qualifier("awsSqsClient") amazonSqs: AmazonSQSAsync,
-  @Value("\${hmpps.sqs.queues.prisonvisitsevents.queue.url}") queueUrl: String,
+  @Qualifier("awsSqsClient") private val amazonSqs: AmazonSQSAsync,
+  @Value("\${hmpps.sqs.queues.prisonvisitsevents.queue.url}") private val queueUrl: String,
 ) {
   companion object {
     val LOG: Logger = LoggerFactory.getLogger(this::class.java)
   }
 
-  private val queueTemplate: QueueMessagingTemplate
-  private val amazonSqs: AmazonSQSAsync
-  private val queueUrl: String
+  private val queueTemplate: QueueMessagingTemplate = QueueMessagingTemplate(
+    amazonSqs,
+    null as ResourceIdResolver?,
+    MappingJackson2MessageConverter().apply {
+      val mapper = ObjectMapper().registerModule(KotlinModule.Builder().build())
+      mapper.dateFormat = StdDateFormat()
+      mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+      mapper.registerModule(JavaTimeModule())
+      this.serializedPayloadClass = String::class.java
+      this.objectMapper = mapper
+    },
+  )
+
   fun sendDomainEvent(payload: SQSMessage) {
     LOG.info("sending message to url - $queueUrl with payload - $payload")
     queueTemplate.convertAndSend(QueueMessageChannel(amazonSqs, queueUrl), payload)
     LOG.info("finished sending message to url - $queueUrl with payload - $payload")
-  }
-
-  init {
-    val mapper = ObjectMapper().registerModule(KotlinModule.Builder().build())
-    mapper.dateFormat = StdDateFormat()
-    mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-    mapper.registerModule(JavaTimeModule())
-    val converter = MappingJackson2MessageConverter()
-    converter.serializedPayloadClass = String::class.java
-    converter.objectMapper = mapper
-    queueTemplate = QueueMessagingTemplate(amazonSqs, null as ResourceIdResolver?, converter)
-    this.queueUrl = queueUrl
-    this.amazonSqs = amazonSqs
   }
 }
