@@ -84,6 +84,7 @@ class EventHandlerService(
     values["nomsNumber"] = prisonerAlertCreatedUpdatedEventDto.prisonerCode
     values["description"] = prisonerAlertCreatedUpdatedEventDto.description
     values["alertsAdded"] = prisonerAlertCreatedUpdatedEventDto.alertsAdded
+    values["alertsRemoved"] = prisonerAlertCreatedUpdatedEventDto.alertsRemoved
 
     sqsService.sendDomainEvent(SQSMessage(NOTIFICATION_TYPE, objectMapper.writeValueAsString(DomainEvent(EVENTS.PRISONER_ALERT_UPDATED_EVENT.eventType, values)), UUID.randomUUID().toString()))
     LOG.info("processed prisoner alert updated event with details - $prisonerAlertCreatedUpdatedEventDto")

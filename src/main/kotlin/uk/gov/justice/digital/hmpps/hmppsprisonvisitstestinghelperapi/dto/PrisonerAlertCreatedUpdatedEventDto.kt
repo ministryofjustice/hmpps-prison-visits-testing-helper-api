@@ -12,4 +12,7 @@ data class PrisonerAlertCreatedUpdatedEventDto(
 
   @NotNull
   val alertsAdded: List<String>,
+
+  @NotNull
+  val alertsRemoved: List<String>,
 )

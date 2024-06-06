@@ -171,6 +171,7 @@ For dev / staging env -
 {
     "prisonerCode": "AA123456",
     "description": "A prisoner had their alerts updated (1)",
-    "alertsAdded": ["OHCO", "SC", "C1"]
+    "alertsAdded": ["OHCO", "SC", "C1"],
+    "alertsRemoved": ["OHCO", "SC", "C1"]
 }
 ```
