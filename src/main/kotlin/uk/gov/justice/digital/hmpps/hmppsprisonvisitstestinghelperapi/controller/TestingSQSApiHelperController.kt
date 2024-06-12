@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.NonAssociationEventDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.PrisonerAlertCreatedUpdatedEventDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.PrisonerEventDto
+import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.PrisonerReceivedEventDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.PrisonerRestrictionEventDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.VisitorRestrictionEventDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.service.EventHandlerService
@@ -77,7 +78,7 @@ class TestingSQSApiHelperController(
       content = [
         Content(
           mediaType = "application/json",
-          schema = Schema(implementation = PrisonerEventDto::class),
+          schema = Schema(implementation = PrisonerReceivedEventDto::class),
         ),
       ],
     ),
@@ -89,9 +90,9 @@ class TestingSQSApiHelperController(
     ],
   )
   fun sqsReceived(
-    @Schema(description = "Prisoner Event Dto - prison code and prisoner code", required = true)
+    @Schema(description = "Prisoner received Event Dto", required = true)
     @RequestBody
-    prisonEventDto: PrisonerEventDto,
+    prisonEventDto: PrisonerReceivedEventDto,
   ): ResponseEntity<HttpStatus> {
     eventHandlerService.handlePrisonerReceivedEvent(prisonEventDto)
     return ResponseEntity(HttpStatus.CREATED)
