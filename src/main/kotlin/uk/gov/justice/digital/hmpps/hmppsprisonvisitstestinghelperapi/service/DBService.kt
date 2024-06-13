@@ -19,6 +19,13 @@ class DBService(
 
   private val logger: Logger = LoggerFactory.getLogger(dBRepository::class.java)
 
+  fun setVisitPrison(reference: String, prisonCode: String): Boolean {
+    logger.debug("Enter setVisitPrison {} {} ", reference, prisonCode)
+    val result = dBRepository.setVisitPrison(reference, prisonCode)
+    logger.debug("setVisitPrison result: {}", result)
+    return result > 0
+  }
+
   fun setVisitStatus(reference: String, status: VisitStatus): Boolean {
     logger.debug("Enter setVisitStatus {} {} ", reference, status)
     val result = dBRepository.setVisitStatus(reference, status.name)

@@ -25,6 +25,7 @@ import java.time.LocalDateTime
 const val BASE_VISIT_URI: String = "/test/visit/{reference}"
 const val BASE_APPLICATION_URI: String = "/test/application/{reference}"
 const val CHANGE_STATUS_URI: String = "$BASE_VISIT_URI/status/{status}"
+const val CHANGE_PRISON_URI: String = "$BASE_VISIT_URI/change/prison/{prisonCode}"
 const val UPDATE_MODIFIED_DATE_URI: String = "$BASE_APPLICATION_URI/modifiedTimestamp/{modifiedTimestamp}"
 const val VISIT_NOTIFICATIONS_URI: String = "$BASE_VISIT_URI/notifications"
 
@@ -33,6 +34,39 @@ class TestingDBApiHelperController {
 
   @Autowired
   lateinit var dBService: DBService
+
+  @PreAuthorize("hasAnyRole('TEST_VISIT_SCHEDULER')")
+  @PutMapping(
+    CHANGE_PRISON_URI,
+    produces = [MediaType.TEXT_PLAIN_VALUE],
+  )
+  @Operation(
+    summary = "Changes prison of a visit",
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        description = "Status changed process started",
+      ),
+      ApiResponse(
+        responseCode = "404",
+        description = "Count not find visit for given reference",
+      ),
+    ],
+  )
+  fun changeVisitPrison(
+    @Schema(description = "reference", example = "v9-d7-ed-7u", required = true)
+    @PathVariable
+    reference: String,
+    @Schema(description = "The new prison code", example = "BLI", required = true)
+    @PathVariable
+    prisonCode: String,
+  ): ResponseEntity<HttpStatus> {
+    return if (dBService.setVisitPrison(reference, prisonCode)) {
+      ResponseEntity(OK)
+    } else {
+      ResponseEntity(NOT_FOUND)
+    }
+  }
 
   @PreAuthorize("hasAnyRole('TEST_VISIT_SCHEDULER')")
   @DeleteMapping(
