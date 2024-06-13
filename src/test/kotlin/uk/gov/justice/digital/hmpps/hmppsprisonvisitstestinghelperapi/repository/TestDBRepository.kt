@@ -217,6 +217,12 @@ interface TestDBRepository : JpaRepository<NotUsedEntity, Long> {
   fun getVisitStatus(reference: String): String
 
   @Query(
+    "SELECT p.code FROM prison p JOIN visit v ON v.prison_id = p.id WHERE v.reference = :reference",
+    nativeQuery = true,
+  )
+  fun getVisitPrisonCode(reference: String): String
+
+  @Query(
     "SELECT modify_timestamp from application where reference = :reference",
     nativeQuery = true,
   )

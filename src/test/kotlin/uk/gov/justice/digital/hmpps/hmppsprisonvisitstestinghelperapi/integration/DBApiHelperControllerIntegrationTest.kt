@@ -24,6 +24,7 @@ import java.time.LocalTime
 @DisplayName("Testing DB API helper Controller")
 class DBApiHelperControllerIntegrationTest : IntegrationTestBase() {
   val prisonCode = "HEI"
+  val prison2Code = "BLI"
   val sessionTemplateReference = "session-1"
   val sessionSlotReference = "session-slot-1"
   val sessionTimeSlot = SessionTimeSlot(LocalTime.of(9, 0), LocalTime.of(10, 0))
@@ -66,6 +67,20 @@ class DBApiHelperControllerIntegrationTest : IntegrationTestBase() {
       null,
       webTestClient,
       "test/visit/$reference/status/$status",
+      authHttpHeaders,
+    )
+  }
+
+  fun callChangeVisitPrison(
+    webTestClient: WebTestClient,
+    authHttpHeaders: (HttpHeaders) -> Unit,
+    reference: String,
+    prisonCode: String,
+  ): WebTestClient.ResponseSpec {
+    return callPut(
+      null,
+      webTestClient,
+      "test/visit/$reference/change/prison/$prisonCode",
       authHttpHeaders,
     )
   }
@@ -115,6 +130,7 @@ class DBApiHelperControllerIntegrationTest : IntegrationTestBase() {
     clearDb()
 
     dBRepository.createPrison(prisonCode)
+    dBRepository.createPrison(prison2Code)
     dBRepository.createSessionTemplate(prisonCode, "room", "SOCIAL", 10, 1, sessionTimeSlot.startTime, sessionTimeSlot.endTime, LocalDate.now(), LocalDate.now().dayOfWeek, sessionTemplateReference, sessionTemplateReference)
     dBRepository.createSessionSlot("session-slot-1", visitDate, visitDate.atTime(sessionTimeSlot.startTime), visitDate.atTime(sessionTimeSlot.endTime), sessionTemplateReference)
   }
@@ -197,6 +213,20 @@ class DBApiHelperControllerIntegrationTest : IntegrationTestBase() {
     responseSpec.expectStatus().isOk
     val updatedStatus = dBRepository.getVisitStatus(visitReference)
     assertThat(updatedStatus).isEqualTo(CANCELLED.toString())
+  }
+
+  @Test
+  fun `when visit prison change called visit prison is updated`() {
+    // Given
+    dBRepository.createVisit("AA123", visitReference, "SOCIAL", "ROOM-1", existingStatus, "OPEN", sessionSlotReference)
+
+    // When
+    val responseSpec = callChangeVisitPrison(webTestClient, setAuthorisation(roles = listOf("ROLE_TEST_VISIT_SCHEDULER")), visitReference, prison2Code)
+
+    // Then
+    responseSpec.expectStatus().isOk
+    val updatedPrisonCode = dBRepository.getVisitPrisonCode(visitReference)
+    assertThat(updatedPrisonCode).isEqualTo(prison2Code)
   }
 
   @Test
