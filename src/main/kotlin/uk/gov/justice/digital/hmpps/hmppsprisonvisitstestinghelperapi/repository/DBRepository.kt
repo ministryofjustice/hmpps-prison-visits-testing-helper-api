@@ -22,7 +22,7 @@ interface DBRepository : JpaRepository<NotUsedEntity, Long> {
   @Transactional(propagation = REQUIRES_NEW)
   @Modifying(clearAutomatically = true, flushAutomatically = true)
   @Query(
-    "UPDATE visit v SET v.prison_id = (SELECT p.id FROM prison p WHERE p.code = :prisonCode) WHERE reference = :bookingReference",
+    "UPDATE visit SET prison_id = (SELECT p.id FROM prison p WHERE p.code = :prisonCode) WHERE reference = :bookingReference",
     nativeQuery = true,
   )
   fun setVisitPrison(
