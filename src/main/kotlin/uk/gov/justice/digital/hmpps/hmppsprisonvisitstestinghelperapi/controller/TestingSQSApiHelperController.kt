@@ -16,6 +16,7 @@ import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.NonAss
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.PrisonerAlertCreatedUpdatedEventDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.PrisonerEventDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.PrisonerReceivedEventDto
+import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.PrisonerReleasedNotificationDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.PrisonerRestrictionEventDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.VisitorRestrictionEventDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.service.EventHandlerService
@@ -58,9 +59,9 @@ class TestingSQSApiHelperController(
     ],
   )
   fun sqsReleased(
-    @Schema(description = "Prisoner Event Dto - prison code and prisoner code", required = true)
+    @Schema(description = "Prisoner released notification Dto - prison code and prisoner code", required = true)
     @RequestBody
-    prisonEventDto: PrisonerEventDto,
+    prisonEventDto: PrisonerReleasedNotificationDto,
   ): ResponseEntity<HttpStatus> {
     eventHandlerService.handlePrisonerReleaseEvent(prisonEventDto)
     return ResponseEntity(HttpStatus.CREATED)
