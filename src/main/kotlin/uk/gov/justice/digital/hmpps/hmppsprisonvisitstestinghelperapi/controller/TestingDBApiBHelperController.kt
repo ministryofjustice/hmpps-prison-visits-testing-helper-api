@@ -35,7 +35,6 @@ class TestingDBApiHelperController {
   @Autowired
   lateinit var dBService: DBService
 
-
   @PreAuthorize("hasAnyRole('TEST_VISIT_SCHEDULER')")
   @PutMapping(
     CHANGE_PRISON_URI,
