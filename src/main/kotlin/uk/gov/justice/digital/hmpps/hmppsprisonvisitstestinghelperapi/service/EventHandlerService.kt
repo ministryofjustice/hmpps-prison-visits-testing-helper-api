@@ -57,8 +57,8 @@ class EventHandlerService(
   fun handlePrisonerReceivedEvent(prisonerEventDto: PrisonerReceivedEventDto) {
     LOG.info("Received prisoner receive event with details - $prisonerEventDto")
     val values = mutableMapOf<String, String>()
-    values["prisonId"] = prisonerEventDto.prisonCode
-    values["nomsNumber"] = prisonerEventDto.prisonerCode
+    values["prisonId"] = prisonerEventDto.prisonerCode
+    values["nomsNumber"] = prisonerEventDto.prisonCode
     values["reason"] = prisonerEventDto.reason
 
     sqsService.sendDomainEvent(SQSMessage(NOTIFICATION_TYPE, objectMapper.writeValueAsString(DomainEvent(EVENTS.PRISONER_RECEIVE_EVENT.eventType, values)), UUID.randomUUID().toString()))
