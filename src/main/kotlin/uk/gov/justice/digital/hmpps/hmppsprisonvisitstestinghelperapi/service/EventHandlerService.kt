@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.DomainEvent
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.NonAssociationEventDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.PrisonerAlertCreatedUpdatedEventDto
-import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.PrisonerEventDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.PrisonerReceivedEventDto
+import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.PrisonerReleasedNotificationDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.PrisonerRestrictionEventDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.SQSMessage
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.VisitorRestrictionEventDto
@@ -30,7 +30,6 @@ class EventHandlerService(
 
   companion object {
     private const val NOTIFICATION_TYPE = "Notification"
-    private const val RELEASE_REASON_TYPE = "RELEASED"
     val LOG: Logger = LoggerFactory.getLogger(this::class.java)
   }
 
@@ -44,15 +43,15 @@ class EventHandlerService(
     LOG.info("processed non association event with details - $nonAssociationEventDto")
   }
 
-  fun handlePrisonerReleaseEvent(prisonerEventDto: PrisonerEventDto) {
-    LOG.info("Received prisoner release event with details - $prisonerEventDto")
+  fun handlePrisonerReleaseEvent(prisonerReleasedNotificationDto: PrisonerReleasedNotificationDto) {
+    LOG.info("Received prisoner release event with details - $prisonerReleasedNotificationDto")
     val values = mutableMapOf<String, String>()
-    values["prisonId"] = prisonerEventDto.prisonCode
-    values["nomsNumber"] = prisonerEventDto.prisonerCode
-    values["reason"] = RELEASE_REASON_TYPE
+    values["prisonId"] = prisonerReleasedNotificationDto.prisonCode
+    values["nomsNumber"] = prisonerReleasedNotificationDto.prisonerCode
+    values["reason"] = prisonerReleasedNotificationDto.reason
 
     sqsService.sendDomainEvent(SQSMessage(NOTIFICATION_TYPE, objectMapper.writeValueAsString(DomainEvent(EVENTS.PRISONER_RELEASE_EVENT.eventType, values)), UUID.randomUUID().toString()))
-    LOG.info("processed prisoner release event with details - $prisonerEventDto")
+    LOG.info("processed prisoner release event with details - $prisonerReleasedNotificationDto")
   }
 
   fun handlePrisonerReceivedEvent(prisonerEventDto: PrisonerReceivedEventDto) {
