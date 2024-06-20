@@ -83,6 +83,22 @@ class DBService(
     deleteApplicationAndChildren(applicationId)
   }
 
+  fun changeOpenSessionSlotCapacityForApplication(applicationReference: String, capacity: Int): Boolean {
+    logger.debug("ChangeOpenSessionSlotCapacityForApplication - {}", applicationReference)
+    val sessionTemplateRef = dBRepository.getSessionTemplateReferenceFromApplication(applicationReference) ?: throw Exception("Could not find session template for application $applicationReference")
+    val rows = dBRepository.updateOpenSessionTemplateCapacity(sessionTemplateRef, capacity)
+    logger.debug("ChangeOpenSessionSlotCapacityForApplication - {} {} {}", sessionTemplateRef, applicationReference, rows)
+    return rows > 0
+  }
+
+  fun changeClosedSessionSlotCapacityForApplication(applicationReference: String, capacity: Int): Boolean {
+    logger.debug("changeClosedSessionSlotCapacityForApplication - {}", applicationReference)
+    val sessionTemplateRef = dBRepository.getSessionTemplateReferenceFromApplication(applicationReference) ?: throw Exception("Could not find session template for application $applicationReference")
+    val rows = dBRepository.updateClosedSessionTemplateCapacity(sessionTemplateRef, capacity)
+    logger.debug("changeClosedSessionSlotCapacityForApplication - {} {} {}", sessionTemplateRef, applicationReference, rows)
+    return rows > 0
+  }
+
   private fun deleteApplicationAndChildren(applicationId: Long?) {
     applicationId?.let {
       dBRepository.deleteApplicationVisitors(it)

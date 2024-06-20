@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test
 import org.springframework.http.HttpHeaders
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec
+import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.controller.CHANGE_CLOSED_SESSION_SLOT_CAPACITY_FOR_APPLICATION
+import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.controller.CHANGE_OPEN_SESSION_SLOT_CAPACITY_FOR_APPLICATION
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.CreateNotificationEventDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.enums.TestDBNotificationEventTypes.PRISON_VISITS_BLOCKED_FOR_DATE
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.enums.VisitNoteType
@@ -32,98 +34,6 @@ class DBApiHelperControllerIntegrationTest : IntegrationTestBase() {
   val visitDate: LocalDate = LocalDate.now()
   val visitReference = "aa-bb-cc-dd"
   val applicationReference = "abc-fgh-cbv"
-
-  fun callDeleteVisitAndAllChildren(
-    webTestClient: WebTestClient,
-    authHttpHeaders: (HttpHeaders) -> Unit,
-    reference: String,
-  ): WebTestClient.ResponseSpec {
-    return callDelete(
-      webTestClient,
-      "test/visit/$reference",
-      authHttpHeaders,
-    )
-  }
-
-  fun callDeleteApplicationAndAllChildren(
-    webTestClient: WebTestClient,
-    authHttpHeaders: (HttpHeaders) -> Unit,
-    reference: String,
-  ): WebTestClient.ResponseSpec {
-    return callDelete(
-      webTestClient,
-      "test/application/$reference",
-      authHttpHeaders,
-    )
-  }
-
-  fun callChangeVisitStatus(
-    webTestClient: WebTestClient,
-    authHttpHeaders: (HttpHeaders) -> Unit,
-    reference: String,
-    status: VisitStatus,
-  ): WebTestClient.ResponseSpec {
-    return callPut(
-      null,
-      webTestClient,
-      "test/visit/$reference/status/$status",
-      authHttpHeaders,
-    )
-  }
-
-  fun callChangeVisitPrison(
-    webTestClient: WebTestClient,
-    authHttpHeaders: (HttpHeaders) -> Unit,
-    reference: String,
-    prisonCode: String,
-  ): WebTestClient.ResponseSpec {
-    return callPut(
-      null,
-      webTestClient,
-      "test/visit/$reference/change/prison/$prisonCode",
-      authHttpHeaders,
-    )
-  }
-
-  fun callUpdateApplicationModifiedTimestamp(
-    webTestClient: WebTestClient,
-    authHttpHeaders: (HttpHeaders) -> Unit,
-    reference: String,
-    timestamp: LocalDateTime,
-  ): WebTestClient.ResponseSpec {
-    return callPut(
-      null,
-      webTestClient,
-      "/test/application/$reference/modifiedTimestamp/$timestamp",
-      authHttpHeaders,
-    )
-  }
-
-  fun callDeleteVisitNotificationEvents(
-    webTestClient: WebTestClient,
-    authHttpHeaders: (HttpHeaders) -> Unit,
-    reference: String,
-  ): WebTestClient.ResponseSpec {
-    return callDelete(
-      webTestClient,
-      "test/visit/$reference/notifications",
-      authHttpHeaders,
-    )
-  }
-
-  fun callCreateVisitNotificationEvents(
-    webTestClient: WebTestClient,
-    authHttpHeaders: (HttpHeaders) -> Unit,
-    reference: String,
-    createNotificationEvent: CreateNotificationEventDto,
-  ): WebTestClient.ResponseSpec {
-    return callPut(
-      createNotificationEvent,
-      webTestClient,
-      "test/visit/$reference/notifications",
-      authHttpHeaders,
-    )
-  }
 
   @BeforeEach
   fun setup() {
@@ -285,7 +195,57 @@ class DBApiHelperControllerIntegrationTest : IntegrationTestBase() {
     assertThat(hasVisitNotifications).isTrue()
   }
 
-  fun assertDeletedVisitAndAssociatedObjectsHaveBeenDeleted(responseSpec: ResponseSpec, visitReference: String, visitId: Long) {
+  @Test
+  fun `when change open slot capacity for application then capacity is changed `() {
+    // Given
+    val prisonId = dBRepository.getPrisonIdFromSessionTemplate(sessionTemplateReference)
+
+    dBRepository.createApplication(
+      prisonId,
+      "AA123",
+      1,
+      true,
+      applicationReference,
+      "SOCIAL",
+      "OPEN",
+      false,
+      "TEST",
+      Timestamp.valueOf(LocalDateTime.now()),
+      "STAFF",
+    )
+
+    val responseSpec = callChangeOpenSessionSlotCapacityForApplication(webTestClient, setAuthorisation(roles = listOf("ROLE_TEST_VISIT_SCHEDULER")), applicationReference, 1)
+
+    // Then
+    responseSpec.expectStatus().isCreated
+  }
+
+  @Test
+  fun `when change closed slot capacity for application then capacity is changed `() {
+    // Given
+    val prisonId = dBRepository.getPrisonIdFromSessionTemplate(sessionTemplateReference)
+
+    dBRepository.createApplication(
+      prisonId,
+      "AA123",
+      1,
+      true,
+      applicationReference,
+      "SOCIAL",
+      "OPEN",
+      false,
+      "TEST",
+      Timestamp.valueOf(LocalDateTime.now()),
+      "STAFF",
+    )
+
+    val responseSpec = callChangeClosedSessionSlotCapacityForApplication(webTestClient, setAuthorisation(roles = listOf("ROLE_TEST_VISIT_SCHEDULER")), applicationReference, 1)
+
+    // Then
+    responseSpec.expectStatus().isCreated
+  }
+
+  private fun assertDeletedVisitAndAssociatedObjectsHaveBeenDeleted(responseSpec: ResponseSpec, visitReference: String, visitId: Long) {
     responseSpec.expectStatus().isOk
     assertThat(dBRepository.hasVisitWithReference(visitReference)).isFalse()
     assertThat(dBRepository.hasVisitVisitor(visitId)).isFalse()
@@ -295,12 +255,130 @@ class DBApiHelperControllerIntegrationTest : IntegrationTestBase() {
     assertThat(dBRepository.hasVisitNotificationsByBookingReference(visitReference)).isFalse()
   }
 
-  fun assertDeleteApplicationAndAssociatedObjectsHaveBeenDeleted(responseSpec: ResponseSpec, applicationReference: String, applicationId: Long) {
+  private fun assertDeleteApplicationAndAssociatedObjectsHaveBeenDeleted(responseSpec: ResponseSpec, applicationReference: String, applicationId: Long) {
     responseSpec.expectStatus().isOk
     assertThat(dBRepository.hasApplicationWithReference(applicationReference)).isFalse()
     assertThat(dBRepository.hasApplicationVisitor(applicationId)).isFalse()
     assertThat(dBRepository.hasApplicationSupport(applicationId)).isFalse()
     assertThat(dBRepository.hasApplicationContact(applicationId)).isFalse()
+  }
+
+  private fun callDeleteVisitAndAllChildren(
+    webTestClient: WebTestClient,
+    authHttpHeaders: (HttpHeaders) -> Unit,
+    reference: String,
+  ): ResponseSpec {
+    return callDelete(
+      webTestClient,
+      "test/visit/$reference",
+      authHttpHeaders,
+    )
+  }
+
+  private fun callDeleteApplicationAndAllChildren(
+    webTestClient: WebTestClient,
+    authHttpHeaders: (HttpHeaders) -> Unit,
+    reference: String,
+  ): ResponseSpec {
+    return callDelete(
+      webTestClient,
+      "test/application/$reference",
+      authHttpHeaders,
+    )
+  }
+
+  private fun callChangeVisitStatus(
+    webTestClient: WebTestClient,
+    authHttpHeaders: (HttpHeaders) -> Unit,
+    reference: String,
+    status: VisitStatus,
+  ): ResponseSpec {
+    return callPut(
+      null,
+      webTestClient,
+      "test/visit/$reference/status/$status",
+      authHttpHeaders,
+    )
+  }
+
+  private fun callChangeVisitPrison(
+    webTestClient: WebTestClient,
+    authHttpHeaders: (HttpHeaders) -> Unit,
+    reference: String,
+    prisonCode: String,
+  ): ResponseSpec {
+    return callPut(
+      null,
+      webTestClient,
+      "test/visit/$reference/change/prison/$prisonCode",
+      authHttpHeaders,
+    )
+  }
+
+  private fun callUpdateApplicationModifiedTimestamp(
+    webTestClient: WebTestClient,
+    authHttpHeaders: (HttpHeaders) -> Unit,
+    reference: String,
+    timestamp: LocalDateTime,
+  ): ResponseSpec {
+    return callPut(
+      null,
+      webTestClient,
+      "/test/application/$reference/modifiedTimestamp/$timestamp",
+      authHttpHeaders,
+    )
+  }
+
+  private fun callDeleteVisitNotificationEvents(
+    webTestClient: WebTestClient,
+    authHttpHeaders: (HttpHeaders) -> Unit,
+    reference: String,
+  ): ResponseSpec {
+    return callDelete(
+      webTestClient,
+      "test/visit/$reference/notifications",
+      authHttpHeaders,
+    )
+  }
+
+  private fun callCreateVisitNotificationEvents(
+    webTestClient: WebTestClient,
+    authHttpHeaders: (HttpHeaders) -> Unit,
+    reference: String,
+    createNotificationEvent: CreateNotificationEventDto,
+  ): ResponseSpec {
+    return callPut(
+      createNotificationEvent,
+      webTestClient,
+      "test/visit/$reference/notifications",
+      authHttpHeaders,
+    )
+  }
+
+  private fun callChangeClosedSessionSlotCapacityForApplication(
+    webTestClient: WebTestClient,
+    authHttpHeaders: (HttpHeaders) -> Unit,
+    applicationReference: String,
+    capacity: Int,
+  ): ResponseSpec {
+    return callPut(
+      webTestClient = webTestClient,
+      url = CHANGE_CLOSED_SESSION_SLOT_CAPACITY_FOR_APPLICATION.replace("reference", applicationReference).replace("capacity", capacity.toString()),
+      authHttpHeaders = authHttpHeaders,
+    )
+  }
+
+  private fun callChangeOpenSessionSlotCapacityForApplication(
+    webTestClient: WebTestClient,
+    authHttpHeaders: (HttpHeaders) -> Unit,
+    applicationReference: String,
+    capacity: Int,
+  ): ResponseSpec {
+    return callPut(
+      webTestClient = webTestClient,
+      url = CHANGE_OPEN_SESSION_SLOT_CAPACITY_FOR_APPLICATION.replace("reference", applicationReference).replace("capacity", capacity.toString()),
+      authHttpHeaders = authHttpHeaders,
+    )
   }
 }
 

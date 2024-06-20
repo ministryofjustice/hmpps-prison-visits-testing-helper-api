@@ -165,4 +165,35 @@ interface DBRepository : JpaRepository<NotUsedEntity, Long> {
     nativeQuery = true,
   )
   fun createVisitNotificationEvents(bookingReference: String, notificationType: String, reference: String): Int
+
+  @Modifying
+  @Query(
+    "SELECT ss.session_template_reference  FROM application a " +
+      " LEFT JOIN session_slot ss ON ss.id = a.session_slot_id " +
+      " WHERE a.reference = :applicationReference ",
+    nativeQuery = true,
+  )
+  fun getSessionTemplateReferenceFromApplication(applicationReference: String): String?
+
+  @Transactional(propagation = REQUIRES_NEW)
+  @Modifying(clearAutomatically = true, flushAutomatically = true)
+  @Query(
+    "UPDATE session_template set open_capacity = :capacity WHERE reference = :sessionTemplateReference",
+    nativeQuery = true,
+  )
+  fun updateOpenSessionTemplateCapacity(
+    sessionTemplateReference: String,
+    capacity: Int,
+  ): Int
+
+  @Transactional(propagation = REQUIRES_NEW)
+  @Modifying(clearAutomatically = true, flushAutomatically = true)
+  @Query(
+    "UPDATE session_template set closed_capacity = :capacity WHERE reference = :sessionTemplateReference",
+    nativeQuery = true,
+  )
+  fun updateClosedSessionTemplateCapacity(
+    sessionTemplateReference: String,
+    capacity: Int,
+  ): Int
 }

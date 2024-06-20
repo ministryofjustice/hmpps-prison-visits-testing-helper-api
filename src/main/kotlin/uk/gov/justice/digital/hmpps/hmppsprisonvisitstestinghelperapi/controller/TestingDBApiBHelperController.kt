@@ -28,6 +28,8 @@ const val CHANGE_STATUS_URI: String = "$BASE_VISIT_URI/status/{status}"
 const val CHANGE_PRISON_URI: String = "$BASE_VISIT_URI/change/prison/{prisonCode}"
 const val UPDATE_MODIFIED_DATE_URI: String = "$BASE_APPLICATION_URI/modifiedTimestamp/{modifiedTimestamp}"
 const val VISIT_NOTIFICATIONS_URI: String = "$BASE_VISIT_URI/notifications"
+const val CHANGE_OPEN_SESSION_SLOT_CAPACITY_FOR_APPLICATION: String = "/test/application/{reference}/session/capacity/open/{capacity}"
+const val CHANGE_CLOSED_SESSION_SLOT_CAPACITY_FOR_APPLICATION: String = "/test/application/{reference}/session/capacity/closed/{capacity}"
 
 @RestController
 class TestingDBApiHelperController {
@@ -235,5 +237,71 @@ class TestingDBApiHelperController {
   ): ResponseEntity<HttpStatus> {
     dBService.createVisitNotificationEvents(reference, createNotificationEvent.notificationEvent)
     return ResponseEntity(CREATED)
+  }
+
+  @PreAuthorize("hasAnyRole('TEST_VISIT_SCHEDULER')")
+  @PutMapping(
+    CHANGE_OPEN_SESSION_SLOT_CAPACITY_FOR_APPLICATION,
+    produces = [MediaType.TEXT_PLAIN_VALUE],
+  )
+  @Operation(
+    summary = "Change open session slot capacity for application",
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        description = "Updated as expected",
+      ),
+      ApiResponse(
+        responseCode = "404",
+        description = "Could not find application",
+      ),
+    ],
+  )
+  fun changeOpenSessionSlotCapacityForApplication(
+    @Schema(description = "reference", example = "v9-d7-ed-7u", required = true)
+    @PathVariable
+    reference: String,
+    @Schema(description = "capacity", example = "1", required = true)
+    @PathVariable
+    capacity: Int,
+  ): ResponseEntity<HttpStatus> {
+    return if (dBService.changeOpenSessionSlotCapacityForApplication(reference, capacity)) {
+      ResponseEntity(OK)
+    } else {
+      ResponseEntity(NOT_FOUND)
+    }
+  }
+
+  @PreAuthorize("hasAnyRole('TEST_VISIT_SCHEDULER')")
+  @PutMapping(
+    CHANGE_CLOSED_SESSION_SLOT_CAPACITY_FOR_APPLICATION,
+    produces = [MediaType.TEXT_PLAIN_VALUE],
+  )
+  @Operation(
+    summary = "Change closed session slot capacity for application",
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        description = "Updated as expected",
+      ),
+      ApiResponse(
+        responseCode = "404",
+        description = "Could not find application",
+      ),
+    ],
+  )
+  fun changeClosedSessionSlotCapacityForApplication(
+    @Schema(description = "reference", example = "v9-d7-ed-7u", required = true)
+    @PathVariable
+    reference: String,
+    @Schema(description = "capacity", example = "1", required = true)
+    @PathVariable
+    capacity: Int,
+  ): ResponseEntity<HttpStatus> {
+    return if (dBService.changeClosedSessionSlotCapacityForApplication(reference, capacity)) {
+      ResponseEntity(OK)
+    } else {
+      ResponseEntity(NOT_FOUND)
+    }
   }
 }
