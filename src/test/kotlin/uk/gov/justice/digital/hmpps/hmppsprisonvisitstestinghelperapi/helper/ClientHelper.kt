@@ -32,3 +32,13 @@ fun callPut(
       .exchange()
   }
 }
+
+fun callGet(
+  webTestClient: WebTestClient,
+  url: String,
+  authHttpHeaders: (HttpHeaders) -> Unit,
+): ResponseSpec {
+  return webTestClient.get().uri(url)
+    .headers(authHttpHeaders)
+    .exchange()
+}
