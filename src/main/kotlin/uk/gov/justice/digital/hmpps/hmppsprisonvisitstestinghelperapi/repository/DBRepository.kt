@@ -166,7 +166,6 @@ interface DBRepository : JpaRepository<NotUsedEntity, Long> {
   )
   fun createVisitNotificationEvents(bookingReference: String, notificationType: String, reference: String): Int
 
-  @Modifying
   @Query(
     "SELECT ss.session_template_reference  FROM application a " +
       " LEFT JOIN session_slot ss ON ss.id = a.session_slot_id " +
