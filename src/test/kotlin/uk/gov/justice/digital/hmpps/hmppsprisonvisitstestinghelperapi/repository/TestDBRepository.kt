@@ -16,6 +16,12 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 
+/**
+ * Note: As we connect to the visit-scheduler database directly, we have to put a fake entity in the JpaRepository interface.
+ * That is why we define a class NotUsedApplicationEntity and give that to the JpaRepository<NotUsedApplicationEntity, Long>.
+ * We then write our own SQL statements to query what we need.
+ **/
+
 @Entity
 class NotUsedEntity {
   @Id
@@ -221,6 +227,12 @@ interface TestDBRepository : JpaRepository<NotUsedEntity, Long> {
     nativeQuery = true,
   )
   fun getVisitPrisonCode(reference: String): String
+
+  @Query(
+    "SELECT s.id FROM session_slot s WHERE s.reference = :reference",
+    nativeQuery = true,
+  )
+  fun getSessionSlotId(reference: String): Int
 
   @Query(
     "SELECT modify_timestamp from application where reference = :reference",

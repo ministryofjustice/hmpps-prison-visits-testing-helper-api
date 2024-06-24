@@ -20,7 +20,7 @@ const val ADD_PRISON_EXCLUDE_DATE: String = "/test/prison/{prisonCode}/add/exclu
 const val REMOVE_PRISON_EXCLUDE_DATE: String = "/test/prison/{prisonCode}/remove/exclude-date/{excludeDate}"
 
 @RestController
-class TestingAdminApiHelperController {
+class VisitAdminController {
   @Autowired
   lateinit var visitSchedulerClient: VisitSchedulerClient
 

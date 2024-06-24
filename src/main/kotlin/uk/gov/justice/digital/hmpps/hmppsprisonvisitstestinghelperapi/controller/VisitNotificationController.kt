@@ -32,7 +32,7 @@ const val SQS_BASE_VISITOR_URL: String = "/test/visitor"
 const val SQS_VISITOR_RESTRICTION: String = "$SQS_BASE_VISITOR_URL/restriction"
 
 @RestController
-class TestingSQSApiHelperController(
+class VisitNotificationController(
   private val eventHandlerService: EventHandlerService,
 ) {
   @PreAuthorize("hasAnyRole('TEST_VISIT_SCHEDULER')")
