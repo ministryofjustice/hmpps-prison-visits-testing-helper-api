@@ -1,5 +1,5 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "6.0.0"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "6.0.1"
   kotlin("plugin.spring") version "2.0.0"
   id("org.jetbrains.kotlin.plugin.noarg") version "2.0.0"
   kotlin("plugin.jpa") version "2.0.0"
@@ -21,9 +21,9 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
   implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:4.0.0")
-  implementation("com.amazonaws:aws-java-sdk-sts:1.12.747")
+  implementation("com.amazonaws:aws-java-sdk-sts:1.12.748")
   implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.6.RELEASE")
-  implementation("com.amazonaws:aws-java-sdk-s3:1.12.747")
+  implementation("com.amazonaws:aws-java-sdk-s3:1.12.748")
 
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.17.1")
   implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.5.0")
@@ -38,7 +38,7 @@ dependencies {
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
   testImplementation("org.springframework.boot:spring-boot-starter-test")
-  testImplementation("io.jsonwebtoken:jjwt:0.12.5")
+  testImplementation("io.jsonwebtoken:jjwt:0.12.6")
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("com.github.tomakehurst:wiremock-jre8-standalone:3.0.1")
 }
