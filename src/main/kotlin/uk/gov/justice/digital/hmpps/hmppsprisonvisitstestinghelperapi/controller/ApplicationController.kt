@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.service.ApplicationService
 import java.time.LocalDateTime
-import kotlin.math.log
 
 const val BASE_APPLICATION_URI: String = "/test/application/{reference}"
 const val UPDATE_MODIFIED_DATE_URI: String = "$BASE_APPLICATION_URI/modifiedTimestamp/{modifiedTimestamp}"
