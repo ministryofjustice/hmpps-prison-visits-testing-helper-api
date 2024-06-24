@@ -105,4 +105,20 @@ interface ApplicationRepository : JpaRepository<NotUsedApplicationEntity, Long> 
     sessionTemplateReference: String,
     capacity: Int,
   ): Int
+
+  @Query(
+    "SELECT open_capacity FROM session_template WHERE reference = :sessionTemplateReference",
+    nativeQuery = true,
+  )
+  fun getOpenSessionTemplateCapacity(
+    sessionTemplateReference: String,
+  ): Int
+
+  @Query(
+    "SELECT closed_capacity FROM session_template WHERE reference = :sessionTemplateReference",
+    nativeQuery = true,
+  )
+  fun getClosedSessionTemplateCapacity(
+    sessionTemplateReference: String,
+  ): Int
 }

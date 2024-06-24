@@ -29,6 +29,8 @@ const val CANCEL_URI: String = "$BASE_VISIT_URI/cancel"
 
 const val VISIT_NOTIFICATIONS_URI: String = "$BASE_VISIT_URI/notifications"
 
+// TODO AARON: See if I can retrieve the visit balance
+
 @RestController
 class VisitController {
 
