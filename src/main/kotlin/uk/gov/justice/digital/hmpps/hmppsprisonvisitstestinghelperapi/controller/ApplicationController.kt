@@ -43,7 +43,7 @@ class ApplicationController {
       ),
       ApiResponse(
         responseCode = "404",
-        description = "Count not find visit for given reference",
+        description = "Could not find visit for given reference",
       ),
     ],
   )

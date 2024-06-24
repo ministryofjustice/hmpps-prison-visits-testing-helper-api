@@ -14,7 +14,6 @@ import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.enums.
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.enums.VisitStatus
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.enums.VisitStatus.BOOKED
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.enums.VisitStatus.CANCELLED
-import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.helper.SessionTimeSlot
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.helper.callDelete
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.helper.callPut
 import java.time.LocalDate
@@ -26,7 +25,8 @@ class VisitControllerIntegrationTest : IntegrationTestBase() {
   val prison2Code = "BLI"
   val sessionTemplateReference = "session-1"
   val sessionSlotReference = "session-slot-1"
-  val sessionTimeSlot = SessionTimeSlot(LocalTime.of(9, 0), LocalTime.of(10, 0))
+  val sessionTimeSlotStart: LocalTime = LocalTime.of(9, 0)
+  val sessionTimeSlotEnd: LocalTime = LocalTime.of(10, 0)
   val existingStatus = BOOKED
   val visitDate: LocalDate = LocalDate.now()
   val visitReference = "aa-bb-cc-dd"
@@ -37,8 +37,8 @@ class VisitControllerIntegrationTest : IntegrationTestBase() {
 
     dBRepository.createPrison(prisonCode)
     dBRepository.createPrison(prison2Code)
-    dBRepository.createSessionTemplate(prisonCode, "room", "SOCIAL", 10, 1, sessionTimeSlot.startTime, sessionTimeSlot.endTime, LocalDate.now(), LocalDate.now().dayOfWeek, sessionTemplateReference, sessionTemplateReference)
-    dBRepository.createSessionSlot("session-slot-1", visitDate, visitDate.atTime(sessionTimeSlot.startTime), visitDate.atTime(sessionTimeSlot.endTime), sessionTemplateReference)
+    dBRepository.createSessionTemplate(prisonCode, "room", "SOCIAL", 10, 1, sessionTimeSlotStart, sessionTimeSlotEnd, LocalDate.now(), LocalDate.now().dayOfWeek, sessionTemplateReference, sessionTemplateReference)
+    dBRepository.createSessionSlot("session-slot-1", visitDate, visitDate.atTime(sessionTimeSlotStart), visitDate.atTime(sessionTimeSlotEnd), sessionTemplateReference)
   }
 
   @AfterEach
@@ -104,7 +104,7 @@ class VisitControllerIntegrationTest : IntegrationTestBase() {
     dBRepository.createVisit("AA123", visitReference, "SOCIAL", "ROOM-1", existingStatus, "OPEN", sessionSlotReference)
     dBRepository.createVisitNotification("PRISON_VISITS_BLOCKED_FOR_DATE", visitNotificationReference, visitReference)
 
-    var hasVisitNotificationsBeforeCall = dBRepository.hasVisitNotificationsByBookingReference(visitReference)
+    val hasVisitNotificationsBeforeCall = dBRepository.hasVisitNotificationsByBookingReference(visitReference)
 
     val responseSpec = callDeleteVisitNotificationEvents(webTestClient, setAuthorisation(roles = listOf("ROLE_TEST_VISIT_SCHEDULER")), visitReference)
 
@@ -112,7 +112,7 @@ class VisitControllerIntegrationTest : IntegrationTestBase() {
     responseSpec.expectStatus().isOk
 
     assertThat(hasVisitNotificationsBeforeCall).isTrue()
-    var hasVisitNotifications = dBRepository.hasVisitNotificationsByBookingReference(visitReference)
+    val hasVisitNotifications = dBRepository.hasVisitNotificationsByBookingReference(visitReference)
     assertThat(hasVisitNotifications).isFalse()
   }
 
@@ -121,14 +121,14 @@ class VisitControllerIntegrationTest : IntegrationTestBase() {
     // Given
     dBRepository.createVisit("AA123", visitReference, "SOCIAL", "ROOM-1", existingStatus, "OPEN", sessionSlotReference)
 
-    var hasVisitNotificationsBeforeCall = dBRepository.hasVisitNotificationsByBookingReference(visitReference)
+    val hasVisitNotificationsBeforeCall = dBRepository.hasVisitNotificationsByBookingReference(visitReference)
 
     val responseSpec = callCreateVisitNotificationEvents(webTestClient, setAuthorisation(roles = listOf("ROLE_TEST_VISIT_SCHEDULER")), visitReference, CreateNotificationEventDto(PRISON_VISITS_BLOCKED_FOR_DATE))
 
     // Then
     responseSpec.expectStatus().isCreated
     assertThat(hasVisitNotificationsBeforeCall).isFalse()
-    var hasVisitNotifications = dBRepository.hasVisitNotificationsByBookingReference(visitReference)
+    val hasVisitNotifications = dBRepository.hasVisitNotificationsByBookingReference(visitReference)
     assertThat(hasVisitNotifications).isTrue()
   }
 

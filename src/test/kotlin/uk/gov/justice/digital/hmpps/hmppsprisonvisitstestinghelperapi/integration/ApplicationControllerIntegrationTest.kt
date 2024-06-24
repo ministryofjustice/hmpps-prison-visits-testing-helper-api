@@ -10,7 +10,6 @@ import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.controller.CHANGE_CLOSED_SESSION_SLOT_CAPACITY_FOR_APPLICATION
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.controller.CHANGE_OPEN_SESSION_SLOT_CAPACITY_FOR_APPLICATION
-import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.helper.SessionTimeSlot
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.helper.callDelete
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.helper.callPut
 import java.sql.Timestamp
@@ -24,7 +23,8 @@ class ApplicationControllerIntegrationTest : IntegrationTestBase() {
   val prison2Code = "BLI"
   val sessionTemplateReference = "session-1"
   val sessionSlotReference = "session-slot-1"
-  val sessionTimeSlot = SessionTimeSlot(LocalTime.of(9, 0), LocalTime.of(10, 0))
+  val sessionTimeSlotStart: LocalTime = LocalTime.of(9, 0)
+  val sessionTimeSlotEnd: LocalTime = LocalTime.of(10, 0)
   val visitDate: LocalDate = LocalDate.now()
   val applicationReference = "abc-fgh-cbv"
 
@@ -34,8 +34,8 @@ class ApplicationControllerIntegrationTest : IntegrationTestBase() {
 
     dBRepository.createPrison(prisonCode)
     dBRepository.createPrison(prison2Code)
-    dBRepository.createSessionTemplate(prisonCode, "room", "SOCIAL", 10, 1, sessionTimeSlot.startTime, sessionTimeSlot.endTime, LocalDate.now(), LocalDate.now().dayOfWeek, sessionTemplateReference, sessionTemplateReference)
-    dBRepository.createSessionSlot(sessionSlotReference, visitDate, visitDate.atTime(sessionTimeSlot.startTime), visitDate.atTime(sessionTimeSlot.endTime), sessionTemplateReference)
+    dBRepository.createSessionTemplate(prisonCode, "room", "SOCIAL", 10, 1, sessionTimeSlotStart, sessionTimeSlotEnd, LocalDate.now(), LocalDate.now().dayOfWeek, sessionTemplateReference, sessionTemplateReference)
+    dBRepository.createSessionSlot(sessionSlotReference, visitDate, visitDate.atTime(sessionTimeSlotStart), visitDate.atTime(sessionTimeSlotEnd), sessionTemplateReference)
   }
 
   @AfterEach
