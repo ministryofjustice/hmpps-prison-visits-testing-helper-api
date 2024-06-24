@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.service.VisitSchedulerService
 
-const val CANCEL_VISIT_URI: String = "$BASE_VISIT_URI/{reference}/cancel"
+const val CANCEL_VISIT_URI: String = "$BASE_VISIT_URI/cancel"
 
 @RestController
 class TestingVisitSchedulerHelperController {
