@@ -23,6 +23,7 @@ class ApplicationControllerIntegrationTest : IntegrationTestBase() {
   val prisonCode = "HEI"
   val prison2Code = "BLI"
   val sessionTemplateReference = "session-1"
+  val sessionSlotReference = "session-slot-1"
   val sessionTimeSlot = SessionTimeSlot(LocalTime.of(9, 0), LocalTime.of(10, 0))
   val visitDate: LocalDate = LocalDate.now()
   val applicationReference = "abc-fgh-cbv"
@@ -34,7 +35,7 @@ class ApplicationControllerIntegrationTest : IntegrationTestBase() {
     dBRepository.createPrison(prisonCode)
     dBRepository.createPrison(prison2Code)
     dBRepository.createSessionTemplate(prisonCode, "room", "SOCIAL", 10, 1, sessionTimeSlot.startTime, sessionTimeSlot.endTime, LocalDate.now(), LocalDate.now().dayOfWeek, sessionTemplateReference, sessionTemplateReference)
-    dBRepository.createSessionSlot("session-slot-1", visitDate, visitDate.atTime(sessionTimeSlot.startTime), visitDate.atTime(sessionTimeSlot.endTime), sessionTemplateReference)
+    dBRepository.createSessionSlot(sessionSlotReference, visitDate, visitDate.atTime(sessionTimeSlot.startTime), visitDate.atTime(sessionTimeSlot.endTime), sessionTemplateReference)
   }
 
   @AfterEach
@@ -47,11 +48,12 @@ class ApplicationControllerIntegrationTest : IntegrationTestBase() {
     // Given
     val newTimestamp = LocalDateTime.now().plusMinutes(20)
     val prisonId = dBRepository.getPrisonIdFromSessionTemplate(sessionTemplateReference)
+    val sessionSlotId = dBRepository.getSessionSlotId(sessionSlotReference)
 
     dBRepository.createApplication(
       prisonId,
       "AA123",
-      1,
+      sessionSlotId,
       true,
       applicationReference,
       "SOCIAL",
@@ -75,11 +77,12 @@ class ApplicationControllerIntegrationTest : IntegrationTestBase() {
   fun `when delete application and children called then application and children are deleted`() {
     // Given
     val prisonId = dBRepository.getPrisonIdFromSessionTemplate(sessionTemplateReference)
+    val sessionSlotId = dBRepository.getSessionSlotId(sessionSlotReference)
 
     dBRepository.createApplication(
       prisonId,
       "AA123",
-      1,
+      sessionSlotId,
       true,
       applicationReference,
       "SOCIAL",
@@ -106,11 +109,12 @@ class ApplicationControllerIntegrationTest : IntegrationTestBase() {
   fun `when change open slot capacity for application then capacity is changed `() {
     // Given
     val prisonId = dBRepository.getPrisonIdFromSessionTemplate(sessionTemplateReference)
+    val sessionSlotId = dBRepository.getSessionSlotId(sessionSlotReference)
 
     dBRepository.createApplication(
       prisonId,
       "AA123",
-      1,
+      sessionSlotId,
       true,
       applicationReference,
       "SOCIAL",
@@ -124,18 +128,19 @@ class ApplicationControllerIntegrationTest : IntegrationTestBase() {
     val responseSpec = callChangeOpenSessionSlotCapacityForApplication(webTestClient, setAuthorisation(roles = listOf("ROLE_TEST_VISIT_SCHEDULER")), applicationReference, 1)
 
     // Then
-    responseSpec.expectStatus().isCreated
+    responseSpec.expectStatus().isOk
   }
 
   @Test
   fun `when change closed slot capacity for application then capacity is changed `() {
     // Given
     val prisonId = dBRepository.getPrisonIdFromSessionTemplate(sessionTemplateReference)
+    val sessionSlotId = dBRepository.getSessionSlotId(sessionSlotReference)
 
     dBRepository.createApplication(
       prisonId,
       "AA123",
-      1,
+      sessionSlotId,
       true,
       applicationReference,
       "SOCIAL",
@@ -149,7 +154,7 @@ class ApplicationControllerIntegrationTest : IntegrationTestBase() {
     val responseSpec = callChangeClosedSessionSlotCapacityForApplication(webTestClient, setAuthorisation(roles = listOf("ROLE_TEST_VISIT_SCHEDULER")), applicationReference, 1)
 
     // Then
-    responseSpec.expectStatus().isCreated
+    responseSpec.expectStatus().isOk
   }
 
   private fun assertDeleteApplicationAndAssociatedObjectsHaveBeenDeleted(responseSpec: ResponseSpec, applicationReference: String, applicationId: Long) {

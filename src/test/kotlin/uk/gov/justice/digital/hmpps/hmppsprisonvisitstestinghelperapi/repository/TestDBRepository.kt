@@ -223,6 +223,12 @@ interface TestDBRepository : JpaRepository<NotUsedEntity, Long> {
   fun getVisitPrisonCode(reference: String): String
 
   @Query(
+    "SELECT s.id FROM session_slot s WHERE s.reference = :reference",
+    nativeQuery = true,
+  )
+  fun getSessionSlotId(reference: String): Int
+
+  @Query(
     "SELECT modify_timestamp from application where reference = :reference",
     nativeQuery = true,
   )
