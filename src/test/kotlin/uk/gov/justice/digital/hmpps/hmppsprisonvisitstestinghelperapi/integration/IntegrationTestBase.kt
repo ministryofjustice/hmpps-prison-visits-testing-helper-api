@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.integration
 
+import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -9,12 +11,29 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.helper.JwtAuthHelper
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.integration.mock.HmppsAuthExtension
+import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.integration.mock.VisitSchedulerMockServer
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.repository.TestDBRepository
 
 @ExtendWith(HmppsAuthExtension::class)
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @ActiveProfiles("test")
 abstract class IntegrationTestBase {
+  companion object {
+    val visitSchedulerMockServer = VisitSchedulerMockServer()
+
+    @BeforeAll
+    @JvmStatic
+    fun startMocks() {
+      visitSchedulerMockServer.start()
+    }
+
+    @AfterAll
+    @JvmStatic
+    fun stopMocks() {
+      visitSchedulerMockServer.stop()
+    }
+  }
+
   @Autowired
   lateinit var webTestClient: WebTestClient
 

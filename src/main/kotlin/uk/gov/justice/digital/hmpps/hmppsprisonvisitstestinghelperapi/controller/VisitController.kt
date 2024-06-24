@@ -13,29 +13,27 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.CreateNotificationEventDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.enums.VisitStatus
-import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.service.DBService
-import java.time.LocalDateTime
+import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.service.VisitService
 
 const val BASE_VISIT_URI: String = "/test/visit/{reference}"
-const val BASE_APPLICATION_URI: String = "/test/application/{reference}"
 const val CHANGE_STATUS_URI: String = "$BASE_VISIT_URI/status/{status}"
 const val CHANGE_PRISON_URI: String = "$BASE_VISIT_URI/change/prison/{prisonCode}"
-const val UPDATE_MODIFIED_DATE_URI: String = "$BASE_APPLICATION_URI/modifiedTimestamp/{modifiedTimestamp}"
+const val CANCEL_URI: String = "$BASE_VISIT_URI/cancel"
+
 const val VISIT_NOTIFICATIONS_URI: String = "$BASE_VISIT_URI/notifications"
-const val CHANGE_OPEN_SESSION_SLOT_CAPACITY_FOR_APPLICATION: String = "/test/application/{reference}/session/capacity/open/{capacity}"
-const val CHANGE_CLOSED_SESSION_SLOT_CAPACITY_FOR_APPLICATION: String = "/test/application/{reference}/session/capacity/closed/{capacity}"
 
 @RestController
-class TestingDBApiHelperController {
+class VisitController {
 
   @Autowired
-  lateinit var dBService: DBService
+  lateinit var visitService: VisitService
 
   @PreAuthorize("hasAnyRole('TEST_VISIT_SCHEDULER')")
   @PutMapping(
@@ -63,7 +61,7 @@ class TestingDBApiHelperController {
     @PathVariable
     prisonCode: String,
   ): ResponseEntity<HttpStatus> {
-    return if (dBService.setVisitPrison(reference, prisonCode)) {
+    return if (visitService.setVisitPrison(reference, prisonCode)) {
       ResponseEntity(OK)
     } else {
       ResponseEntity(NOT_FOUND)
@@ -93,33 +91,7 @@ class TestingDBApiHelperController {
     @PathVariable
     reference: String,
   ) {
-    dBService.deleteVisitAndChildren(reference)
-  }
-
-  @PreAuthorize("hasAnyRole('TEST_VISIT_SCHEDULER')")
-  @DeleteMapping(
-    BASE_APPLICATION_URI,
-  )
-  @ResponseStatus(OK)
-  @Operation(
-    summary = "Delete application and children by reference",
-    responses = [
-      ApiResponse(
-        responseCode = "200",
-        description = "Status changed process started",
-      ),
-      ApiResponse(
-        responseCode = "404",
-        description = "Count not find visit for given reference",
-      ),
-    ],
-  )
-  fun deleteApplicationAndAllChildren(
-    @Schema(description = "application reference", example = "v9-d7-ed-7u", required = true)
-    @PathVariable
-    reference: String,
-  ) {
-    dBService.deleteApplicationAndChildren(reference)
+    visitService.deleteVisitAndChildren(reference)
   }
 
   @PreAuthorize("hasAnyRole('TEST_VISIT_SCHEDULER')")
@@ -148,40 +120,7 @@ class TestingDBApiHelperController {
     @PathVariable
     status: VisitStatus,
   ): ResponseEntity<HttpStatus> {
-    return if (dBService.setVisitStatus(reference, status)) {
-      ResponseEntity(OK)
-    } else {
-      ResponseEntity(NOT_FOUND)
-    }
-  }
-
-  @PreAuthorize("hasAnyRole('TEST_VISIT_SCHEDULER')")
-  @PutMapping(
-    UPDATE_MODIFIED_DATE_URI,
-    produces = [MediaType.TEXT_PLAIN_VALUE],
-  )
-  @Operation(
-    summary = "Change modified date of an application",
-    responses = [
-      ApiResponse(
-        responseCode = "200",
-        description = "Modified date changed",
-      ),
-      ApiResponse(
-        responseCode = "404",
-        description = "Could not find application for given reference",
-      ),
-    ],
-  )
-  fun updateApplicationModifiedDate(
-    @Schema(description = "reference", example = "v9-d7-ed-7u", required = true)
-    @PathVariable
-    reference: String,
-    @Schema(description = "Updated modified timestamp", example = "2007-12-28T10:15:30", required = true)
-    @PathVariable
-    modifiedTimestamp: LocalDateTime,
-  ): ResponseEntity<HttpStatus> {
-    return if (dBService.updateApplicationModifyTimestamp(reference, modifiedTimestamp)) {
+    return if (visitService.setVisitStatus(reference, status)) {
       ResponseEntity(OK)
     } else {
       ResponseEntity(NOT_FOUND)
@@ -207,7 +146,7 @@ class TestingDBApiHelperController {
     @PathVariable
     reference: String,
   ): ResponseEntity<Int> {
-    val recordsDeleted = dBService.deleteVisitNotificationEventsByBookingReference(reference)
+    val recordsDeleted = visitService.deleteVisitNotificationEventsByBookingReference(reference)
     return ResponseEntity(recordsDeleted, OK)
   }
 
@@ -235,73 +174,33 @@ class TestingDBApiHelperController {
     @RequestBody
     createNotificationEvent: CreateNotificationEventDto,
   ): ResponseEntity<HttpStatus> {
-    dBService.createVisitNotificationEvents(reference, createNotificationEvent.notificationEvent)
+    visitService.createVisitNotificationEvents(reference, createNotificationEvent.notificationEvent)
     return ResponseEntity(CREATED)
   }
 
   @PreAuthorize("hasAnyRole('TEST_VISIT_SCHEDULER')")
-  @PutMapping(
-    CHANGE_OPEN_SESSION_SLOT_CAPACITY_FOR_APPLICATION,
+  @PostMapping(
+    CANCEL_URI,
     produces = [MediaType.TEXT_PLAIN_VALUE],
   )
   @Operation(
-    summary = "Change open session slot capacity for application",
+    summary = "Cancel a visit via the visit-scheduler",
     responses = [
       ApiResponse(
         responseCode = "200",
-        description = "Updated as expected",
+        description = "Visit has been cancelled",
       ),
       ApiResponse(
         responseCode = "404",
-        description = "Could not find application",
+        description = "Count not find visit for given reference",
       ),
     ],
   )
-  fun changeOpenSessionSlotCapacityForApplication(
+  fun cancelVisit(
     @Schema(description = "reference", example = "v9-d7-ed-7u", required = true)
     @PathVariable
     reference: String,
-    @Schema(description = "capacity", example = "1", required = true)
-    @PathVariable
-    capacity: Int,
-  ): ResponseEntity<HttpStatus> {
-    return if (dBService.changeOpenSessionSlotCapacityForApplication(reference, capacity)) {
-      ResponseEntity(OK)
-    } else {
-      ResponseEntity(NOT_FOUND)
-    }
-  }
-
-  @PreAuthorize("hasAnyRole('TEST_VISIT_SCHEDULER')")
-  @PutMapping(
-    CHANGE_CLOSED_SESSION_SLOT_CAPACITY_FOR_APPLICATION,
-    produces = [MediaType.TEXT_PLAIN_VALUE],
-  )
-  @Operation(
-    summary = "Change closed session slot capacity for application",
-    responses = [
-      ApiResponse(
-        responseCode = "200",
-        description = "Updated as expected",
-      ),
-      ApiResponse(
-        responseCode = "404",
-        description = "Could not find application",
-      ),
-    ],
-  )
-  fun changeClosedSessionSlotCapacityForApplication(
-    @Schema(description = "reference", example = "v9-d7-ed-7u", required = true)
-    @PathVariable
-    reference: String,
-    @Schema(description = "capacity", example = "1", required = true)
-    @PathVariable
-    capacity: Int,
-  ): ResponseEntity<HttpStatus> {
-    return if (dBService.changeClosedSessionSlotCapacityForApplication(reference, capacity)) {
-      ResponseEntity(OK)
-    } else {
-      ResponseEntity(NOT_FOUND)
-    }
+  ) {
+    visitService.cancelVisitByBookingReference(reference)
   }
 }

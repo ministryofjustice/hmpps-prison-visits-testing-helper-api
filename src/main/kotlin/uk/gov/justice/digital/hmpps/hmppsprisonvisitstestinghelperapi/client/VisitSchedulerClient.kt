@@ -49,7 +49,7 @@ class VisitSchedulerClient(
     LOG.info("Finished calling remove exclude date for prison - $prisonCode, excluded date - $excludeDate")
   }
 
-  fun cancelVisitByReference(reference: String) {
+  fun cancelVisitByBookingReference(reference: String) {
     LOG.info("Calling the visit scheduler to cancel a visit with reference - $reference")
 
     val body = CancelVisitDto(

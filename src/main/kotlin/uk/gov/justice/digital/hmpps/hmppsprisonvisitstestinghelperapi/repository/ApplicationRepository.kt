@@ -10,36 +10,20 @@ import org.springframework.transaction.annotation.Propagation.REQUIRES_NEW
 import org.springframework.transaction.annotation.Transactional
 import java.sql.Timestamp
 
+/**
+ * Note: As we connect to the visit-scheduler database directly, we have to put a fake entity in the JpaRepository interface.
+ * That is why we define a class NotUsedApplicationEntity and give that to the JpaRepository<NotUsedApplicationEntity, Long>.
+ * We then write our own SQL statements to query what we need.
+ **/
+
 @Entity
-class NotUsedEntity {
+class NotUsedApplicationEntity {
   @Id
   private var id: Long = 0
 }
 
 @Repository
-interface DBRepository : JpaRepository<NotUsedEntity, Long> {
-
-  @Transactional(propagation = REQUIRES_NEW)
-  @Modifying(clearAutomatically = true, flushAutomatically = true)
-  @Query(
-    "UPDATE visit SET prison_id = (SELECT p.id FROM prison p WHERE p.code = :prisonCode) WHERE reference = :bookingReference",
-    nativeQuery = true,
-  )
-  fun setVisitPrison(
-    bookingReference: String,
-    prisonCode: String,
-  ): Int
-
-  @Transactional(propagation = REQUIRES_NEW)
-  @Modifying(clearAutomatically = true, flushAutomatically = true)
-  @Query(
-    "UPDATE visit SET visit_status = :status  WHERE reference = :bookingReference",
-    nativeQuery = true,
-  )
-  fun setVisitStatus(
-    bookingReference: String,
-    status: String,
-  ): Int
+interface ApplicationRepository : JpaRepository<NotUsedApplicationEntity, Long> {
 
   @Transactional(propagation = REQUIRES_NEW)
   @Modifying(clearAutomatically = true, flushAutomatically = true)
@@ -53,76 +37,16 @@ interface DBRepository : JpaRepository<NotUsedEntity, Long> {
   ): Int
 
   @Query(
-    "SELECT COUNT(*) > 0 From visit Where reference = :bookingReference AND visit_status = 'BOOKED'",
+    "Select reference from application where visit_id = :visitId limit 1",
     nativeQuery = true,
   )
-  fun isVisitBooked(bookingReference: String): Boolean
-
-  @Query(
-    "Select id from visit where reference = :bookingReference",
-    nativeQuery = true,
-  )
-  fun getVisitId(bookingReference: String): Long?
-
-  @Modifying
-  @Query(
-    "delete from visit where id = :id",
-    nativeQuery = true,
-  )
-  fun deleteVisit(id: Long): Int
-
-  @Modifying
-  @Query(
-    "delete from visit_notes where visit_id = :id",
-    nativeQuery = true,
-  )
-  fun deleteVisitNotes(id: Long): Int
-
-  @Modifying
-  @Query(
-    "delete from visit_support where visit_id = :id",
-    nativeQuery = true,
-  )
-  fun deleteVisitSupport(id: Long): Int
-
-  @Modifying
-  @Query(
-    "delete from visit_visitor where visit_id = :id",
-    nativeQuery = true,
-  )
-  fun deleteVisitVisitors(id: Long): Int
-
-  @Modifying
-  @Query(
-    "delete from visit_contact where visit_id = :id",
-    nativeQuery = true,
-  )
-  fun deleteVisitContact(id: Long): Int
-
-  @Modifying
-  @Query(
-    "delete from legacy_data where visit_id = :id",
-    nativeQuery = true,
-  )
-  fun deleteVisitLegacy(id: Long): Int
-
-  @Query(
-    "Select id from application where visit_id = :visitId limit 1",
-    nativeQuery = true,
-  )
-  fun getApplicationIdByVisitId(visitId: Long): Long?
+  fun getApplicationReferenceByVisitId(visitId: Long): String?
 
   @Query(
     "Select id from application where reference = :reference",
     nativeQuery = true,
   )
   fun getApplicationIdByReference(reference: String): Long?
-
-  @Query(
-    "Select visit_id from application where reference = :reference",
-    nativeQuery = true,
-  )
-  fun getVisitIdByReference(reference: String): Long?
 
   @Modifying
   @Query(
@@ -151,20 +75,6 @@ interface DBRepository : JpaRepository<NotUsedEntity, Long> {
     nativeQuery = true,
   )
   fun deleteApplicationContact(id: Long): Int
-
-  @Modifying
-  @Query(
-    "delete from visit_notification_event where booking_reference = :bookingReference",
-    nativeQuery = true,
-  )
-  fun deleteVisitNotificationEventsByBookingReference(bookingReference: String): Int
-
-  @Modifying
-  @Query(
-    "insert into visit_notification_event(booking_reference, type, reference) values (:bookingReference, :notificationType, :reference)",
-    nativeQuery = true,
-  )
-  fun createVisitNotificationEvents(bookingReference: String, notificationType: String, reference: String): Int
 
   @Query(
     "SELECT ss.session_template_reference  FROM application a " +
