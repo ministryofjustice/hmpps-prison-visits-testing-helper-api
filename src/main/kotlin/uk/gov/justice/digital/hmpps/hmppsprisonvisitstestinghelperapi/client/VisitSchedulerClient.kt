@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
+import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.CancelVisitDto
+import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.OutcomeDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.PrisonExcludeDateDto
 import java.time.Duration
 import java.time.LocalDate
@@ -45,5 +47,24 @@ class VisitSchedulerClient(
       .block(apiTimeout)
 
     LOG.info("Finished calling remove exclude date for prison - $prisonCode, excluded date - $excludeDate")
+  }
+
+  fun cancelVisitByReference(reference: String) {
+    LOG.info("Calling the visit scheduler to cancel a visit with reference - $reference")
+
+    val body = CancelVisitDto(
+      OutcomeDto("CANCELLED"),
+      "testing-helper-api",
+      "NOT_KNOWN",
+    )
+    webClient.put()
+      .uri("/visits/$reference/cancel")
+      .body(BodyInserters.fromValue(body))
+      .retrieve()
+      .toBodilessEntity()
+      .doOnError { e -> LOG.error("Could not cancel visit :", e) }
+      .block(apiTimeout)
+
+    LOG.info("Finished calling the visit scheduler to cancel a visit with reference - $reference")
   }
 }
