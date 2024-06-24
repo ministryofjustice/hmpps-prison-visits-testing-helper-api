@@ -12,6 +12,7 @@ import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.Prison
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.PrisonerRestrictionEventDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.SQSMessage
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.VisitorRestrictionEventDto
+import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.enums.Events
 import java.util.*
 
 @Service
@@ -19,15 +20,6 @@ class EventHandlerService(
   private val sqsService: SQSService,
   private val objectMapper: ObjectMapper,
 ) {
-  enum class EVENTS(val eventType: String) {
-    NON_ASSOCIATION_CREATE_EVENT("non-associations.created"),
-    PRISONER_RELEASE_EVENT("prison-offender-events.prisoner.released"),
-    PRISONER_RECEIVE_EVENT("prison-offender-events.prisoner.received"),
-    PRISONER_RESTRICTION_CHANGE_EVENT("prison-offender-events.prisoner.restriction.changed"),
-    PRISONER_ALERT_UPDATED_EVENT("prisoner-offender-search.prisoner.alerts-updated"),
-    VISITOR_RESTRICTION_CHANGE_EVENT("prison-offender-events.visitor.restriction.changed"),
-  }
-
   companion object {
     private const val NOTIFICATION_TYPE = "Notification"
     val LOG: Logger = LoggerFactory.getLogger(this::class.java)
@@ -39,7 +31,7 @@ class EventHandlerService(
     values["nsPrisonerNumber1"] = nonAssociationEventDto.prisonerCode
     values["nsPrisonerNumber2"] = nonAssociationEventDto.nonAssociationPrisonerCode
 
-    sqsService.sendDomainEvent(SQSMessage(NOTIFICATION_TYPE, objectMapper.writeValueAsString(DomainEvent(EVENTS.NON_ASSOCIATION_CREATE_EVENT.eventType, values)), UUID.randomUUID().toString()))
+    sqsService.sendDomainEvent(SQSMessage(NOTIFICATION_TYPE, objectMapper.writeValueAsString(DomainEvent(Events.NON_ASSOCIATION_CREATE_EVENT.eventType, values)), UUID.randomUUID().toString()))
     LOG.info("processed non association event with details - $nonAssociationEventDto")
   }
 
@@ -50,7 +42,7 @@ class EventHandlerService(
     values["nomsNumber"] = prisonerReleasedNotificationDto.prisonerCode
     values["reason"] = prisonerReleasedNotificationDto.reason
 
-    sqsService.sendDomainEvent(SQSMessage(NOTIFICATION_TYPE, objectMapper.writeValueAsString(DomainEvent(EVENTS.PRISONER_RELEASE_EVENT.eventType, values)), UUID.randomUUID().toString()))
+    sqsService.sendDomainEvent(SQSMessage(NOTIFICATION_TYPE, objectMapper.writeValueAsString(DomainEvent(Events.PRISONER_RELEASE_EVENT.eventType, values)), UUID.randomUUID().toString()))
     LOG.info("processed prisoner release event with details - $prisonerReleasedNotificationDto")
   }
 
@@ -61,7 +53,7 @@ class EventHandlerService(
     values["nomsNumber"] = prisonerEventDto.prisonerCode
     values["reason"] = prisonerEventDto.reason
 
-    sqsService.sendDomainEvent(SQSMessage(NOTIFICATION_TYPE, objectMapper.writeValueAsString(DomainEvent(EVENTS.PRISONER_RECEIVE_EVENT.eventType, values)), UUID.randomUUID().toString()))
+    sqsService.sendDomainEvent(SQSMessage(NOTIFICATION_TYPE, objectMapper.writeValueAsString(DomainEvent(Events.PRISONER_RECEIVE_EVENT.eventType, values)), UUID.randomUUID().toString()))
     LOG.info("processed prisoner receive event with details - $prisonerEventDto")
   }
 
@@ -74,7 +66,7 @@ class EventHandlerService(
       values["expiryDate"] = it.toString()
     }
 
-    sqsService.sendDomainEvent(SQSMessage(NOTIFICATION_TYPE, objectMapper.writeValueAsString(DomainEvent(EVENTS.PRISONER_RESTRICTION_CHANGE_EVENT.eventType, values)), UUID.randomUUID().toString()))
+    sqsService.sendDomainEvent(SQSMessage(NOTIFICATION_TYPE, objectMapper.writeValueAsString(DomainEvent(Events.PRISONER_RESTRICTION_CHANGE_EVENT.eventType, values)), UUID.randomUUID().toString()))
     LOG.info("processed prisoner restriction change event with details - $prisonerRestrictionEventDto")
   }
 
@@ -87,7 +79,7 @@ class EventHandlerService(
     values["alertsAdded"] = prisonerAlertCreatedUpdatedEventDto.alertsAdded
     values["alertsRemoved"] = prisonerAlertCreatedUpdatedEventDto.alertsRemoved
 
-    sqsService.sendDomainEvent(SQSMessage(NOTIFICATION_TYPE, objectMapper.writeValueAsString(DomainEvent(EVENTS.PRISONER_ALERT_UPDATED_EVENT.eventType, values)), UUID.randomUUID().toString()))
+    sqsService.sendDomainEvent(SQSMessage(NOTIFICATION_TYPE, objectMapper.writeValueAsString(DomainEvent(Events.PRISONER_ALERT_UPDATED_EVENT.eventType, values)), UUID.randomUUID().toString()))
     LOG.info("processed prisoner alert updated event with details - $prisonerAlertCreatedUpdatedEventDto")
   }
 
@@ -100,7 +92,7 @@ class EventHandlerService(
       values["expiryDate"] = it.toString()
     }
 
-    sqsService.sendDomainEvent(SQSMessage(NOTIFICATION_TYPE, objectMapper.writeValueAsString(DomainEvent(EVENTS.VISITOR_RESTRICTION_CHANGE_EVENT.eventType, values)), UUID.randomUUID().toString()))
+    sqsService.sendDomainEvent(SQSMessage(NOTIFICATION_TYPE, objectMapper.writeValueAsString(DomainEvent(Events.VISITOR_RESTRICTION_CHANGE_EVENT.eventType, values)), UUID.randomUUID().toString()))
     LOG.info("processed visitor restriction change event with details - $visitorRestrictionEventDto")
   }
 }
