@@ -24,6 +24,12 @@ spring:
             client-secret: ${system.client.secret}
             authorization-grant-type: client_credentials
             scope: read, write
+          other-hmpps-apis:
+            provider: hmpps-auth
+            client-id: ${system.client.id}
+            client-secret: ${system.client.secret}
+            authorization-grant-type: client_credentials
+            scope: read
         provider:
           hmpps-auth:
             token-uri: ${hmpps.auth.url}/oauth/token
@@ -92,6 +98,10 @@ management:
         time-to-live: 2000ms
 
 visit-scheduler:
+  api:
+    timeout: 10s
+
+prison:
   api:
     timeout: 10s
 

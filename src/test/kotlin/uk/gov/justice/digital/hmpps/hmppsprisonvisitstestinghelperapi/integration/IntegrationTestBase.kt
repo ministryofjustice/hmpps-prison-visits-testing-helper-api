@@ -11,6 +11,7 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.helper.JwtAuthHelper
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.integration.mock.HmppsAuthExtension
+import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.integration.mock.PrisonApiMockServer
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.integration.mock.VisitSchedulerMockServer
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.repository.TestDBRepository
 
@@ -20,17 +21,20 @@ import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.repository
 abstract class IntegrationTestBase {
   companion object {
     val visitSchedulerMockServer = VisitSchedulerMockServer()
+    val prisonApiMockServer = PrisonApiMockServer()
 
     @BeforeAll
     @JvmStatic
     fun startMocks() {
       visitSchedulerMockServer.start()
+      prisonApiMockServer.start()
     }
 
     @AfterAll
     @JvmStatic
     fun stopMocks() {
       visitSchedulerMockServer.stop()
+      prisonApiMockServer.stop()
     }
   }
 
