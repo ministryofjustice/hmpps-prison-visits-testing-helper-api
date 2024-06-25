@@ -53,9 +53,9 @@ class VisitSchedulerClient(
     LOG.info("Calling the visit scheduler to cancel a visit with reference - $reference")
 
     val body = CancelVisitDto(
-      OutcomeDto("CANCELLED"),
+      OutcomeDto("CANCELLATION"),
       "testing-helper-api",
-      "NOT_KNOWN",
+      "NOT_APPLICABLE",
     )
     webClient.put()
       .uri("/visits/$reference/cancel")
