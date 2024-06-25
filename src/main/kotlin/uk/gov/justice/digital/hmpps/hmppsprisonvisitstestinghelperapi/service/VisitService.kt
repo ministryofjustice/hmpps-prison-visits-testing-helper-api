@@ -8,7 +8,9 @@ import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.client.Vis
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.enums.TestDBNotificationEventTypes
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.enums.VisitStatus
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.repository.VisitRepository
+import java.lang.Thread.sleep
 import java.util.UUID
+import kotlin.time.Duration
 
 @Service
 @Transactional
@@ -60,6 +62,11 @@ class VisitService(
 
     visitId?.let {
       visitSchedulerClient.cancelVisitByBookingReference(bookingReference)
+
+      // Wait for 5seconds before deleting the visit and it's children, as downstream services need time to process the
+      // cancellation and refund the VO balance and update nomis. This is done via the visit-scheduler publishing a visit cancelled
+      // event, which is then picked up by other services to process.
+      sleep(5000)
 
       visitRepository.deleteVisitVisitors(it)
       visitRepository.deleteVisitSupport(it)
