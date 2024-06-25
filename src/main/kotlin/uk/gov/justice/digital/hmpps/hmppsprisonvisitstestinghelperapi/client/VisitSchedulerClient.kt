@@ -4,12 +4,14 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.core.ParameterizedTypeReference
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.CancelVisitDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.OutcomeDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.PrisonExcludeDateDto
+import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.VisitDto
 import java.time.Duration
 import java.time.LocalDate
 
@@ -21,6 +23,7 @@ class VisitSchedulerClient(
 
   companion object {
     val LOG: Logger = LoggerFactory.getLogger(this::class.java)
+    private val VISIT_DTO = object : ParameterizedTypeReference<VisitDto>() {}
   }
 
   fun addExcludeDate(prisonCode: String, excludeDate: LocalDate) {
@@ -49,7 +52,7 @@ class VisitSchedulerClient(
     LOG.info("Finished calling remove exclude date for prison - $prisonCode, excluded date - $excludeDate")
   }
 
-  fun cancelVisitByBookingReference(reference: String) {
+  fun cancelVisitByBookingReference(reference: String): VisitDto? {
     LOG.info("Calling the visit scheduler to cancel a visit with reference - $reference")
 
     val body = CancelVisitDto(
@@ -57,14 +60,14 @@ class VisitSchedulerClient(
       "testing-helper-api",
       "NOT_APPLICABLE",
     )
-    webClient.put()
+    return webClient.put()
       .uri("/visits/$reference/cancel")
       .body(BodyInserters.fromValue(body))
       .retrieve()
-      .toBodilessEntity()
+      .bodyToMono(VISIT_DTO)
       .doOnError { e -> LOG.error("Could not cancel visit :", e) }
-      .block(apiTimeout)
-
-    LOG.info("Finished calling the visit scheduler to cancel a visit with reference - $reference")
+      .block(apiTimeout).also {
+        LOG.info("Finished calling the visit scheduler to cancel a visit with reference - $reference")
+      }
   }
 }
