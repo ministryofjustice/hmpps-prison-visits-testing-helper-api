@@ -17,7 +17,7 @@ visit-scheduler:
 prison:
   api:
     timeout: 10s
-    url: http://localhost:8093
+    url: https://prison-api-dev.prison.service.justice.gov.uk
 
 hmpps:
   sqs:
