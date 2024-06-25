@@ -39,6 +39,18 @@ class ApplicationService(
     return rows > 0
   }
 
+  fun getOpenSessionSlotCapacityForApplication(applicationReference: String): Int {
+    logger.debug("getOpenSessionSlotCapacityForApplication - {}", applicationReference)
+    val sessionTemplateRef = applicationRepository.getSessionTemplateReferenceFromApplication(applicationReference) ?: throw Exception("Could not find session template for application $applicationReference")
+    return applicationRepository.getOpenSessionTemplateCapacity(sessionTemplateRef)
+  }
+
+  fun getClosedSessionSlotCapacityForApplication(applicationReference: String): Int {
+    logger.debug("getClosedSessionSlotCapacityForApplication - {}", applicationReference)
+    val sessionTemplateRef = applicationRepository.getSessionTemplateReferenceFromApplication(applicationReference) ?: throw Exception("Could not find session template for application $applicationReference")
+    return applicationRepository.getClosedSessionTemplateCapacity(sessionTemplateRef)
+  }
+
   fun deleteApplicationAndChildren(applicationReference: String?) {
     logger.debug("deleteApplicationAndChildren - {}", applicationReference)
 

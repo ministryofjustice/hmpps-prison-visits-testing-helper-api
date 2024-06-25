@@ -11,6 +11,7 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.ResponseStatus
@@ -22,6 +23,8 @@ const val BASE_APPLICATION_URI: String = "/test/application/{reference}"
 const val UPDATE_MODIFIED_DATE_URI: String = "$BASE_APPLICATION_URI/modifiedTimestamp/{modifiedTimestamp}"
 const val CHANGE_OPEN_SESSION_SLOT_CAPACITY_FOR_APPLICATION: String = "$BASE_APPLICATION_URI/session/capacity/open/{capacity}"
 const val CHANGE_CLOSED_SESSION_SLOT_CAPACITY_FOR_APPLICATION: String = "$BASE_APPLICATION_URI/session/capacity/closed/{capacity}"
+const val GET_OPEN_SESSION_SLOT_CAPACITY_FOR_APPLICATION: String = "$BASE_APPLICATION_URI/session/open/capacity"
+const val GET_CLOSED_SESSION_SLOT_CAPACITY_FOR_APPLICATION: String = "$BASE_APPLICATION_URI/session/closed/capacity"
 
 @RestController
 class ApplicationController {
@@ -152,5 +155,57 @@ class ApplicationController {
     } else {
       ResponseEntity(NOT_FOUND)
     }
+  }
+
+  @PreAuthorize("hasAnyRole('TEST_VISIT_SCHEDULER')")
+  @GetMapping(
+    GET_OPEN_SESSION_SLOT_CAPACITY_FOR_APPLICATION,
+    produces = [MediaType.APPLICATION_JSON_VALUE],
+  )
+  @Operation(
+    summary = "Get open session slot capacity for application",
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        description = "Return open capacity",
+      ),
+      ApiResponse(
+        responseCode = "404",
+        description = "Could not find application",
+      ),
+    ],
+  )
+  fun getOpenSessionSlotCapacityForApplication(
+    @Schema(description = "reference", example = "v9-d7-ed-7u", required = true)
+    @PathVariable
+    reference: String,
+  ): ResponseEntity<Int> {
+    return ResponseEntity.status(OK).body(applicationService.getOpenSessionSlotCapacityForApplication(reference))
+  }
+
+  @PreAuthorize("hasAnyRole('TEST_VISIT_SCHEDULER')")
+  @GetMapping(
+    GET_CLOSED_SESSION_SLOT_CAPACITY_FOR_APPLICATION,
+    produces = [MediaType.APPLICATION_JSON_VALUE],
+  )
+  @Operation(
+    summary = "Get closed session slot capacity for application",
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        description = "Return closed capacity",
+      ),
+      ApiResponse(
+        responseCode = "404",
+        description = "Could not find application",
+      ),
+    ],
+  )
+  fun getClosedSessionSlotCapacityForApplication(
+    @Schema(description = "reference", example = "v9-d7-ed-7u", required = true)
+    @PathVariable
+    reference: String,
+  ): ResponseEntity<Int> {
+    return ResponseEntity.status(OK).body(applicationService.getClosedSessionSlotCapacityForApplication(reference))
   }
 }

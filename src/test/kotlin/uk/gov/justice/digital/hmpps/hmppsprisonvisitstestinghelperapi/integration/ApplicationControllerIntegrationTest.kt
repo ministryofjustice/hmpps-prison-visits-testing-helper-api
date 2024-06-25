@@ -10,8 +10,12 @@ import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.controller.CHANGE_CLOSED_SESSION_SLOT_CAPACITY_FOR_APPLICATION
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.controller.CHANGE_OPEN_SESSION_SLOT_CAPACITY_FOR_APPLICATION
+import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.controller.GET_CLOSED_SESSION_SLOT_CAPACITY_FOR_APPLICATION
+import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.controller.GET_OPEN_SESSION_SLOT_CAPACITY_FOR_APPLICATION
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.helper.callDelete
+import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.helper.callGet
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.helper.callPut
+import java.nio.charset.StandardCharsets
 import java.sql.Timestamp
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -27,6 +31,8 @@ class ApplicationControllerIntegrationTest : IntegrationTestBase() {
   val sessionTimeSlotEnd: LocalTime = LocalTime.of(10, 0)
   val visitDate: LocalDate = LocalDate.now()
   val applicationReference = "abc-fgh-cbv"
+  val openCapacity = 10
+  val closedCapacity = 1
 
   @BeforeEach
   fun setup() {
@@ -34,7 +40,7 @@ class ApplicationControllerIntegrationTest : IntegrationTestBase() {
 
     dBRepository.createPrison(prisonCode)
     dBRepository.createPrison(prison2Code)
-    dBRepository.createSessionTemplate(prisonCode, "room", "SOCIAL", 10, 1, sessionTimeSlotStart, sessionTimeSlotEnd, LocalDate.now(), LocalDate.now().dayOfWeek, sessionTemplateReference, sessionTemplateReference)
+    dBRepository.createSessionTemplate(prisonCode, "room", "SOCIAL", openCapacity, closedCapacity, sessionTimeSlotStart, sessionTimeSlotEnd, LocalDate.now(), LocalDate.now().dayOfWeek, sessionTemplateReference, sessionTemplateReference)
     dBRepository.createSessionSlot(sessionSlotReference, visitDate, visitDate.atTime(sessionTimeSlotStart), visitDate.atTime(sessionTimeSlotEnd), sessionTemplateReference)
   }
 
@@ -157,6 +163,64 @@ class ApplicationControllerIntegrationTest : IntegrationTestBase() {
     responseSpec.expectStatus().isOk
   }
 
+  @Test
+  fun `when get open slot capacity for application then capacity returned`() {
+    // Given
+    val prisonId = dBRepository.getPrisonIdFromSessionTemplate(sessionTemplateReference)
+    val sessionSlotId = dBRepository.getSessionSlotId(sessionSlotReference)
+
+    dBRepository.createApplication(
+      prisonId,
+      "AA123",
+      sessionSlotId,
+      true,
+      applicationReference,
+      "SOCIAL",
+      "OPEN",
+      false,
+      "TEST",
+      Timestamp.valueOf(LocalDateTime.now()),
+      "STAFF",
+    )
+
+    val responseSpec = callGetOpenSessionSlotCapacityForApplication(webTestClient, setAuthorisation(roles = listOf("ROLE_TEST_VISIT_SCHEDULER")), applicationReference)
+
+    // Then
+    responseSpec.expectStatus().isOk
+    val responseBody = responseSpec.expectBody().returnResult().responseBody
+    val capacity = String(responseBody!!, StandardCharsets.UTF_8).toInt()
+    assertThat(capacity).isEqualTo(openCapacity)
+  }
+
+  @Test
+  fun `when get closed slot capacity for application then capacity returned`() {
+    // Given
+    val prisonId = dBRepository.getPrisonIdFromSessionTemplate(sessionTemplateReference)
+    val sessionSlotId = dBRepository.getSessionSlotId(sessionSlotReference)
+
+    dBRepository.createApplication(
+      prisonId,
+      "AA123",
+      sessionSlotId,
+      true,
+      applicationReference,
+      "SOCIAL",
+      "OPEN",
+      false,
+      "TEST",
+      Timestamp.valueOf(LocalDateTime.now()),
+      "STAFF",
+    )
+
+    val responseSpec = callGetClosedSessionSlotCapacityForApplication(webTestClient, setAuthorisation(roles = listOf("ROLE_TEST_VISIT_SCHEDULER")), applicationReference)
+
+    // Then
+    responseSpec.expectStatus().isOk
+    val responseBody = responseSpec.expectBody().returnResult().responseBody
+    val capacity = String(responseBody!!, StandardCharsets.UTF_8).toInt()
+    assertThat(capacity).isEqualTo(closedCapacity)
+  }
+
   private fun assertDeleteApplicationAndAssociatedObjectsHaveBeenDeleted(responseSpec: ResponseSpec, applicationReference: String, applicationId: Long) {
     responseSpec.expectStatus().isOk
     assertThat(dBRepository.hasApplicationWithReference(applicationReference)).isFalse()
@@ -213,6 +277,30 @@ class ApplicationControllerIntegrationTest : IntegrationTestBase() {
     return callPut(
       webTestClient = webTestClient,
       url = CHANGE_OPEN_SESSION_SLOT_CAPACITY_FOR_APPLICATION.replace("{reference}", applicationReference).replace("{capacity}", capacity.toString()),
+      authHttpHeaders = authHttpHeaders,
+    )
+  }
+
+  private fun callGetOpenSessionSlotCapacityForApplication(
+    webTestClient: WebTestClient,
+    authHttpHeaders: (HttpHeaders) -> Unit,
+    applicationReference: String,
+  ): ResponseSpec {
+    return callGet(
+      webTestClient = webTestClient,
+      url = GET_OPEN_SESSION_SLOT_CAPACITY_FOR_APPLICATION.replace("{reference}", applicationReference),
+      authHttpHeaders = authHttpHeaders,
+    )
+  }
+
+  private fun callGetClosedSessionSlotCapacityForApplication(
+    webTestClient: WebTestClient,
+    authHttpHeaders: (HttpHeaders) -> Unit,
+    applicationReference: String,
+  ): ResponseSpec {
+    return callGet(
+      webTestClient = webTestClient,
+      url = GET_CLOSED_SESSION_SLOT_CAPACITY_FOR_APPLICATION.replace("{reference}", applicationReference),
       authHttpHeaders = authHttpHeaders,
     )
   }
