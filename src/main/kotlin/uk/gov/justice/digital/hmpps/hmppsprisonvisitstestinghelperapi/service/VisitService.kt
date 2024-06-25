@@ -10,7 +10,6 @@ import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.enums.
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.repository.VisitRepository
 import java.lang.Thread.sleep
 import java.util.UUID
-import kotlin.time.Duration
 
 @Service
 @Transactional
