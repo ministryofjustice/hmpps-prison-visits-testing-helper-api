@@ -20,10 +20,10 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-security")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
-  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:4.0.0")
-  implementation("com.amazonaws:aws-java-sdk-sts:1.12.748")
+  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:4.0.1")
+  implementation("com.amazonaws:aws-java-sdk-sts:1.12.749")
   implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.6.RELEASE")
-  implementation("com.amazonaws:aws-java-sdk-s3:1.12.748")
+  implementation("com.amazonaws:aws-java-sdk-s3:1.12.749")
 
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.17.1")
   implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.5.0")
