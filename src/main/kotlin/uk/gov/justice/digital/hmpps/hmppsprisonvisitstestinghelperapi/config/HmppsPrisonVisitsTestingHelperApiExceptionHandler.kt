@@ -8,9 +8,14 @@ import org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
+import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.exception.NotFoundException
 
 @RestControllerAdvice
 class HmppsPrisonVisitsTestingHelperApiExceptionHandler {
+  companion object {
+    private val log = LoggerFactory.getLogger(this::class.java)
+  }
+
   @ExceptionHandler(ValidationException::class)
   fun handleValidationException(e: Exception): ResponseEntity<ErrorResponse> {
     log.info("Validation exception: {}", e.message)
@@ -39,8 +44,18 @@ class HmppsPrisonVisitsTestingHelperApiExceptionHandler {
       )
   }
 
-  companion object {
-    private val log = LoggerFactory.getLogger(this::class.java)
+  @ExceptionHandler(NotFoundException::class)
+  fun handleNotFoundException(e: NotFoundException): ResponseEntity<ErrorResponse?>? {
+    log.error("Not Found exception caught: {}", e.message)
+    return ResponseEntity
+      .status(HttpStatus.NOT_FOUND)
+      .body(
+        ErrorResponse(
+          status = HttpStatus.NOT_FOUND,
+          userMessage = "not found: ${e.cause?.message}",
+          developerMessage = e.message,
+        ),
+      )
   }
 }
 

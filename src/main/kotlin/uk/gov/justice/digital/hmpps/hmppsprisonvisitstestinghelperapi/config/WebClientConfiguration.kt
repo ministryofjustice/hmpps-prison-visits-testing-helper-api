@@ -14,18 +14,28 @@ import org.springframework.web.reactive.function.client.ExchangeStrategies
 import org.springframework.web.reactive.function.client.WebClient
 
 @Configuration
-open class WebClientConfiguration(
+class WebClientConfiguration(
   @Value("\${visit-scheduler.api.url}")
   private val visitSchedulerBaseUrl: String,
+
+  @Value("\${prison.api.url}")
+  private val prisonApiBaseUrl: String,
 ) {
   private enum class HmppsAuthClientRegistrationId(val clientRegistrationId: String) {
     VISIT_SCHEDULER("visit-scheduler"),
+    PRISON_API("other-hmpps-apis"),
   }
 
   @Bean
-  open fun visitSchedulerWebClient(authorizedClientManager: OAuth2AuthorizedClientManager): WebClient {
+  fun visitSchedulerWebClient(authorizedClientManager: OAuth2AuthorizedClientManager): WebClient {
     val oauth2Client = getOauth2Client(authorizedClientManager, HmppsAuthClientRegistrationId.VISIT_SCHEDULER.clientRegistrationId)
     return getWebClient(visitSchedulerBaseUrl, oauth2Client)
+  }
+
+  @Bean
+  fun prisonApiWebClient(authorizedClientManager: OAuth2AuthorizedClientManager): WebClient {
+    val oauth2Client = getOauth2Client(authorizedClientManager, HmppsAuthClientRegistrationId.PRISON_API.clientRegistrationId)
+    return getWebClient(prisonApiBaseUrl, oauth2Client)
   }
 
   private fun getOauth2Client(authorizedClientManager: OAuth2AuthorizedClientManager, clientRegistrationId: String): ServletOAuth2AuthorizedClientExchangeFilterFunction {
@@ -49,12 +59,17 @@ open class WebClientConfiguration(
   }
 
   @Bean
-  open fun visitSchedulerHealthWebClient(): WebClient {
+  fun visitSchedulerHealthWebClient(): WebClient {
     return WebClient.builder().baseUrl(visitSchedulerBaseUrl).build()
   }
 
   @Bean
-  open fun authorizedClientManager(
+  fun prisonApiHealthWebClient(): WebClient {
+    return WebClient.builder().baseUrl(prisonApiBaseUrl).build()
+  }
+
+  @Bean
+  fun authorizedClientManager(
     clientRegistrationRepository: ClientRegistrationRepository?,
     oAuth2AuthorizedClientService: OAuth2AuthorizedClientService?,
   ): OAuth2AuthorizedClientManager? {
