@@ -87,7 +87,8 @@ class VisitControllerIntegrationTest : IntegrationTestBase() {
     dBRepository.createVisitNote(visitReference, VisitNoteType.VISIT_COMMENT, "visit note description")
     dBRepository.createVisitContact(visitReference, "John", "07777777777")
     dBRepository.createVisitNotification("PRISON_VISITS_BLOCKED_FOR_DATE", visitNotificationReference, visitReference)
-
+    dBRepository.createActionedBy("", "ALED", "STAFF")
+    dBRepository.createEventAudit(visitReference, "appRef", sessionSlotReference, "BOOKED_VISIT", "NOT_KNOWN", 1)
     val visitId = dBRepository.getVisitIdByReference(visitReference)
 
     // When
@@ -140,6 +141,8 @@ class VisitControllerIntegrationTest : IntegrationTestBase() {
     assertThat(dBRepository.hasVisitContact(visitId)).isFalse()
     assertThat(dBRepository.hasVisitNotes(visitId)).isFalse()
     assertThat(dBRepository.hasVisitNotificationsByBookingReference(visitReference)).isFalse()
+    assertThat(dBRepository.hasEventAuditByBookingReference(visitReference)).isFalse()
+    assertThat(dBRepository.hasActionedBy(1)).isFalse()
   }
 
   private fun callDeleteVisitAndAllChildren(

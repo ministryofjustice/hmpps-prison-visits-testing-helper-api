@@ -4,7 +4,10 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.repository.ActionedByRepository
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.repository.ApplicationRepository
+import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.repository.EventAuditRepository
+import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.repository.SessionSlotRepository
 import java.sql.Timestamp
 import java.time.LocalDateTime
 
@@ -12,6 +15,9 @@ import java.time.LocalDateTime
 @Transactional
 class ApplicationService(
   private val applicationRepository: ApplicationRepository,
+  private val sessionSlotRepository: SessionSlotRepository,
+  private val actionedByRepository: ActionedByRepository,
+  private val eventAuditRepository: EventAuditRepository,
 ) {
 
   private val logger: Logger = LoggerFactory.getLogger(this::class.java)
@@ -62,8 +68,12 @@ class ApplicationService(
         applicationRepository.deleteApplicationSupport(it)
         applicationRepository.deleteApplicationContact(it)
         applicationRepository.deleteApplication(it)
+        eventAuditRepository.deleteByApplicationReference(applicationReference)
       }
     }
+
+    sessionSlotRepository.deleteUnused()
+    actionedByRepository.deleteUnused()
   }
 
   fun getApplicationReferenceByVisitId(visitId: Long): String? {

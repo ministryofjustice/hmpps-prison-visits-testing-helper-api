@@ -216,6 +216,35 @@ interface TestDBRepository : JpaRepository<NotUsedEntity, Long> {
     visitReference: String,
   )
 
+  @Transactional(propagation = REQUIRES_NEW)
+  @Modifying
+  @Query(
+    "INSERT INTO event_audit(booking_reference,application_reference, session_template_reference,type, application_method_type,actioned_by_id) " +
+      "values (:bookingReference,:applicationReference,:sessionTemplateReference,:type,:applicationMethodType,:actionedById)",
+    nativeQuery = true,
+  )
+  fun createEventAudit(
+    bookingReference: String,
+    applicationReference: String,
+    sessionTemplateReference: String,
+    type: String,
+    applicationMethodType: String,
+    actionedById: Int,
+  )
+
+  @Transactional(propagation = REQUIRES_NEW)
+  @Modifying
+  @Query(
+    "INSERT INTO actioned_by(booker_reference,user_name, user_type) " +
+      "values (:bookerReference,:userName,:userType)",
+    nativeQuery = true,
+  )
+  fun createActionedBy(
+    bookerReference: String,
+    userName: String,
+    userType: String,
+  )
+
   @Query(
     "SELECT visit_status from visit where reference = :reference",
     nativeQuery = true,
@@ -305,6 +334,24 @@ interface TestDBRepository : JpaRepository<NotUsedEntity, Long> {
     nativeQuery = true,
   )
   fun hasApplicationContact(applicationId: Long): Boolean
+
+  @Query(
+    "SELECT count(*) > 0 from event_audit where booking_reference = :bookingReference",
+    nativeQuery = true,
+  )
+  fun hasEventAuditByBookingReference(bookingReference: String): Boolean
+
+  @Query(
+    "SELECT count(*) > 0 from event_audit where application_reference = :applicationReference",
+    nativeQuery = true,
+  )
+  fun hasEventAuditByApplicationReference(applicationReference: String): Boolean
+
+  @Query(
+    "SELECT count(*) > 0 from actioned_by where id = :actionedById",
+    nativeQuery = true,
+  )
+  fun hasActionedBy(actionedById: Int): Boolean
 
   @Transactional(propagation = REQUIRES_NEW)
   @Modifying
