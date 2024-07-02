@@ -87,14 +87,16 @@ class VisitControllerIntegrationTest : IntegrationTestBase() {
     dBRepository.createVisitNote(visitReference, VisitNoteType.VISIT_COMMENT, "visit note description")
     dBRepository.createVisitContact(visitReference, "John", "07777777777")
     dBRepository.createVisitNotification("PRISON_VISITS_BLOCKED_FOR_DATE", visitNotificationReference, visitReference)
-
+    dBRepository.createActionedBy("", "ALED", "STAFF")
+    val actionById = dBRepository.getActionById()
+    dBRepository.createEventAudit(visitReference, "appRef", sessionSlotReference, "BOOKED_VISIT", "NOT_KNOWN", actionById)
     val visitId = dBRepository.getVisitIdByReference(visitReference)
 
     // When
     val responseSpec = callDeleteVisitAndAllChildren(webTestClient, setAuthorisation(roles = listOf("ROLE_TEST_VISIT_SCHEDULER")), visitReference)
 
     // Then
-    assertDeletedVisitAndAssociatedObjectsHaveBeenDeleted(responseSpec, visitReference, visitId)
+    assertDeletedVisitAndAssociatedObjectsHaveBeenDeleted(responseSpec, visitReference, visitId, actionById)
   }
 
   @Test
@@ -132,7 +134,7 @@ class VisitControllerIntegrationTest : IntegrationTestBase() {
     assertThat(hasVisitNotifications).isTrue()
   }
 
-  private fun assertDeletedVisitAndAssociatedObjectsHaveBeenDeleted(responseSpec: ResponseSpec, visitReference: String, visitId: Long) {
+  private fun assertDeletedVisitAndAssociatedObjectsHaveBeenDeleted(responseSpec: ResponseSpec, visitReference: String, visitId: Long, actionById: Int) {
     responseSpec.expectStatus().isOk
     assertThat(dBRepository.hasVisitWithReference(visitReference)).isFalse()
     assertThat(dBRepository.hasVisitVisitor(visitId)).isFalse()
@@ -140,6 +142,8 @@ class VisitControllerIntegrationTest : IntegrationTestBase() {
     assertThat(dBRepository.hasVisitContact(visitId)).isFalse()
     assertThat(dBRepository.hasVisitNotes(visitId)).isFalse()
     assertThat(dBRepository.hasVisitNotificationsByBookingReference(visitReference)).isFalse()
+    assertThat(dBRepository.hasEventAuditByBookingReference(visitReference)).isFalse()
+    assertThat(dBRepository.hasActionedBy(actionById)).isFalse()
   }
 
   private fun callDeleteVisitAndAllChildren(
