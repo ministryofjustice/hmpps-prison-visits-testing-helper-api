@@ -224,7 +224,7 @@ interface TestDBRepository : JpaRepository<NotUsedEntity, Long> {
     nativeQuery = true,
   )
   fun createEventAudit(
-    bookingReference: String,
+    bookingReference: String? = null,
     applicationReference: String,
     sessionTemplateReference: String,
     type: String,
@@ -244,6 +244,12 @@ interface TestDBRepository : JpaRepository<NotUsedEntity, Long> {
     userName: String,
     userType: String,
   )
+
+  @Query(
+    "Select max(id) from actioned_by",
+    nativeQuery = true,
+  )
+  fun getActionById(): Int
 
   @Query(
     "SELECT visit_status from visit where reference = :reference",

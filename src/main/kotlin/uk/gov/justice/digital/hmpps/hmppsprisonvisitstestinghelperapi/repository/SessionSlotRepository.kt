@@ -25,7 +25,7 @@ interface SessionSlotRepository : JpaRepository<SessionSlotEntity, Long> {
   @Modifying
   @Query(
     "DELETE FROM session_slot " +
-      " WHERE actioned_by.id not IN (" +
+      " WHERE id not IN (" +
       "    SELECT a.session_slot_id FROM application a group by a.session_slot_id UNION SELECT v.session_slot_id FROM visit v group by v.session_slot_id " +
       " ) ",
     nativeQuery = true,

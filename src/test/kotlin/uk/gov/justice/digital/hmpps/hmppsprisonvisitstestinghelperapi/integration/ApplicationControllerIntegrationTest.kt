@@ -102,13 +102,17 @@ class ApplicationControllerIntegrationTest : IntegrationTestBase() {
     dBRepository.createApplicationSupport(applicationReference, "application support description")
     dBRepository.createApplicationContact(applicationReference, "John", "07777777777")
 
+    dBRepository.createActionedBy("", "ALED", "STAFF")
+    val actionById = dBRepository.getActionById()
+    dBRepository.createEventAudit(null, applicationReference, sessionSlotReference, "RESERVED_VISIT", "NOT_KNOWN", actionById)
+
     val applicationId = dBRepository.getApplicationIdByReference(applicationReference)
 
     // When
     val responseSpec = callDeleteApplicationAndAllChildren(webTestClient, setAuthorisation(roles = listOf("ROLE_TEST_VISIT_SCHEDULER")), applicationReference)
 
     // Then
-    assertDeleteApplicationAndAssociatedObjectsHaveBeenDeleted(responseSpec, applicationReference, applicationId)
+    assertDeleteApplicationAndAssociatedObjectsHaveBeenDeleted(responseSpec, applicationReference, applicationId, actionById)
   }
 
   @Test
@@ -221,12 +225,14 @@ class ApplicationControllerIntegrationTest : IntegrationTestBase() {
     assertThat(capacity).isEqualTo(closedCapacity)
   }
 
-  private fun assertDeleteApplicationAndAssociatedObjectsHaveBeenDeleted(responseSpec: ResponseSpec, applicationReference: String, applicationId: Long) {
+  private fun assertDeleteApplicationAndAssociatedObjectsHaveBeenDeleted(responseSpec: ResponseSpec, applicationReference: String, applicationId: Long, actionById: Int) {
     responseSpec.expectStatus().isOk
     assertThat(dBRepository.hasApplicationWithReference(applicationReference)).isFalse()
     assertThat(dBRepository.hasApplicationVisitor(applicationId)).isFalse()
     assertThat(dBRepository.hasApplicationSupport(applicationId)).isFalse()
     assertThat(dBRepository.hasApplicationContact(applicationId)).isFalse()
+    assertThat(dBRepository.hasEventAuditByApplicationReference(applicationReference)).isFalse()
+    assertThat(dBRepository.hasActionedBy(actionById)).isFalse()
   }
 
   private fun callDeleteApplicationAndAllChildren(

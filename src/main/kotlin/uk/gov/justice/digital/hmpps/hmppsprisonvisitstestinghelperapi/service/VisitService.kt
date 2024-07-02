@@ -7,7 +7,9 @@ import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.client.VisitSchedulerClient
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.enums.TestDBNotificationEventTypes
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.enums.VisitStatus
+import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.repository.ActionedByRepository
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.repository.EventAuditRepository
+import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.repository.SessionSlotRepository
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.repository.VisitRepository
 import java.lang.Thread.sleep
 import java.util.UUID
@@ -19,6 +21,8 @@ class VisitService(
   private val visitSchedulerClient: VisitSchedulerClient,
   private val applicationService: ApplicationService,
   private val eventAuditRepository: EventAuditRepository,
+  private val actionedByRepository: ActionedByRepository,
+  private val sessionSlotRepository: SessionSlotRepository,
 ) {
 
   private val logger: Logger = LoggerFactory.getLogger(this::class.java)
@@ -81,6 +85,8 @@ class VisitService(
       applicationService.deleteApplicationAndChildren(applicationReference)
 
       eventAuditRepository.deleteByBookingReference(bookingReference)
+      sessionSlotRepository.deleteUnused()
+      actionedByRepository.deleteUnused()
     }
   }
 
