@@ -30,6 +30,18 @@ class SessionTemplateIntegrationTest : IntegrationTestBase() {
   }
 
   @Test
+  fun `test activateSessionTemplate SQL`() {
+    // Given
+    val sessionTemplateReference = "testToSeeIfSqlValid"
+
+    // When
+    val results = sessionTemplateRepository.activateSessionTemplate(sessionTemplateReference)
+
+    // Then
+    assertThat(results).isEqualTo(0)
+  }
+
+  @Test
   fun `test getSessionTemplateDetails SQL`() {
     // Given
     val sessionTemplateReference = "testToSeeIfSqlValid"

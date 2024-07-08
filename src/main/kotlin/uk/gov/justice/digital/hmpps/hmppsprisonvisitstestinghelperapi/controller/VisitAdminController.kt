@@ -94,11 +94,11 @@ class VisitAdminController {
   )
   @ResponseStatus(CREATED)
   @Operation(
-    summary = "Create visit notification events for a visit - fallback for events that are not SQS based",
+    summary = "Add session template",
     responses = [
       ApiResponse(
         responseCode = "201",
-        description = "Visit notification event visits added for visit reference",
+        description = "Add session template",
       ),
     ],
   )
@@ -150,6 +150,7 @@ class VisitAdminController {
       incentive = incentive,
       disableAllOtherSessionsForSlotAndPrison = disableAllOtherSessionsForSlotAndPrison,
     )
+
     return ResponseEntity(result, CREATED)
   }
 

@@ -90,6 +90,7 @@ class SessionService(
     if (disableAllOtherSessionsForSlotAndPrison) {
       sessionTemplateRepository.deActiveSessionTemplatesForSlot(prisonCode, slotDate, validToDate, dayOfWeek.name, sessionTimeSlotDto.startTime, sessionTimeSlotDto.endTime)
     }
+    sessionTemplateRepository.activateSessionTemplate(sessionTemplateReference)
 
     return sessionTemplateReference
   }

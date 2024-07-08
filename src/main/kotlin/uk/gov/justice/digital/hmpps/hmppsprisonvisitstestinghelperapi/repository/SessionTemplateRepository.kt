@@ -97,4 +97,8 @@ interface SessionTemplateRepository : JpaRepository<SessionTemplateEntity, Long>
   @Modifying
   @Query("UPDATE session_template SET active = false WHERE reference = :sessionTemplateReference", nativeQuery = true)
   fun deActivateSessionTemplate(sessionTemplateReference: String): Int
+
+  @Modifying
+  @Query("UPDATE session_template SET active = true WHERE reference = :sessionTemplateReference", nativeQuery = true)
+  fun activateSessionTemplate(sessionTemplateReference: String): Int
 }
