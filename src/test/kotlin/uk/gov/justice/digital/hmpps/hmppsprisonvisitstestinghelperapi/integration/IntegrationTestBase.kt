@@ -21,6 +21,16 @@ import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.repository
 @AutoConfigureWebTestClient(timeout = "10000")
 @ActiveProfiles("test")
 abstract class IntegrationTestBase {
+
+  @Autowired
+  protected lateinit var webTestClient: WebTestClient
+
+  @Autowired
+  protected lateinit var dBRepository: TestDBRepository
+
+  @Autowired
+  protected lateinit var jwtAuthHelper: JwtAuthHelper
+
   companion object {
     val visitSchedulerMockServer = VisitSchedulerMockServer()
     val prisonApiMockServer = PrisonApiMockServer()
@@ -39,15 +49,6 @@ abstract class IntegrationTestBase {
       prisonApiMockServer.stop()
     }
   }
-
-  @Autowired
-  lateinit var webTestClient: WebTestClient
-
-  @Autowired
-  lateinit var dBRepository: TestDBRepository
-
-  @Autowired
-  protected lateinit var jwtAuthHelper: JwtAuthHelper
 
   internal fun setAuthorisation(
     user: String = "AUTH_ADM",
