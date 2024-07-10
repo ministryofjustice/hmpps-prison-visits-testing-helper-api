@@ -51,7 +51,7 @@ class SessionService(
     val sessionDateRange = SessionDateRangeDto(validFromDate = slotDate, validToDate = validToDate)
     val locationReferenceList = mutableListOf<String>()
     val visitRoom = "Main test room"
-    val group = "test group " +  Base64.getEncoder().encode(UUID.randomUUID().toString().encodeToByteArray())
+    val group = "test group " + Base64.getEncoder().encode(UUID.randomUUID().toString().encodeToByteArray())
 
     locationLevels?.let {
       val levels = locationLevels.split("-").toList()
