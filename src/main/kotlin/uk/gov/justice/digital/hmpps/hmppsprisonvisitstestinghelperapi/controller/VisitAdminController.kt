@@ -118,7 +118,7 @@ class VisitAdminController {
     @Schema(description = "openCapacity", example = "1", required = false)
     @RequestParam(required = false)
     openCapacity: Int = 1,
-    @Schema(description = "Location level string", example = "A/1/3/007", required = false)
+    @Schema(description = "Location level string", example = "A-1-3-007", required = false)
     @RequestParam(required = false)
     locationLevels: String?,
     @Schema(description = "incentive string", example = "ENHANCED", required = false)

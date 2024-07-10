@@ -53,7 +53,7 @@ class SessionService(
     val locationReferenceList = mutableListOf<String>()
 
     locationLevels?.let {
-      val levels = locationLevels.split("/").toList()
+      val levels = locationLevels.split("-").toList()
       val location = PermittedSessionLocationDto(levels[0], levels.getOrNull(1), levels.getOrNull(2), levels.getOrNull(3))
       val createLocationGroup = CreateLocationGroupDto(groupName, prisonCode, listOf(location))
       locationReferenceList.add(visitSchedulerClient.createLocationGroup(createLocationGroup))
