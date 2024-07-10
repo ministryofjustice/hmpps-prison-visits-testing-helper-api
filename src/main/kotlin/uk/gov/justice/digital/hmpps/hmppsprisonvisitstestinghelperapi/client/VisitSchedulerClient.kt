@@ -97,7 +97,7 @@ class VisitSchedulerClient(
     LOG.info("Calling the visit scheduler to createLocationGroup - ${createLocationGroup.name}")
 
     val jsonValue = webClient.put()
-      .uri("/admin/location-groups/group}")
+      .uri("/admin/location-groups/group")
       .body(BodyInserters.fromValue(createLocationGroup))
       .retrieve()
       .bodyToMono<String>()
