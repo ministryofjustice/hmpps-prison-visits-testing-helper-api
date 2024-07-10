@@ -77,7 +77,7 @@ class VisitSchedulerClient(
   fun creatSessionTemplate(creatSessionTemplate: CreateSessionTemplateDto): String {
     LOG.info("Calling the visit scheduler to creatSessionTemplate - ${creatSessionTemplate.name}")
 
-    val jsonValue = webClient.put()
+    val jsonValue = webClient.post()
       .uri("/admin/session-templates/template")
       .body(BodyInserters.fromValue(creatSessionTemplate))
       .retrieve()
@@ -96,7 +96,7 @@ class VisitSchedulerClient(
   fun createLocationGroup(createLocationGroup: CreateLocationGroupDto): String {
     LOG.info("Calling the visit scheduler to createLocationGroup - ${createLocationGroup.name}")
 
-    val jsonValue = webClient.put()
+    val jsonValue = webClient.post()
       .uri("/admin/location-groups/group")
       .body(BodyInserters.fromValue(createLocationGroup))
       .retrieve()
@@ -115,7 +115,7 @@ class VisitSchedulerClient(
   fun createIncentiveGroup(createIncentiveGroupDto: CreateIncentiveGroupDto): String {
     LOG.info("Calling the visit scheduler to createIncentiveGroup - ${createIncentiveGroupDto.name}")
 
-    val jsonValue = webClient.put()
+    val jsonValue = webClient.post()
       .uri("/admin/incentive-groups/group}")
       .body(BodyInserters.fromValue(createIncentiveGroupDto))
       .retrieve()
@@ -134,7 +134,7 @@ class VisitSchedulerClient(
   fun createCategoryGroup(createCategoryGroupDto: CreateCategoryGroupDto): String {
     LOG.info("Calling the visit scheduler to createCategoryGroup - ${createCategoryGroupDto.name}")
 
-    val jsonValue = webClient.put()
+    val jsonValue = webClient.post()
       .uri("/admin/category-groups/group}")
       .body(BodyInserters.fromValue(createCategoryGroupDto))
       .retrieve()
