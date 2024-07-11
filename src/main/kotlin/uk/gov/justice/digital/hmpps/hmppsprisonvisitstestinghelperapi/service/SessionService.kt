@@ -109,10 +109,7 @@ class SessionService(
   }
 
   fun deleteSessionTemplate(sessionTemplateReference: String, enableAllOtherSessionsForSlotAndPrison: Boolean) {
-    // De active session template to allow it to be deleted
-    deActivateSessionTemplate(sessionTemplateReference)
-
-/*    val message = visitSchedulerClient.deleteSessionTemplate(sessionTemplateReference)
+    val message = visitSchedulerClient.deleteSessionTemplate(sessionTemplateReference)
     logger.debug("Message from deleteSessionTemplate $message")
 
     val sessionTemplatedInfo = sessionTemplateRepository.getSessionTemplateDetails(sessionTemplateReference) ?: throw RuntimeException("Session template does not exist")
@@ -128,6 +125,6 @@ class SessionService(
           endTime,
         )
       }
-    }*/
+    }
   }
 }

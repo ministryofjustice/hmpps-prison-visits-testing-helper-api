@@ -170,12 +170,14 @@ class VisitAdminController {
   )
   fun deleteSessionTemplate(
     @Schema(description = "session template reference", example = "v9-d7-ed-7u", required = true)
-    @PathVariable
-    reference: String,
+    @PathVariable(name = "reference")
+    sessionTemplateReference: String,
     @RequestParam(required = false)
     enableAllOtherSessionsForSlotAndPrison: Boolean = false,
   ): ResponseEntity<HttpStatus> {
-    sessionService.deleteSessionTemplate(reference, enableAllOtherSessionsForSlotAndPrison)
+    // De active session template to allow it to be deleted
+    sessionService.deActivateSessionTemplate(sessionTemplateReference)
+    sessionService.deleteSessionTemplate(sessionTemplateReference, enableAllOtherSessionsForSlotAndPrison)
     return ResponseEntity(OK)
   }
 }
