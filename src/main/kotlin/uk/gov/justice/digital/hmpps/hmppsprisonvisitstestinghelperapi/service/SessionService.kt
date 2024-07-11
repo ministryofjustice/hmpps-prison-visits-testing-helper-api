@@ -113,7 +113,7 @@ class SessionService(
     deActivateSessionTemplate(sessionTemplateReference)
 
     val message = visitSchedulerClient.deleteSessionTemplate(sessionTemplateReference)
-    logger.debug(message)
+    logger.debug("Message from deleteSessionTemplate $message")
 
     val sessionTemplatedInfo = sessionTemplateRepository.getSessionTemplateDetails(sessionTemplateReference) ?: throw RuntimeException("Session template does not exist")
 
