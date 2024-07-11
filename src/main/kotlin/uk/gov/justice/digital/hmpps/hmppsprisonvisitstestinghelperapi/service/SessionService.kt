@@ -102,8 +102,10 @@ class SessionService(
 
   @Transactional(propagation = NOT_SUPPORTED)
   fun deActivateSessionTemplate(sessionTemplateReference: String) {
+    logger.debug("Enter deActivateSessionTemplate $sessionTemplateReference")
     // De active session template to allow it to be deleted
-    sessionTemplateRepository.deActivateSessionTemplate(sessionTemplateReference)
+    val updatedRows = sessionTemplateRepository.deActivateSessionTemplate(sessionTemplateReference)
+    logger.debug("ran deActivateSessionTemplate $sessionTemplateReference rows updated $updatedRows")
   }
 
   fun deleteSessionTemplate(sessionTemplateReference: String, enableAllOtherSessionsForSlotAndPrison: Boolean) {
