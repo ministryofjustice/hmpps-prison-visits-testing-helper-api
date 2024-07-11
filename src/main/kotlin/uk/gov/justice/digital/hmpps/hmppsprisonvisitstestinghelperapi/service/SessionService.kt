@@ -3,7 +3,7 @@ package uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.service
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Propagation.NOT_SUPPORTED
+import org.springframework.transaction.annotation.Propagation.REQUIRES_NEW
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.client.VisitSchedulerClient
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.admin.CreateCategoryGroupDto
@@ -100,7 +100,7 @@ class SessionService(
     return sessionTemplateReference
   }
 
-  @Transactional(propagation = NOT_SUPPORTED)
+  @Transactional(propagation = REQUIRES_NEW)
   fun deActivateSessionTemplate(sessionTemplateReference: String) {
     logger.debug("Enter deActivateSessionTemplate $sessionTemplateReference")
     // De active session template to allow it to be deleted
@@ -108,6 +108,7 @@ class SessionService(
     logger.debug("ran deActivateSessionTemplate $sessionTemplateReference rows updated $updatedRows")
   }
 
+  @Transactional(propagation = REQUIRES_NEW)
   fun deleteSessionTemplate(sessionTemplateReference: String, enableAllOtherSessionsForSlotAndPrison: Boolean) {
     val message = visitSchedulerClient.deleteSessionTemplate(sessionTemplateReference)
     logger.debug("Message from deleteSessionTemplate $message")
