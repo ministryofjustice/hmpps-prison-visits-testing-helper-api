@@ -2,7 +2,7 @@
 # Per environment values which override defaults in hmpps-prison-visits-testing-helper-api/values.yaml
 
 generic-service:
-  replicaCount: 2
+  replicaCount: 1
 
   ingress:
     host: hmpps-prison-visits-testing-helper-api-staging.prison.service.justice.gov.uk
