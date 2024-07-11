@@ -110,7 +110,6 @@ class SessionService(
 
   @Transactional(propagation = REQUIRES_NEW)
   fun deleteSessionTemplate(sessionTemplateReference: String, enableAllOtherSessionsForSlotAndPrison: Boolean) {
-
     val sessionTemplatedInfo = sessionTemplateRepository.getSessionTemplateDetails(sessionTemplateReference) ?: throw RuntimeException("Session template does not exist")
 
     val message = visitSchedulerClient.deleteSessionTemplate(sessionTemplateReference)
