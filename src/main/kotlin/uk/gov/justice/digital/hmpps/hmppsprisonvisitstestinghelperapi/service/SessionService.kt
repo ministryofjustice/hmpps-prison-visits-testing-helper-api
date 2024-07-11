@@ -112,6 +112,19 @@ class SessionService(
   fun deleteSessionTemplate(sessionTemplateReference: String, enableAllOtherSessionsForSlotAndPrison: Boolean) {
     val sessionTemplatedInfo = sessionTemplateRepository.getSessionTemplateDetails(sessionTemplateReference) ?: throw RuntimeException("Session template does not exist")
 
+    val incentiveGroupRef = sessionTemplateRepository.getIncentiveGroup(sessionTemplateReference)
+    incentiveGroupRef?.let {
+      visitSchedulerClient.deleteIncentiveGroup(it)
+    }
+    val categoryGroupRef = sessionTemplateRepository.getCategoryGroup(sessionTemplateReference)
+    categoryGroupRef?.let {
+      visitSchedulerClient.deleteCategoryGroup(it)
+    }
+    val locationGroupRef = sessionTemplateRepository.getLocationGroup(sessionTemplateReference)
+    locationGroupRef?.let {
+      visitSchedulerClient.deleteLocationGroup(it)
+    }
+
     val message = visitSchedulerClient.deleteSessionTemplate(sessionTemplateReference)
     logger.debug("Message from deleteSessionTemplate $message")
 
