@@ -25,7 +25,7 @@ class SessionTemplateEntity {
 @Repository
 interface SessionTemplateRepository : JpaRepository<SessionTemplateEntity, Long> {
 
-  @Modifying
+  @Modifying(flushAutomatically = true)
   @Query(
     "UPDATE session_template SET active = false WHERE id IN ( " +
       "SELECT st.id  FROM session_template st " +
@@ -48,7 +48,7 @@ interface SessionTemplateRepository : JpaRepository<SessionTemplateEntity, Long>
     slotEndTime: LocalTime,
   ): Int
 
-  @Modifying
+  @Modifying(flushAutomatically = true)
   @Query(
     "UPDATE session_template SET active = true WHERE id IN ( " +
       "SELECT st.id  FROM session_template st " +
@@ -94,11 +94,11 @@ interface SessionTemplateRepository : JpaRepository<SessionTemplateEntity, Long>
   )
   fun getSessionTemplateDetails(sessionTemplateReference: String): SessionTemplateInfo?
 
-  @Modifying
+  @Modifying(flushAutomatically = true)
   @Query("UPDATE session_template SET active = false WHERE reference = :sessionTemplateReference", nativeQuery = true)
   fun deActivateSessionTemplate(sessionTemplateReference: String): Int
 
-  @Modifying
+  @Modifying(flushAutomatically = true)
   @Query("UPDATE session_template SET active = true WHERE reference = :sessionTemplateReference", nativeQuery = true)
   fun activateSessionTemplate(sessionTemplateReference: String): Int
 }
