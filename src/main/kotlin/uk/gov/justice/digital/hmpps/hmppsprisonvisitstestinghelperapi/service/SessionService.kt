@@ -56,7 +56,7 @@ class SessionService(
 
     locationLevels?.let {
       val levels = locationLevels.split("-").toList()
-      val groupName = "$levels $group"
+      val groupName = "$locationLevels $group"
       val location = PermittedSessionLocationDto(levels[0], levels.getOrNull(1), levels.getOrNull(2), levels.getOrNull(3))
       val createLocationGroup = CreateLocationGroupDto(groupName, prisonCode, listOf(location))
       locationReferenceList.add(visitSchedulerClient.createLocationGroup(createLocationGroup))
@@ -112,7 +112,7 @@ class SessionService(
     // De active session template to allow it to be deleted
     deActivateSessionTemplate(sessionTemplateReference)
 
-    val message = visitSchedulerClient.deleteSessionTemplate(sessionTemplateReference)
+/*    val message = visitSchedulerClient.deleteSessionTemplate(sessionTemplateReference)
     logger.debug("Message from deleteSessionTemplate $message")
 
     val sessionTemplatedInfo = sessionTemplateRepository.getSessionTemplateDetails(sessionTemplateReference) ?: throw RuntimeException("Session template does not exist")
@@ -128,6 +128,6 @@ class SessionService(
           endTime,
         )
       }
-    }
+    }*/
   }
 }
