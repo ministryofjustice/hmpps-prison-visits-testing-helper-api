@@ -25,7 +25,7 @@ class SessionTemplateEntity {
 @Repository
 interface SessionTemplateRepository : JpaRepository<SessionTemplateEntity, Long> {
 
-  @Modifying
+  @Modifying(flushAutomatically = true)
   @Query(
     "UPDATE session_template SET active = false WHERE id IN ( " +
       "SELECT st.id  FROM session_template st " +
@@ -48,7 +48,7 @@ interface SessionTemplateRepository : JpaRepository<SessionTemplateEntity, Long>
     slotEndTime: LocalTime,
   ): Int
 
-  @Modifying
+  @Modifying(flushAutomatically = true)
   @Query(
     "UPDATE session_template SET active = true WHERE id IN ( " +
       "SELECT st.id  FROM session_template st " +
@@ -94,11 +94,38 @@ interface SessionTemplateRepository : JpaRepository<SessionTemplateEntity, Long>
   )
   fun getSessionTemplateDetails(sessionTemplateReference: String): SessionTemplateInfo?
 
-  @Modifying
+  @Modifying(flushAutomatically = true)
   @Query("UPDATE session_template SET active = false WHERE reference = :sessionTemplateReference", nativeQuery = true)
   fun deActivateSessionTemplate(sessionTemplateReference: String): Int
 
-  @Modifying
+  @Modifying(flushAutomatically = true)
   @Query("UPDATE session_template SET active = true WHERE reference = :sessionTemplateReference", nativeQuery = true)
   fun activateSessionTemplate(sessionTemplateReference: String): Int
+
+  @Query(
+    "SELECT slg.reference FROM session_template st " +
+      " LEFT JOIN session_to_location_group stlg ON stlg.session_template_id = st.id " +
+      " LEFT JOIN session_location_group slg ON slg.id = stlg.group_id " +
+      " WHERE st.reference = :sessionTemplateReference",
+    nativeQuery = true,
+  )
+  fun getLocationGroup(sessionTemplateReference: String): String?
+
+  @Query(
+    "SELECT sig.reference FROM session_template st " +
+      " LEFT JOIN session_to_incentive_group stig ON stig.session_template_id = st.id " +
+      " LEFT JOIN session_incentive_group sig ON sig.id = stig.session_incentive_group_id " +
+      " WHERE st.reference = :sessionTemplateReference",
+    nativeQuery = true,
+  )
+  fun getIncentiveGroup(sessionTemplateReference: String): String?
+
+  @Query(
+    "SELECT scg.reference FROM session_template st " +
+      " LEFT JOIN session_to_category_group stcg ON stcg.session_template_id = st.id " +
+      " LEFT JOIN session_category_group scg ON scg.id = stcg.session_category_group_id " +
+      " WHERE st.reference = :sessionTemplateReference",
+    nativeQuery = true,
+  )
+  fun getCategoryGroup(sessionTemplateReference: String): String?
 }

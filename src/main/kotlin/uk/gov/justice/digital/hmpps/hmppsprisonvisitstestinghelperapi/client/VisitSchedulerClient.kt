@@ -166,4 +166,55 @@ class VisitSchedulerClient(
 
     return message
   }
+
+  fun deleteIncentiveGroup(reference: String): String? {
+    LOG.info("Delete incentive group - $reference")
+
+    val message = webClient.delete()
+      .uri("/admin/incentive-groups/group/$reference")
+      .retrieve()
+      .bodyToMono<String>()
+      .doOnError { e ->
+        LOG.error("Could not delete incentive group:", e)
+      }
+      .block(apiTimeout)
+
+    LOG.info("Delete incentive groups  - $reference")
+
+    return message
+  }
+
+  fun deleteCategoryGroup(reference: String): String? {
+    LOG.info("Delete Category Group - $reference")
+
+    val message = webClient.delete()
+      .uri("/admin/category-groups/group/$reference")
+      .retrieve()
+      .bodyToMono<String>()
+      .doOnError { e ->
+        LOG.error("Could not delete category group:", e)
+      }
+      .block(apiTimeout)
+
+    LOG.info("Delete Category Group - $reference")
+
+    return message
+  }
+
+  fun deleteLocationGroup(reference: String): String? {
+    LOG.info("Delete Location Group - $reference")
+
+    val message = webClient.delete()
+      .uri("/admin/location-groups/group/$reference")
+      .retrieve()
+      .bodyToMono<String>()
+      .doOnError { e ->
+        LOG.error("Could not delete location group:", e)
+      }
+      .block(apiTimeout)
+
+    LOG.info("Delete Location Group - $reference")
+
+    return message
+  }
 }

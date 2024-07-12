@@ -56,7 +56,7 @@ class SessionService(
 
     locationLevels?.let {
       val levels = locationLevels.split("-").toList()
-      val groupName = "$levels $group"
+      val groupName = "$locationLevels $group"
       val location = PermittedSessionLocationDto(levels[0], levels.getOrNull(1), levels.getOrNull(2), levels.getOrNull(3))
       val createLocationGroup = CreateLocationGroupDto(groupName, prisonCode, listOf(location))
       locationReferenceList.add(visitSchedulerClient.createLocationGroup(createLocationGroup))
@@ -102,18 +102,32 @@ class SessionService(
 
   @Transactional(propagation = REQUIRES_NEW)
   fun deActivateSessionTemplate(sessionTemplateReference: String) {
+    logger.debug("Enter deActivateSessionTemplate $sessionTemplateReference")
     // De active session template to allow it to be deleted
-    sessionTemplateRepository.deActivateSessionTemplate(sessionTemplateReference)
+    val updatedRows = sessionTemplateRepository.deActivateSessionTemplate(sessionTemplateReference)
+    logger.debug("ran deActivateSessionTemplate $sessionTemplateReference rows updated $updatedRows")
   }
 
+  @Transactional(propagation = REQUIRES_NEW)
   fun deleteSessionTemplate(sessionTemplateReference: String, enableAllOtherSessionsForSlotAndPrison: Boolean) {
-    // De active session template to allow it to be deleted
-    deActivateSessionTemplate(sessionTemplateReference)
+    val sessionTemplatedInfo = sessionTemplateRepository.getSessionTemplateDetails(sessionTemplateReference) ?: throw RuntimeException("Session template does not exist")
+
+    val incentiveGroupRef = sessionTemplateRepository.getIncentiveGroup(sessionTemplateReference)
+    val categoryGroupRef = sessionTemplateRepository.getCategoryGroup(sessionTemplateReference)
+    val locationGroupRef = sessionTemplateRepository.getLocationGroup(sessionTemplateReference)
 
     val message = visitSchedulerClient.deleteSessionTemplate(sessionTemplateReference)
-    logger.debug(message)
+    logger.debug("Message from deleteSessionTemplate $message")
 
-    val sessionTemplatedInfo = sessionTemplateRepository.getSessionTemplateDetails(sessionTemplateReference) ?: throw RuntimeException("Session template does not exist")
+    incentiveGroupRef?.let {
+      visitSchedulerClient.deleteIncentiveGroup(it)
+    }
+    categoryGroupRef?.let {
+      visitSchedulerClient.deleteCategoryGroup(it)
+    }
+    locationGroupRef?.let {
+      visitSchedulerClient.deleteLocationGroup(it)
+    }
 
     if (enableAllOtherSessionsForSlotAndPrison) {
       with(sessionTemplatedInfo) {

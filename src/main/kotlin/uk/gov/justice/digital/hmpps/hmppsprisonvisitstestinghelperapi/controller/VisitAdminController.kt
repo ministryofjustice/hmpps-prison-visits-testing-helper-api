@@ -22,7 +22,7 @@ import java.time.LocalDateTime
 
 const val ADD_PRISON_EXCLUDE_DATE: String = "/test/prison/{prisonCode}/add/exclude-date/{excludeDate}"
 const val REMOVE_PRISON_EXCLUDE_DATE: String = "/test/prison/{prisonCode}/remove/exclude-date/{excludeDate}"
-const val ADD_SESSION_TEMPLATE_PATH: String = "/test/prison/{prisonCode}/add/template"
+const val ADD_SESSION_TEMPLATE_PATH: String = "/test/prison/{prisonCode}/template/add"
 const val DELETE_SESSION_TEMPLATE_PATH: String = "/test/template/{reference}/delete"
 
 @RestController
@@ -170,12 +170,14 @@ class VisitAdminController {
   )
   fun deleteSessionTemplate(
     @Schema(description = "session template reference", example = "v9-d7-ed-7u", required = true)
-    @PathVariable
-    reference: String,
+    @PathVariable(name = "reference")
+    sessionTemplateReference: String,
     @RequestParam(required = false)
     enableAllOtherSessionsForSlotAndPrison: Boolean = false,
   ): ResponseEntity<HttpStatus> {
-    sessionService.deleteSessionTemplate(reference, enableAllOtherSessionsForSlotAndPrison)
+    // De active session template to allow it to be deleted
+    sessionService.deActivateSessionTemplate(sessionTemplateReference)
+    sessionService.deleteSessionTemplate(sessionTemplateReference, enableAllOtherSessionsForSlotAndPrison)
     return ResponseEntity(OK)
   }
 }
