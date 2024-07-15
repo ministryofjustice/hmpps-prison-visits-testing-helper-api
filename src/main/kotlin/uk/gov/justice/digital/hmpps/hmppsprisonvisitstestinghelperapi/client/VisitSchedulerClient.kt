@@ -116,7 +116,7 @@ class VisitSchedulerClient(
     LOG.info("Calling the visit scheduler to createIncentiveGroup - ${createIncentiveGroupDto.name}")
 
     val jsonValue = webClient.post()
-      .uri("/admin/incentive-groups/group}")
+      .uri("/admin/incentive-groups/group")
       .body(BodyInserters.fromValue(createIncentiveGroupDto))
       .retrieve()
       .bodyToMono<String>()
@@ -135,7 +135,7 @@ class VisitSchedulerClient(
     LOG.info("Calling the visit scheduler to createCategoryGroup - ${createCategoryGroupDto.name}")
 
     val jsonValue = webClient.post()
-      .uri("/admin/category-groups/group}")
+      .uri("/admin/category-groups/group")
       .body(BodyInserters.fromValue(createCategoryGroupDto))
       .retrieve()
       .bodyToMono<String>()
