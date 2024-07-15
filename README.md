@@ -4,7 +4,6 @@
 
 This is a Spring Boot application, written in Kotlin. It is a testing helper API for automated tests. Used by [Visits UI Tests](https://github.com/ministryofjustice/hmpps-vsip-ui-tests).
 
-
 ## Building
 
 To build the project (without tests):
