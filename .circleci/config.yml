@@ -208,7 +208,7 @@ workflows:
               ignore: /.*/
       - hmpps/helm_lint:
           name: helm_lint
-      - my_job_test_dlc:
+      - test-orb/my_job_test_dlc:
           name: build_docker
       - request-dev-approval:
           type: approval
