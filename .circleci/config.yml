@@ -25,6 +25,15 @@ orbs:
       jira: circleci/jira@2.1.0
 
     jobs:
+      install_git_lfs:
+        description: Install Git LFS
+        steps:
+          - run:
+              name: Install Git LFS
+              command: |
+                curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
+                DEBIAN_FRONTEND=noninteractive sudo apt-get install -y --no-install-recommends git-lfs
+                git lfs install
       my_job_test_dlc:
         description: >
           Build docker image, also creates an app version string and pushes image to repo.
