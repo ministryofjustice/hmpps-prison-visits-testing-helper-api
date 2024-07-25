@@ -95,4 +95,9 @@ class VisitService(
 
     visitSchedulerClient.cancelVisitByBookingReference(bookingReference)
   }
+
+  fun bookVisit(applicationReference: String) {
+    logger.debug("book visit called with reference - {}", applicationReference)
+    visitSchedulerClient.bookVisit(applicationReference)
+  }
 }
