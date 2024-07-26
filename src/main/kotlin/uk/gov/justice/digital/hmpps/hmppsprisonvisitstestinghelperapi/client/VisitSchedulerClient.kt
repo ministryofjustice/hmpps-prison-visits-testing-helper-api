@@ -76,7 +76,7 @@ class VisitSchedulerClient(
   }
 
   fun bookVisit(applicationReference: String) {
-    LOG.info("Calling the visit scheduler to cancel a visit with reference - $applicationReference")
+    LOG.info("Calling the visit scheduler to book a visit for application with reference - $applicationReference")
 
     val body = BookingRequestDto(
       actionedBy = "testing-helper-api",
