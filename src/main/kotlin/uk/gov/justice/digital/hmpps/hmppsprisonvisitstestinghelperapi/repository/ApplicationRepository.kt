@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Propagation.REQUIRES_NEW
 import org.springframework.transaction.annotation.Transactional
 import java.sql.Timestamp
+import java.time.LocalDateTime
 
 /**
  * Note: As we connect to the visit-scheduler database directly, we have to put a fake entity in the JpaRepository interface.
@@ -121,4 +122,55 @@ interface ApplicationRepository : JpaRepository<NotUsedApplicationEntity, Long> 
   fun getClosedSessionTemplateCapacity(
     sessionTemplateReference: String,
   ): Int
+
+  @Transactional(propagation = REQUIRES_NEW)
+  @Modifying(clearAutomatically = true, flushAutomatically = true)
+  @Query(
+    "insert into application(prison_id, prisoner_id, session_slot_id, reference, user_type, visit_type, restriction, create_timestamp, modify_timestamp)" +
+      " select p.id, :prisonerId, ss.id, :applicationReference, :userType, 'SOCIAL', :visitRestriction, now(), now() from prison p left join session_slot ss " +
+      " ON p.id =  ss.prison_id " +
+      " where ss.slot_start = :sessionSlotStart " +
+      " and ss.slot_end = :sessionSlotEnd " +
+      " and p.code = :prisonCode",
+    nativeQuery = true,
+  )
+  fun createApplication(
+    prisonCode: String,
+    prisonerId: String,
+    visitRestriction: String,
+    applicationReference: String,
+    sessionSlotStart: LocalDateTime,
+    sessionSlotEnd: LocalDateTime,
+    userType: String,
+  ): Int
+
+  @Transactional(propagation = REQUIRES_NEW)
+  @Modifying(clearAutomatically = true, flushAutomatically = true)
+  @Query(
+    "insert into application_visitor(application_id, nomis_person_id) values(:applicationId, :visitorId)",
+    nativeQuery = true,
+  )
+  fun createApplicationVisitor(
+    applicationId: Long,
+    visitorId: Long,
+  ): Int
+
+  @Transactional(propagation = REQUIRES_NEW)
+  @Modifying(clearAutomatically = true, flushAutomatically = true)
+  @Query(
+    "insert into application_contact(application_id, contact_name) values(:applicationId, :contactName)",
+    nativeQuery = true,
+  )
+  fun createApplicationContact(
+    applicationId: Long,
+    contactName: String,
+  ): Int
+
+  @Query(
+    "select id from application where reference = :applicationReference",
+    nativeQuery = true,
+  )
+  fun getApplicationId(
+    applicationReference: String,
+  ): Long?
 }

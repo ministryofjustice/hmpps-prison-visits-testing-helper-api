@@ -26,6 +26,7 @@ const val BASE_VISIT_URI: String = "/test/visit/{reference}"
 const val CHANGE_STATUS_URI: String = "$BASE_VISIT_URI/status/{status}"
 const val CHANGE_PRISON_URI: String = "$BASE_VISIT_URI/change/prison/{prisonCode}"
 const val CANCEL_URI: String = "$BASE_VISIT_URI/cancel"
+const val BOOK_VISIT_URI: String = "/test/visit/{applicationReference}/book"
 
 const val VISIT_NOTIFICATIONS_URI: String = "$BASE_VISIT_URI/notifications"
 
@@ -202,5 +203,31 @@ class VisitController {
     reference: String,
   ) {
     visitService.cancelVisitByBookingReference(reference)
+  }
+
+  @PreAuthorize("hasAnyRole('TEST_VISIT_SCHEDULER')")
+  @PostMapping(
+    BOOK_VISIT_URI,
+    produces = [MediaType.TEXT_PLAIN_VALUE],
+  )
+  @Operation(
+    summary = "Book a visit via the visit-scheduler",
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        description = "Visit has been booked",
+      ),
+      ApiResponse(
+        responseCode = "404",
+        description = "Could not find application for given reference",
+      ),
+    ],
+  )
+  fun bookVisit(
+    @Schema(description = "applicationReference", example = "v9-d7-ed-7u", required = true)
+    @PathVariable
+    applicationReference: String,
+  ) {
+    visitService.bookVisit(applicationReference)
   }
 }

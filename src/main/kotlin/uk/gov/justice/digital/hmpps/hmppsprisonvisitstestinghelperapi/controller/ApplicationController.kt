@@ -14,12 +14,15 @@ import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
+import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.visit.scheduler.CreateApplicationDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.service.ApplicationService
 import java.time.LocalDateTime
 
 const val BASE_APPLICATION_URI: String = "/test/application/{reference}"
+const val CREATE_APPLICATION: String = "/test/application/create"
 const val UPDATE_MODIFIED_DATE_URI: String = "$BASE_APPLICATION_URI/modifiedTimestamp/{modifiedTimestamp}"
 const val CHANGE_OPEN_SESSION_SLOT_CAPACITY_FOR_APPLICATION: String = "$BASE_APPLICATION_URI/session/capacity/open/{capacity}"
 const val CHANGE_CLOSED_SESSION_SLOT_CAPACITY_FOR_APPLICATION: String = "$BASE_APPLICATION_URI/session/capacity/closed/{capacity}"
@@ -207,5 +210,27 @@ class ApplicationController {
     reference: String,
   ): ResponseEntity<Int> {
     return ResponseEntity.status(OK).body(applicationService.getClosedSessionSlotCapacityForApplication(reference))
+  }
+
+  @PreAuthorize("hasAnyRole('TEST_VISIT_SCHEDULER')")
+  @PutMapping(
+    CREATE_APPLICATION,
+  )
+  @ResponseStatus(OK)
+  @Operation(
+    summary = "Application successfully created",
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        description = "Status changed process started",
+      ),
+    ],
+  )
+  fun createApplication(
+    @RequestBody
+    createApplicationDto: CreateApplicationDto,
+  ): ResponseEntity<String> {
+    val applicationReference = applicationService.createApplication(createApplicationDto)
+    return ResponseEntity.status(OK).body(applicationReference)
   }
 }
