@@ -9,7 +9,6 @@ data class CreateApplicationDto(
   val sessionDate: LocalDate,
   val sessionStart: LocalTime,
   val sessionEnd: LocalTime,
-  val restriction: String,
   val userType: String,
   val contactName: String,
   val visitors: List<Long>,
