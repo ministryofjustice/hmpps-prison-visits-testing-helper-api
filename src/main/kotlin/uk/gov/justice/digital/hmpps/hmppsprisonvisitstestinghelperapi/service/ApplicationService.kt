@@ -21,6 +21,7 @@ class ApplicationService(
   private val actionedByRepository: ActionedByRepository,
   private val eventAuditRepository: EventAuditRepository,
   private val referenceGenerator: ReferenceGenerator,
+  private val sessionSlotService: SessionSlotService,
 ) {
 
   private val logger: Logger = LoggerFactory.getLogger(this::class.java)
@@ -87,54 +88,35 @@ class ApplicationService(
     val applicationReference = referenceGenerator.generateReference()
     logger.debug("creating application with reference - {}, details - {}", applicationReference, application)
 
-    val sessionSlotId = sessionSlotRepository.selectSessionSlot(
-      startTime = application.sessionStart,
-      endTime = application.sessionEnd,
-      slotDate = application.sessionDate,
+    val sessionSlotId = sessionSlotService.getSessionSlot(
+      sessionStart = application.sessionStart,
+      sessionEnd = application.sessionEnd,
+      sessionDate = application.sessionDate,
       prisonCode = application.prisonCode,
     )
 
-    if (sessionSlotId == null) {
-      logger.debug(
-        "session slot for prison - {}, slotDate - {}, start time - {}, end tme - {} does not exist, creating one",
-        application.prisonCode,
-        application.sessionDate,
-        application.sessionStart,
-        application.sessionEnd,
-      )
-
-      sessionSlotRepository.createSessionSlot(
-        reference = referenceGenerator.generateReference(),
-        startTime = application.sessionStart,
-        endTime = application.sessionEnd,
-        slotDate = application.sessionDate,
-        slotStart = application.sessionDate.atTime(application.sessionStart),
-        slotEnd = application.sessionDate.atTime(application.sessionEnd),
+    sessionSlotId?.let {
+      applicationRepository.createApplication(
         prisonCode = application.prisonCode,
+        prisonerId = application.prisonerId,
+        visitRestriction = application.visitRestriction,
+        applicationReference = applicationReference,
+        sessionSlotStart = application.sessionDate.atTime(application.sessionStart),
+        sessionSlotEnd = application.sessionDate.atTime(application.sessionEnd),
+        userType = application.userType,
       )
-    }
 
-    applicationRepository.createApplication(
-      prisonCode = application.prisonCode,
-      prisonerId = application.prisonerId,
-      visitRestriction = application.visitRestriction,
-      applicationReference = applicationReference,
-      sessionSlotStart = application.sessionDate.atTime(application.sessionStart),
-      sessionSlotEnd = application.sessionDate.atTime(application.sessionEnd),
-      userType = application.userType,
-    )
+      val applicationId = applicationRepository.getApplicationId(applicationReference)
 
-    logger.debug("created  application with reference - {}", applicationReference)
+      applicationId?.let {
+        logger.debug("created  application with reference - {}", applicationReference)
+        createApplicationVisitors(applicationId, applicationReference, application.visitors)
+        createApplicationContact(applicationId, applicationReference, application.contactName)
+      } ?: throw RuntimeException("Failed to create application with details - $application")
 
-    val applicationId = applicationRepository.getApplicationId(applicationReference)
-
-    applicationId?.let {
-      createApplicationVisitors(applicationId, applicationReference, application.visitors)
-      createApplicationContact(applicationId, applicationReference, application.contactName)
-    }
-
-    logger.debug("completed application creation with reference - {}", applicationReference)
-    return applicationReference
+      logger.debug("completed application creation with reference - {}", applicationReference)
+      return applicationReference
+    } ?: throw RuntimeException("Failed to create session slot for details - $application, make sure the session template exists")
   }
 
   fun createApplicationVisitors(applicationId: Long, applicationReference: String, visitors: List<Long>) {
