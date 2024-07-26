@@ -47,7 +47,8 @@ interface SessionSlotRepository : JpaRepository<SessionSlotEntity, Long> {
       " and (st.valid_to_date IS NULL OR st.valid_to_date >= now()) " +
       " and (st.start_time = :startTime) " +
       " and (st.end_time = :endTime) " +
-      " and p.code = :prisonCode",
+      " and p.code = :prisonCode " +
+      " and st.day_of_week = :dayOfWeek",
     nativeQuery = true,
   )
   fun createSessionSlot(
@@ -58,6 +59,7 @@ interface SessionSlotRepository : JpaRepository<SessionSlotEntity, Long> {
     slotStart: LocalDateTime,
     slotEnd: LocalDateTime,
     prisonCode: String,
+    dayOfWeek: String,
   ): Int
 
   @Query(
@@ -69,7 +71,8 @@ interface SessionSlotRepository : JpaRepository<SessionSlotEntity, Long> {
       " and (st.start_time = :startTime) " +
       " and (st.end_time = :endTime) " +
       " and (ss.slot_date = :slotDate) " +
-      " and p.code = :prisonCode",
+      " and p.code = :prisonCode " +
+      " and st.day_of_week = :dayOfWeek",
     nativeQuery = true,
   )
   fun selectSessionSlot(
@@ -77,5 +80,6 @@ interface SessionSlotRepository : JpaRepository<SessionSlotEntity, Long> {
     endTime: LocalTime,
     slotDate: LocalDate,
     prisonCode: String,
+    dayOfWeek: String,
   ): Long?
 }
