@@ -29,6 +29,7 @@ class SessionSlotService(
       endTime = sessionEnd,
       slotDate = sessionDate,
       prisonCode = prisonCode,
+      dayOfWeek = sessionDate.dayOfWeek.name,
     )
   }
 
@@ -46,6 +47,7 @@ class SessionSlotService(
       slotStart = sessionDate.atTime(sessionStart),
       slotEnd = sessionDate.atTime(sessionEnd),
       prisonCode = prisonCode,
+      dayOfWeek = sessionDate.dayOfWeek.name,
     )
   }
 
