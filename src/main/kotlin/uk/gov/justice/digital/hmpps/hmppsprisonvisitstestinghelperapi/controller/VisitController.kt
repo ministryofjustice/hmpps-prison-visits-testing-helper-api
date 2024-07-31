@@ -227,7 +227,8 @@ class VisitController {
     @Schema(description = "applicationReference", example = "v9-d7-ed-7u", required = true)
     @PathVariable
     applicationReference: String,
-  ) {
-    visitService.bookVisit(applicationReference)
+  ): ResponseEntity<String> {
+    val visit = visitService.bookVisit(applicationReference)
+    return ResponseEntity.status(OK).body(visit.reference)
   }
 }

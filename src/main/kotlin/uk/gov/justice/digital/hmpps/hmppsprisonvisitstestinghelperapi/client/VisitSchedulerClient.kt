@@ -17,6 +17,7 @@ import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.admin.
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.admin.CreateLocationGroupDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.admin.CreateSessionTemplateDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.visit.scheduler.BookingRequestDto
+import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.visit.scheduler.VisitDto
 import java.time.Duration
 import java.time.LocalDate
 
@@ -75,7 +76,7 @@ class VisitSchedulerClient(
     LOG.info("Finished calling the visit scheduler to cancel a visit with reference - $reference")
   }
 
-  fun bookVisit(applicationReference: String) {
+  fun bookVisit(applicationReference: String): VisitDto? {
     LOG.info("Calling the visit scheduler to book a visit for application with reference - $applicationReference")
 
     val body = BookingRequestDto(
@@ -83,15 +84,15 @@ class VisitSchedulerClient(
       applicationMethodType = "NOT_KNOWN",
       allowOverBooking = true,
     )
-    webClient.put()
+    return webClient.put()
       .uri("/visits/$applicationReference/book")
       .body(BodyInserters.fromValue(body))
       .retrieve()
-      .toBodilessEntity()
+      .bodyToMono<VisitDto>()
       .doOnError { e -> LOG.error("Could not book visit :", e) }
-      .block(apiTimeout)
-
-    LOG.info("Finished calling the visit scheduler to book a visit for application with reference - $applicationReference")
+      .block(apiTimeout).also {
+        LOG.info("Finished calling the visit scheduler to book a visit for application with reference - $applicationReference")
+      }
   }
 
   fun creatSessionTemplate(creatSessionTemplate: CreateSessionTemplateDto): String {
