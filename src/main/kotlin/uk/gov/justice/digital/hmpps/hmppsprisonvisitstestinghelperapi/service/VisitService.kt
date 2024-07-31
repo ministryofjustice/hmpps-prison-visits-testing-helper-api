@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.client.VisitSchedulerClient
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.enums.TestDBNotificationEventTypes
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.enums.VisitStatus
+import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.visit.scheduler.VisitDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.repository.ActionedByRepository
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.repository.EventAuditRepository
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.repository.SessionSlotRepository
@@ -96,8 +97,10 @@ class VisitService(
     visitSchedulerClient.cancelVisitByBookingReference(bookingReference)
   }
 
-  fun bookVisit(applicationReference: String) {
-    logger.debug("book visit called with reference - {}", applicationReference)
-    visitSchedulerClient.bookVisit(applicationReference)
+  fun bookVisit(applicationReference: String): VisitDto {
+    logger.debug("book visit called for application with reference - {}", applicationReference)
+    val visit = visitSchedulerClient.bookVisit(applicationReference) ?: throw RuntimeException("Unble to book visit.")
+    logger.debug("booked visit with visit reference - {}", visit.reference)
+    return visit
   }
 }
