@@ -49,6 +49,12 @@ interface ApplicationRepository : JpaRepository<NotUsedApplicationEntity, Long> 
   )
   fun getApplicationIdByReference(reference: String): Long?
 
+  @Query(
+    "Select reference from application where prisoner_id = :prisonerId",
+    nativeQuery = true,
+  )
+  fun getApplicationsByPrisonerId(prisonerId: String): List<String>?
+
   @Modifying
   @Query(
     "delete from application where id = :id",

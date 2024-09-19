@@ -63,6 +63,18 @@ class VisitService(
     logger.debug("Created visit notification event {} for booking reference - {}", notificationType, bookingReference)
   }
 
+  fun deleteAllPrisonerVisits(prisonerId: String) {
+    logger.debug("Deleting all future visits for prisoner - {}", prisonerId)
+
+    val visitReferences = visitRepository.getVisitsByPrisonerId(prisonerId)
+    visitReferences?.forEach { visitReference ->
+      logger.debug("Delete all visit with reference - {}", visitReference)
+      deleteVisitAndChildren(visitReference)
+    }
+
+    logger.debug("Finished deleting all future visits for prisoner - {}", prisonerId)
+  }
+
   fun deleteVisitAndChildren(bookingReference: String) {
     val visitId = visitRepository.getVisitId(bookingReference)
 
