@@ -29,6 +29,7 @@ const val CANCEL_URI: String = "$BASE_VISIT_URI/cancel"
 const val BOOK_VISIT_URI: String = "/test/visit/{applicationReference}/book"
 
 const val VISIT_NOTIFICATIONS_URI: String = "$BASE_VISIT_URI/notifications"
+const val DELETE_PRISONER_VISITS_URI: String = "/test/prisoner/{prisonerId}/clear-visits"
 
 @RestController
 class VisitController {
@@ -93,6 +94,28 @@ class VisitController {
     reference: String,
   ) {
     visitService.deleteVisitAndChildren(reference)
+  }
+
+  @PreAuthorize("hasAnyRole('TEST_VISIT_SCHEDULER')")
+  @DeleteMapping(
+    DELETE_PRISONER_VISITS_URI,
+  )
+  @ResponseStatus(OK)
+  @Operation(
+    summary = "Delete all prisoner's booked visits and children by reference",
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        description = "Delete all prisoner's visits",
+      ),
+    ],
+  )
+  fun deleteAllPrisonerVisits(
+    @Schema(description = "prisonerId", example = "AB123CDE", required = true)
+    @PathVariable
+    prisonerId: String,
+  ) {
+    visitService.deleteAllPrisonerVisits(prisonerId)
   }
 
   @PreAuthorize("hasAnyRole('TEST_VISIT_SCHEDULER')")

@@ -28,6 +28,7 @@ const val CHANGE_OPEN_SESSION_SLOT_CAPACITY_FOR_APPLICATION: String = "$BASE_APP
 const val CHANGE_CLOSED_SESSION_SLOT_CAPACITY_FOR_APPLICATION: String = "$BASE_APPLICATION_URI/session/capacity/closed/{capacity}"
 const val GET_OPEN_SESSION_SLOT_CAPACITY_FOR_APPLICATION: String = "$BASE_APPLICATION_URI/session/open/capacity"
 const val GET_CLOSED_SESSION_SLOT_CAPACITY_FOR_APPLICATION: String = "$BASE_APPLICATION_URI/session/closed/capacity"
+const val DELETE_PRISONER_APPLICATIONS_URI: String = "/test/prisoner/{prisonerId}/clear-applications"
 
 @RestController
 class ApplicationController {
@@ -59,6 +60,28 @@ class ApplicationController {
     reference: String,
   ) {
     applicationService.deleteApplicationAndChildren(reference)
+  }
+
+  @PreAuthorize("hasAnyRole('TEST_VISIT_SCHEDULER')")
+  @DeleteMapping(
+    DELETE_PRISONER_APPLICATIONS_URI,
+  )
+  @ResponseStatus(OK)
+  @Operation(
+    summary = "Delete all prisoner's booked visits and children by reference",
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        description = "Delete all prisoner's visits",
+      ),
+    ],
+  )
+  fun deleteAllPrisonerApplications(
+    @Schema(description = "prisonerId", example = "AB123CDE", required = true)
+    @PathVariable
+    prisonerId: String,
+  ) {
+    applicationService.deleteAllPrisonerApplications(prisonerId)
   }
 
   @PreAuthorize("hasAnyRole('TEST_VISIT_SCHEDULER')")

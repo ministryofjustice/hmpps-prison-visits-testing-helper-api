@@ -58,6 +58,12 @@ interface VisitRepository : JpaRepository<NotUsedVisitEntity, Long> {
   )
   fun getVisitId(bookingReference: String): Long?
 
+  @Query(
+    "Select reference from visit where prisoner_id = :prisonerId",
+    nativeQuery = true,
+  )
+  fun getVisitsByPrisonerId(prisonerId: String): List<String>?
+
   @Modifying
   @Query(
     "delete from visit where id = :id",

@@ -80,6 +80,18 @@ class ApplicationService(
     actionedByRepository.deleteUnused()
   }
 
+  fun deleteAllPrisonerApplications(prisonerId: String) {
+    logger.debug("Deleting all future applications for prisoner - {}", prisonerId)
+
+    val applicationReferences = applicationRepository.getApplicationsByPrisonerId(prisonerId)
+    applicationReferences?.forEach { applicationReference ->
+      logger.debug("Deleting application with reference - {}", applicationReference)
+      deleteApplicationAndChildren(applicationReference)
+    }
+
+    logger.debug("Finished deleting all future applications for prisoner - {}", prisonerId)
+  }
+
   fun getApplicationReferenceByVisitId(visitId: Long): String? {
     return applicationRepository.getApplicationReferenceByVisitId(visitId)
   }
