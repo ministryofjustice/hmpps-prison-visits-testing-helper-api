@@ -29,13 +29,14 @@ class VisitSchedulerClient(
 
   companion object {
     val LOG: Logger = LoggerFactory.getLogger(this::class.java)
+    val actionedBy: String = "testing-helper-api"
   }
 
   fun addExcludeDate(prisonCode: String, excludeDate: LocalDate) {
     LOG.info("Calling add exclude date for prison - $prisonCode, excluded date - $excludeDate")
     webClient.put()
-      .uri("/admin/prisons/prison/$prisonCode/exclude-date/add")
-      .body(BodyInserters.fromValue(PrisonExcludeDateDto(excludeDate)))
+      .uri("/prisons/prison/$prisonCode/exclude-date/add")
+      .body(BodyInserters.fromValue(PrisonExcludeDateDto(excludeDate, actionedBy)))
       .retrieve()
       .toBodilessEntity()
       .doOnError { e -> LOG.error("Could not add exclude date :", e) }
@@ -47,8 +48,8 @@ class VisitSchedulerClient(
     LOG.info("Calling remove exclude date for prison - $prisonCode, excluded date - $excludeDate")
 
     webClient.put()
-      .uri("/admin/prisons/prison/$prisonCode/exclude-date/remove")
-      .body(BodyInserters.fromValue(PrisonExcludeDateDto(excludeDate)))
+      .uri("/prisons/prison/$prisonCode/exclude-date/remove")
+      .body(BodyInserters.fromValue(PrisonExcludeDateDto(excludeDate, actionedBy)))
       .retrieve()
       .toBodilessEntity()
       .doOnError { e -> LOG.error("Could not remove exclude date :", e) }
