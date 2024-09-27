@@ -25,7 +25,7 @@ dependencies {
   implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.6.RELEASE")
   implementation("com.amazonaws:aws-java-sdk-s3:1.12.772")
 
-  implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.17.2")
+  implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.18.0")
   implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.8.0")
 
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-api:2.6.0")
