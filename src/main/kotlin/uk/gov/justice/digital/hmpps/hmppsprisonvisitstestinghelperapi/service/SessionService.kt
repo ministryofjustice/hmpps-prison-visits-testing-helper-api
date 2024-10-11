@@ -15,6 +15,7 @@ import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.admin.
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.admin.SessionDateRangeDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.admin.SessionTimeSlotDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.repository.SessionTemplateRepository
+import java.lang.Thread.sleep
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -95,6 +96,9 @@ class SessionService(
     if (disableAllOtherSessionsForSlotAndPrison) {
       sessionTemplateRepository.deActiveSessionTemplatesForSlot(prisonCode, slotDate, validToDate, dayOfWeek.name, sessionTimeSlotDto.startTime, sessionTimeSlotDto.endTime)
     }
+
+    // Adding a sleep here to allow the visit-scheduler to create the session template before attempting to activate it.
+    sleep(2000)
     sessionTemplateRepository.activateSessionTemplate(sessionTemplateReference)
 
     return sessionTemplateReference
