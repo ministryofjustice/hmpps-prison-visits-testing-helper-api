@@ -16,6 +16,7 @@ import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.admin.
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.admin.CreateIncentiveGroupDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.admin.CreateLocationGroupDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.admin.CreateSessionTemplateDto
+import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.enums.UserType
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.visit.scheduler.BookingRequestDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.visit.scheduler.VisitDto
 import java.time.Duration
@@ -64,6 +65,7 @@ class VisitSchedulerClient(
     val body = CancelVisitDto(
       OutcomeDto("CANCELLATION"),
       "testing-helper-api",
+      UserType.STAFF,
       "NOT_APPLICABLE",
     )
     webClient.put()
