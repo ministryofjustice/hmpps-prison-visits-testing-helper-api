@@ -82,10 +82,10 @@ class VisitService(
       if (visitRepository.isVisitBooked(bookingReference)) {
         visitSchedulerClient.cancelVisitByBookingReference(bookingReference)
 
-        // Wait for 5 seconds before deleting the visit and it's children, as downstream services need time to process the
+        // Wait for 3 seconds before deleting the visit and it's children, as downstream services need time to process the
         // cancellation and refund the VO balance and update nomis. This is done via the visit-scheduler publishing a visit cancelled
         // event, which is then picked up by other services to process.
-        sleep(5000)
+        sleep(3000)
       }
 
       visitRepository.deleteVisitVisitors(it)
