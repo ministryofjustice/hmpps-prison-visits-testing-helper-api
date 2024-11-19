@@ -79,12 +79,14 @@ class VisitService(
     val visitId = visitRepository.getVisitId(bookingReference)
 
     visitId?.let {
-      visitSchedulerClient.cancelVisitByBookingReference(bookingReference)
+      if (visitRepository.isVisitBooked(bookingReference)) {
+        visitSchedulerClient.cancelVisitByBookingReference(bookingReference)
 
-      // Wait for 5seconds before deleting the visit and it's children, as downstream services need time to process the
-      // cancellation and refund the VO balance and update nomis. This is done via the visit-scheduler publishing a visit cancelled
-      // event, which is then picked up by other services to process.
-      sleep(5000)
+        // Wait for 5 seconds before deleting the visit and it's children, as downstream services need time to process the
+        // cancellation and refund the VO balance and update nomis. This is done via the visit-scheduler publishing a visit cancelled
+        // event, which is then picked up by other services to process.
+        sleep(5000)
+      }
 
       visitRepository.deleteVisitVisitors(it)
       visitRepository.deleteVisitSupport(it)
