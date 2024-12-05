@@ -44,12 +44,13 @@ class SessionService(
     incentive: String?,
     category: String?,
     disableAllOtherSessionsForSlotAndPrison: Boolean,
+    customSessionName: String? = null,
   ): String {
     logger.debug("createSessionTemplate for slot:$sessionStartDateTime prison:$prisonCode")
 
     val sessionTimeSlotDto = SessionTimeSlotDto(startTime = sessionStartDateTime.toLocalTime(), endTime)
     val dayOfWeek = sessionStartDateTime.dayOfWeek
-    val sessionName = "$dayOfWeek,  ${sessionStartDateTime.toLocalDate()}, ${sessionTimeSlotDto.startTime} (Test)"
+    val sessionName = customSessionName ?: "$dayOfWeek,  ${sessionStartDateTime.toLocalDate()}, ${sessionTimeSlotDto.startTime} (Test)"
     val sessionDateRange = SessionDateRangeDto(validFromDate = slotDate, validToDate = validToDate)
     val locationReferenceList = mutableListOf<String>()
     val visitRoom = "Main test room"

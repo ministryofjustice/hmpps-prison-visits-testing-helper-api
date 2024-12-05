@@ -130,6 +130,9 @@ class VisitAdminController {
     @Schema(description = "disable all other sessions for slot and prison", example = "false", required = false)
     @RequestParam(required = false)
     disableAllOtherSessionsForSlotAndPrison: Boolean = false,
+    @Schema(description = "Custom session name - if needed", example = "Saturday Mornings", required = false)
+    @RequestParam(required = false)
+    sessionName: String? = null,
   ): ResponseEntity<String> {
     val startTime = sessionStartDateTime.toLocalTime()
     val endTime = startTime.plusHours(2)
@@ -149,6 +152,7 @@ class VisitAdminController {
       category = category,
       incentive = incentive,
       disableAllOtherSessionsForSlotAndPrison = disableAllOtherSessionsForSlotAndPrison,
+      customSessionName = sessionName,
     )
 
     return ResponseEntity(result, CREATED)
