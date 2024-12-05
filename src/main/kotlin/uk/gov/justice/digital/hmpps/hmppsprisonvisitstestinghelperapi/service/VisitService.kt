@@ -80,12 +80,17 @@ class VisitService(
 
     visitId?.let {
       if (visitRepository.isVisitBooked(bookingReference)) {
-        visitSchedulerClient.cancelVisitByBookingReference(bookingReference)
+        try {
+          visitSchedulerClient.cancelVisitByBookingReference(bookingReference)
 
-        // Wait for 3 seconds before deleting the visit and it's children, as downstream services need time to process the
-        // cancellation and refund the VO balance and update nomis. This is done via the visit-scheduler publishing a visit cancelled
-        // event, which is then picked up by other services to process.
-        sleep(3000)
+          // Wait for 3 seconds before deleting the visit and it's children, as downstream services need time to process the
+          // cancellation and refund the VO balance and update nomis. This is done via the visit-scheduler publishing a visit cancelled
+          // event, which is then picked up by other services to process.
+          sleep(3000)
+        } catch (e: Exception) {
+          // ignore any visits that cannot be cancelled
+          logger.info("Unable to cancel visit with booking reference - {}, exception details - {}", bookingReference, e.toString())
+        }
       }
 
       visitRepository.deleteVisitVisitors(it)
