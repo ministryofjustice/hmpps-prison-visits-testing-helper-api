@@ -88,7 +88,8 @@ class VisitService(
           // event, which is then picked up by other services to process.
           sleep(3000)
         } catch (e: Exception) {
-          logger.info("Unable to cancel visit with booking reference, might be an old visit - {}", bookingReference)
+          // ignore any visits that cannot be cancelled
+          logger.info("Unable to cancel visit with booking reference - {}, exception details - {}", bookingReference, e.toString())
         }
       }
 
