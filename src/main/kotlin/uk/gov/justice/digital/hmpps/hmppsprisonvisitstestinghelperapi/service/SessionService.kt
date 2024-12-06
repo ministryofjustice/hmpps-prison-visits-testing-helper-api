@@ -55,7 +55,7 @@ class SessionService(
       openCapacity,
       closedCapacity,
       incentive,
-      category
+      category,
     )
 
     val sessionTimeSlotDto = SessionTimeSlotDto(startTime = sessionStartDateTime.toLocalTime(), endTime)
