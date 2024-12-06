@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.controlle
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
+import jakarta.validation.Valid
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,13 +15,14 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.client.VisitSchedulerClient
+import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.admin.CreateSessionTemplateRequestDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.service.SessionService
 import java.time.LocalDate
-import java.time.LocalDateTime
 
 const val ADD_PRISON_EXCLUDE_DATE: String = "/test/prison/{prisonCode}/add/exclude-date/{excludeDate}"
 const val REMOVE_PRISON_EXCLUDE_DATE: String = "/test/prison/{prisonCode}/remove/exclude-date/{excludeDate}"
@@ -108,70 +110,31 @@ class VisitAdminController {
     ],
   )
   fun addSessionTemplate(
-    @Schema(description = "prison code", example = "MDI", required = true)
-    @PathVariable
-    prisonCode: String,
-    @Schema(description = "sessionStartDateTime", example = "2007-12-03T10:15:30", required = false)
-    @RequestParam(required = false)
-    sessionStartDateTime: LocalDateTime = LocalDateTime.now().plusDays(2),
-    @Schema(description = "weeklyFrequency", example = "1", required = false)
-    @RequestParam(required = false)
-    weeklyFrequency: Int = 1,
-    @Schema(description = "closedCapacity", example = "1", required = false)
-    @RequestParam(required = false)
-    closedCapacity: Int = 1,
-    @Schema(description = "openCapacity", example = "1", required = false)
-    @RequestParam(required = false)
-    openCapacity: Int = 1,
-    @Schema(description = "Location level string", example = "A-1-3-007", required = false)
-    @RequestParam(required = false)
-    locationLevels: String?,
-    @Schema(description = "incentive string", example = "ENHANCED", required = false)
-    @RequestParam(required = false)
-    incentive: String?,
-    @Schema(description = "category string", example = "A_EXCEPTIONAL", required = false)
-    @RequestParam(required = false)
-    category: String?,
-    @Schema(description = "disable all other sessions for slot and prison", example = "false", required = false)
-    @RequestParam(required = false)
-    disableAllOtherSessionsForSlotAndPrison: Boolean = false,
-    @Schema(description = "Custom session name - if needed", example = "Saturday Mornings", required = false)
-    @RequestParam(required = false)
-    sessionName: String? = null,
+    @RequestBody
+    @Valid
+    createSessionTemplateRequestDto: CreateSessionTemplateRequestDto,
   ): ResponseEntity<String> {
-    val startTime = sessionStartDateTime.toLocalTime()
+    val startTime = createSessionTemplateRequestDto.sessionStartDateTime.toLocalTime()
     val endTime = startTime.plusHours(2)
-    val slotDate = sessionStartDateTime.toLocalDate()
-    val validToDate = slotDate.plusDays(((1 * weeklyFrequency) + 1).toLong())
+    val slotDate = createSessionTemplateRequestDto.sessionStartDateTime.toLocalDate()
+    val validToDate = slotDate.plusDays(((1 * createSessionTemplateRequestDto.weeklyFrequency) + 1).toLong())
 
-    logger.debug(
-      "createSessionTemplate for slot:{}, weeklyFrequency: {}, prison:{}, slotDate:{}, validToDate: {}, openCapacity: {}, locationLevels: {}, closedCapacity: {}, incentive:{}, category: {}",
-      sessionStartDateTime,
-      weeklyFrequency,
-      prisonCode,
-      slotDate,
-      validToDate,
-      openCapacity,
-      locationLevels,
-      closedCapacity,
-      incentive,
-      category,
-    )
+    logger.debug("createSessionTemplateRequestDto received - {}", createSessionTemplateRequestDto)
 
     val result = sessionService.createSessionTemplate(
-      sessionStartDateTime,
+      createSessionTemplateRequestDto.sessionStartDateTime,
       endTime,
       slotDate,
       validToDate,
-      prisonCode,
-      closedCapacity,
-      openCapacity,
-      weeklyFrequency,
-      locationLevels = locationLevels,
-      category = category,
-      incentive = incentive,
-      disableAllOtherSessionsForSlotAndPrison = disableAllOtherSessionsForSlotAndPrison,
-      customSessionName = sessionName,
+      createSessionTemplateRequestDto.prisonCode,
+      createSessionTemplateRequestDto.closedCapacity,
+      createSessionTemplateRequestDto.openCapacity,
+      createSessionTemplateRequestDto.weeklyFrequency,
+      locationLevels = createSessionTemplateRequestDto.locationLevels,
+      category = createSessionTemplateRequestDto.category,
+      incentive = createSessionTemplateRequestDto.incentive,
+      disableAllOtherSessionsForSlotAndPrison = createSessionTemplateRequestDto.disableAllOtherSessionsForSlotAndPrison,
+      customSessionName = createSessionTemplateRequestDto.sessionName,
     )
 
     return ResponseEntity(result, CREATED)
