@@ -139,6 +139,20 @@ class VisitAdminController {
     val slotDate = sessionStartDateTime.toLocalDate()
     val validToDate = slotDate.plusDays(((1 * weeklyFrequency) + 1).toLong())
 
+    logger.debug(
+      "createSessionTemplate for slot:{}, weeklyFrequency: {}, prison:{}, slotDate:{}, validToDate: {}, openCapacity: {}, locationLevels: {}, closedCapacity: {}, incentive:{}, category: {}",
+      sessionStartDateTime,
+      weeklyFrequency,
+      prisonCode,
+      slotDate,
+      validToDate,
+      openCapacity,
+      locationLevels,
+      closedCapacity,
+      incentive,
+      category,
+    )
+
     val result = sessionService.createSessionTemplate(
       sessionStartDateTime,
       endTime,
