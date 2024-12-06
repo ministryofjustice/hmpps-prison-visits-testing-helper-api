@@ -46,7 +46,17 @@ class SessionService(
     disableAllOtherSessionsForSlotAndPrison: Boolean,
     customSessionName: String? = null,
   ): String {
-    logger.debug("createSessionTemplate for slot:$sessionStartDateTime prison:$prisonCode")
+    logger.debug(
+      "createSessionTemplate for slot:{} prison:{}, slotDate:{}, validToDate: {}, openCapacity: {}, closedCapacity: {}, incentive:{}, category: {}",
+      sessionStartDateTime,
+      prisonCode,
+      slotDate,
+      validToDate,
+      openCapacity,
+      closedCapacity,
+      incentive,
+      category
+    )
 
     val sessionTimeSlotDto = SessionTimeSlotDto(startTime = sessionStartDateTime.toLocalTime(), endTime)
     val dayOfWeek = sessionStartDateTime.dayOfWeek
@@ -57,6 +67,7 @@ class SessionService(
     val group = "test group " + Base64.getEncoder().encode(UUID.randomUUID().toString().encodeToByteArray())
 
     locationLevels?.let {
+      logger.debug("locationLevels provided $locationLevels, calling visit-scheduler to create locationLevels group")
       val levels = locationLevels.split("-").toList()
       val groupName = "$locationLevels $group"
       val location = PermittedSessionLocationDto(levels[0], levels.getOrNull(1), levels.getOrNull(2), levels.getOrNull(3))
@@ -66,6 +77,7 @@ class SessionService(
 
     val incentiveReferenceList = mutableListOf<String>()
     incentive?.let {
+      logger.debug("incentive provided $incentive, calling visit-scheduler to create incentive group")
       val groupName = "$incentive  $group"
       val createIncentiveGroup = CreateIncentiveGroupDto(groupName, prisonCode, listOf(incentive))
       incentiveReferenceList.add(visitSchedulerClient.createIncentiveGroup(createIncentiveGroup))
@@ -73,6 +85,7 @@ class SessionService(
 
     val categoryReferenceList = mutableListOf<String>()
     category?.let {
+      logger.debug("category provided $category, calling visit-scheduler to create category group")
       val groupName = "$category $group"
       val createCategoryGroup = CreateCategoryGroupDto(groupName, prisonCode, listOf(category))
       categoryReferenceList.add(visitSchedulerClient.createCategoryGroup(createCategoryGroup))
