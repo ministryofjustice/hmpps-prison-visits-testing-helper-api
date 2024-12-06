@@ -3,6 +3,8 @@ package uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.controlle
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatus.CREATED
@@ -27,6 +29,9 @@ const val DELETE_SESSION_TEMPLATE_PATH: String = "/test/template/{reference}/del
 
 @RestController
 class VisitAdminController {
+
+  private val logger: Logger = LoggerFactory.getLogger(this::class.java)
+
   @Autowired
   lateinit var visitSchedulerClient: VisitSchedulerClient
 
