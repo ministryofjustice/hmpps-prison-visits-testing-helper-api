@@ -1,8 +1,8 @@
 plugins {
   id("uk.gov.justice.hmpps.gradle-spring-boot") version "6.1.2"
-  kotlin("plugin.spring") version "2.0.21"
-  id("org.jetbrains.kotlin.plugin.noarg") version "2.0.21"
-  kotlin("plugin.jpa") version "2.0.21"
+  kotlin("plugin.spring") version "2.1.0"
+  id("org.jetbrains.kotlin.plugin.noarg") version "2.1.0"
+  kotlin("plugin.jpa") version "2.1.0"
 }
 
 configurations {
@@ -28,9 +28,9 @@ dependencies {
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.18.2")
   implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.11.0")
 
-  implementation("org.springdoc:springdoc-openapi-starter-webmvc-api:2.7.0")
-  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0")
-  implementation("org.springdoc:springdoc-openapi-starter-common:2.7.0")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-api:2.8.1")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.1")
+  implementation("org.springdoc:springdoc-openapi-starter-common:2.8.1")
 
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   runtimeOnly("org.postgresql:postgresql:42.7.4")
