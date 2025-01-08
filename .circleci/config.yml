@@ -97,6 +97,74 @@ workflows:
             - request-staging-approval
 
 
+  build-test-deploy-feature:
+    jobs:
+      - validate:
+          filters:
+            tags:
+              ignore: /.*/
+            branches:
+              ignore:
+                - main
+
+      - hmpps/helm_lint:
+          name: helm_lint
+          filters:
+            branches:
+              ignore:
+                - main
+
+      - hmpps/build_multiplatform_docker:
+          name: build_docker
+          filters:
+            branches:
+              ignore:
+                - main
+
+      - hmpps/deploy_env:
+          name: deploy_dev
+          env: "dev"
+          context: hmpps-common-vars
+          filters:
+            branches:
+              ignore:
+                - main
+          requires:
+            - request-dev-approval
+      - request-dev-approval:
+          type: approval
+          requires:
+            - validate
+            - build_docker
+            - helm_lint
+          filters:
+            branches:
+              ignore:
+                - main
+
+      - hmpps/deploy_env:
+          name: deploy_staging
+          env: "staging"
+          context:
+            - hmpps-common-vars
+            - visit-someone-in-prison-backend-svc-staging
+          filters:
+            branches:
+              ignore:
+                - main
+          requires:
+            - request-staging-approval
+      - request-staging-approval:
+          type: approval
+          requires:
+            - validate
+            - build_docker
+            - helm_lint
+          filters:
+            branches:
+              ignore:
+                - main
+
   security:
     triggers:
       - schedule:
