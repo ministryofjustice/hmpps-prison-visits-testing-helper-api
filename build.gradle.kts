@@ -22,7 +22,6 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
   implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:5.2.2")
   implementation("com.amazonaws:aws-java-sdk-sts:1.12.780")
-  implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.6.RELEASE")
   implementation("com.amazonaws:aws-java-sdk-s3:1.12.780")
 
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.18.2")
