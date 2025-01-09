@@ -96,7 +96,6 @@ workflows:
           requires:
             - request-staging-approval
 
-
   security:
     triggers:
       - schedule:
