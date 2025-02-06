@@ -11,9 +11,10 @@ import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.visit.
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.repository.ActionedByRepository
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.repository.EventAuditRepository
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.repository.SessionSlotRepository
+import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.repository.VisitNotifyHistoryRepository
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.repository.VisitRepository
 import java.lang.Thread.sleep
-import java.util.UUID
+import java.util.*
 
 @Service
 @Transactional
@@ -22,6 +23,7 @@ class VisitService(
   private val visitSchedulerClient: VisitSchedulerClient,
   private val applicationService: ApplicationService,
   private val eventAuditRepository: EventAuditRepository,
+  private val visitNotifyHistory: VisitNotifyHistoryRepository,
   private val actionedByRepository: ActionedByRepository,
   private val sessionSlotRepository: SessionSlotRepository,
 ) {
@@ -104,6 +106,7 @@ class VisitService(
       val applicationReference = applicationService.getApplicationReferenceByVisitId(it)
       applicationService.deleteApplicationAndChildren(applicationReference)
 
+      visitNotifyHistory.deleteByBookingReference(bookingReference)
       eventAuditRepository.deleteByBookingReference(bookingReference)
       sessionSlotRepository.deleteUnused()
       actionedByRepository.deleteUnused()
