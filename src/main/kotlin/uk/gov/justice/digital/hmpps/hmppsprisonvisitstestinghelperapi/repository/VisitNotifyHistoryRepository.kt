@@ -14,13 +14,13 @@ import org.springframework.stereotype.Repository
  **/
 
 @Entity
-class NotUsedEventAuditEntity {
+class NotUsedNotifyHistoryEntity {
   @Id
   private var id: Long = 0
 }
 
 @Repository
-interface VisitNotifyHistoryRepository : JpaRepository<NotUsedEventAuditEntity, Long> {
+interface VisitNotifyHistoryRepository : JpaRepository<NotUsedNotifyHistoryEntity, Long> {
 
   @Modifying
   @Query("delete from visit_notify_history where event_audit_id IN (select id from event_audit where booking_reference = :bookingReference)", nativeQuery = true)
