@@ -9,36 +9,30 @@ fun callDelete(
   webTestClient: WebTestClient,
   url: String,
   authHttpHeaders: (HttpHeaders) -> Unit,
-): ResponseSpec {
-  return webTestClient.delete().uri(url)
-    .headers(authHttpHeaders)
-    .exchange()
-}
+): ResponseSpec = webTestClient.delete().uri(url)
+  .headers(authHttpHeaders)
+  .exchange()
 
 fun callPut(
   bodyValue: Any? = null,
   webTestClient: WebTestClient,
   url: String,
   authHttpHeaders: (HttpHeaders) -> Unit,
-): ResponseSpec {
-  return if (bodyValue == null) {
-    webTestClient.put().uri(url)
-      .headers(authHttpHeaders)
-      .exchange()
-  } else {
-    webTestClient.put().uri(url)
-      .headers(authHttpHeaders)
-      .body(BodyInserters.fromValue(bodyValue))
-      .exchange()
-  }
+): ResponseSpec = if (bodyValue == null) {
+  webTestClient.put().uri(url)
+    .headers(authHttpHeaders)
+    .exchange()
+} else {
+  webTestClient.put().uri(url)
+    .headers(authHttpHeaders)
+    .body(BodyInserters.fromValue(bodyValue))
+    .exchange()
 }
 
 fun callGet(
   webTestClient: WebTestClient,
   url: String,
   authHttpHeaders: (HttpHeaders) -> Unit,
-): ResponseSpec {
-  return webTestClient.get().uri(url)
-    .headers(authHttpHeaders)
-    .exchange()
-}
+): ResponseSpec = webTestClient.get().uri(url)
+  .headers(authHttpHeaders)
+  .exchange()

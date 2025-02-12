@@ -12,7 +12,5 @@ data class SessionCapacityDto(
   @field:Min(0)
   val open: Int,
 ) {
-  operator fun plus(sessionCapacityDto: SessionCapacityDto): SessionCapacityDto {
-    return SessionCapacityDto(closed = this.closed + sessionCapacityDto.closed, open = this.open + sessionCapacityDto.open)
-  }
+  operator fun plus(sessionCapacityDto: SessionCapacityDto): SessionCapacityDto = SessionCapacityDto(closed = this.closed + sessionCapacityDto.closed, open = this.open + sessionCapacityDto.open)
 }

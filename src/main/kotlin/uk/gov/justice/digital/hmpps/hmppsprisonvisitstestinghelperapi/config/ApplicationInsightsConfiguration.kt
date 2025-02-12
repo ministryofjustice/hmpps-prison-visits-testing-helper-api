@@ -12,9 +12,7 @@ import org.springframework.context.annotation.Configuration
 open class ApplicationInsightsConfiguration {
 
   @Bean
-  open fun telemetryClient(): TelemetryClient {
-    return TelemetryClient()
-  }
+  open fun telemetryClient(): TelemetryClient = TelemetryClient()
 }
 
 @Suppress("unused")

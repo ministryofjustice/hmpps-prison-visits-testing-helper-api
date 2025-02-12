@@ -239,75 +239,63 @@ class ApplicationControllerIntegrationTest : IntegrationTestBase() {
     webTestClient: WebTestClient,
     authHttpHeaders: (HttpHeaders) -> Unit,
     reference: String,
-  ): ResponseSpec {
-    return callDelete(
-      webTestClient,
-      "test/application/$reference",
-      authHttpHeaders,
-    )
-  }
+  ): ResponseSpec = callDelete(
+    webTestClient,
+    "test/application/$reference",
+    authHttpHeaders,
+  )
 
   private fun callUpdateApplicationModifiedTimestamp(
     webTestClient: WebTestClient,
     authHttpHeaders: (HttpHeaders) -> Unit,
     reference: String,
     timestamp: LocalDateTime,
-  ): ResponseSpec {
-    return callPut(
-      null,
-      webTestClient,
-      "/test/application/$reference/modifiedTimestamp/$timestamp",
-      authHttpHeaders,
-    )
-  }
+  ): ResponseSpec = callPut(
+    null,
+    webTestClient,
+    "/test/application/$reference/modifiedTimestamp/$timestamp",
+    authHttpHeaders,
+  )
 
   private fun callChangeClosedSessionSlotCapacityForApplication(
     webTestClient: WebTestClient,
     authHttpHeaders: (HttpHeaders) -> Unit,
     applicationReference: String,
     capacity: Int,
-  ): ResponseSpec {
-    return callPut(
-      webTestClient = webTestClient,
-      url = CHANGE_CLOSED_SESSION_SLOT_CAPACITY_FOR_APPLICATION.replace("{reference}", applicationReference).replace("{capacity}", capacity.toString()),
-      authHttpHeaders = authHttpHeaders,
-    )
-  }
+  ): ResponseSpec = callPut(
+    webTestClient = webTestClient,
+    url = CHANGE_CLOSED_SESSION_SLOT_CAPACITY_FOR_APPLICATION.replace("{reference}", applicationReference).replace("{capacity}", capacity.toString()),
+    authHttpHeaders = authHttpHeaders,
+  )
 
   private fun callChangeOpenSessionSlotCapacityForApplication(
     webTestClient: WebTestClient,
     authHttpHeaders: (HttpHeaders) -> Unit,
     applicationReference: String,
     capacity: Int,
-  ): ResponseSpec {
-    return callPut(
-      webTestClient = webTestClient,
-      url = CHANGE_OPEN_SESSION_SLOT_CAPACITY_FOR_APPLICATION.replace("{reference}", applicationReference).replace("{capacity}", capacity.toString()),
-      authHttpHeaders = authHttpHeaders,
-    )
-  }
+  ): ResponseSpec = callPut(
+    webTestClient = webTestClient,
+    url = CHANGE_OPEN_SESSION_SLOT_CAPACITY_FOR_APPLICATION.replace("{reference}", applicationReference).replace("{capacity}", capacity.toString()),
+    authHttpHeaders = authHttpHeaders,
+  )
 
   private fun callGetOpenSessionSlotCapacityForApplication(
     webTestClient: WebTestClient,
     authHttpHeaders: (HttpHeaders) -> Unit,
     applicationReference: String,
-  ): ResponseSpec {
-    return callGet(
-      webTestClient = webTestClient,
-      url = GET_OPEN_SESSION_SLOT_CAPACITY_FOR_APPLICATION.replace("{reference}", applicationReference),
-      authHttpHeaders = authHttpHeaders,
-    )
-  }
+  ): ResponseSpec = callGet(
+    webTestClient = webTestClient,
+    url = GET_OPEN_SESSION_SLOT_CAPACITY_FOR_APPLICATION.replace("{reference}", applicationReference),
+    authHttpHeaders = authHttpHeaders,
+  )
 
   private fun callGetClosedSessionSlotCapacityForApplication(
     webTestClient: WebTestClient,
     authHttpHeaders: (HttpHeaders) -> Unit,
     applicationReference: String,
-  ): ResponseSpec {
-    return callGet(
-      webTestClient = webTestClient,
-      url = GET_CLOSED_SESSION_SLOT_CAPACITY_FOR_APPLICATION.replace("{reference}", applicationReference),
-      authHttpHeaders = authHttpHeaders,
-    )
-  }
+  ): ResponseSpec = callGet(
+    webTestClient = webTestClient,
+    url = GET_CLOSED_SESSION_SLOT_CAPACITY_FOR_APPLICATION.replace("{reference}", applicationReference),
+    authHttpHeaders = authHttpHeaders,
+  )
 }
