@@ -62,12 +62,10 @@ class VisitController {
     @Schema(description = "The new prison code", example = "BLI", required = true)
     @PathVariable
     prisonCode: String,
-  ): ResponseEntity<HttpStatus> {
-    return if (visitService.setVisitPrison(reference, prisonCode)) {
-      ResponseEntity(OK)
-    } else {
-      ResponseEntity(NOT_FOUND)
-    }
+  ): ResponseEntity<HttpStatus> = if (visitService.setVisitPrison(reference, prisonCode)) {
+    ResponseEntity(OK)
+  } else {
+    ResponseEntity(NOT_FOUND)
   }
 
   @PreAuthorize("hasAnyRole('TEST_VISIT_SCHEDULER')")
@@ -143,12 +141,10 @@ class VisitController {
     @Schema(description = "status", example = "BOOKED", required = true)
     @PathVariable
     status: VisitStatus,
-  ): ResponseEntity<HttpStatus> {
-    return if (visitService.setVisitStatus(reference, status)) {
-      ResponseEntity(OK)
-    } else {
-      ResponseEntity(NOT_FOUND)
-    }
+  ): ResponseEntity<HttpStatus> = if (visitService.setVisitStatus(reference, status)) {
+    ResponseEntity(OK)
+  } else {
+    ResponseEntity(NOT_FOUND)
   }
 
   @PreAuthorize("hasAnyRole('TEST_VISIT_SCHEDULER')")

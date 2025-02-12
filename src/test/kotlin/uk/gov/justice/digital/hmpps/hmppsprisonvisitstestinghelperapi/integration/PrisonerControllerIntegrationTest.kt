@@ -59,11 +59,9 @@ class PrisonerControllerIntegrationTest : IntegrationTestBase() {
     webTestClient: WebTestClient,
     authHttpHeaders: (HttpHeaders) -> Unit,
     prisonerId: String,
-  ): ResponseSpec {
-    return callGet(
-      webTestClient,
-      "test/prisoner/$prisonerId/visit/balances",
-      authHttpHeaders,
-    )
-  }
+  ): ResponseSpec = callGet(
+    webTestClient,
+    "test/prisoner/$prisonerId/visit/balances",
+    authHttpHeaders,
+  )
 }
