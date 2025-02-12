@@ -92,9 +92,7 @@ class ApplicationService(
     logger.debug("Finished deleting all future applications for prisoner - {}", prisonerId)
   }
 
-  fun getApplicationReferenceByVisitId(visitId: Long): String? {
-    return applicationRepository.getApplicationReferenceByVisitId(visitId)
-  }
+  fun getApplicationReferenceByVisitId(visitId: Long): String? = applicationRepository.getApplicationReferenceByVisitId(visitId)
 
   fun createApplication(application: CreateApplicationDto): String {
     val applicationReference = referenceGenerator.generateReference()

@@ -5,7 +5,5 @@ import java.util.UUID
 
 @Component
 class ReferenceGenerator {
-  fun generateReference(): String {
-    return UUID.randomUUID().toString().substring(9, 23)
-  }
+  fun generateReference(): String = UUID.randomUUID().toString().substring(9, 23)
 }

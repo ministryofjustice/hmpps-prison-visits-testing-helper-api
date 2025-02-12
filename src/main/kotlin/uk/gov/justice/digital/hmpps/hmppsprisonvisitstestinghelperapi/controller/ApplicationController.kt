@@ -109,12 +109,10 @@ class ApplicationController {
     @Schema(description = "Updated modified timestamp", example = "2007-12-28T10:15:30", required = true)
     @PathVariable
     modifiedTimestamp: LocalDateTime,
-  ): ResponseEntity<HttpStatus> {
-    return if (applicationService.updateApplicationModifyTimestamp(reference, modifiedTimestamp)) {
-      ResponseEntity(OK)
-    } else {
-      ResponseEntity(NOT_FOUND)
-    }
+  ): ResponseEntity<HttpStatus> = if (applicationService.updateApplicationModifyTimestamp(reference, modifiedTimestamp)) {
+    ResponseEntity(OK)
+  } else {
+    ResponseEntity(NOT_FOUND)
   }
 
   @PreAuthorize("hasAnyRole('TEST_VISIT_SCHEDULER')")
@@ -142,12 +140,10 @@ class ApplicationController {
     @Schema(description = "capacity", example = "1", required = true)
     @PathVariable
     capacity: Int,
-  ): ResponseEntity<HttpStatus> {
-    return if (applicationService.changeOpenSessionSlotCapacityForApplication(reference, capacity)) {
-      ResponseEntity(OK)
-    } else {
-      ResponseEntity(NOT_FOUND)
-    }
+  ): ResponseEntity<HttpStatus> = if (applicationService.changeOpenSessionSlotCapacityForApplication(reference, capacity)) {
+    ResponseEntity(OK)
+  } else {
+    ResponseEntity(NOT_FOUND)
   }
 
   @PreAuthorize("hasAnyRole('TEST_VISIT_SCHEDULER')")
@@ -175,12 +171,10 @@ class ApplicationController {
     @Schema(description = "capacity", example = "1", required = true)
     @PathVariable
     capacity: Int,
-  ): ResponseEntity<HttpStatus> {
-    return if (applicationService.changeClosedSessionSlotCapacityForApplication(reference, capacity)) {
-      ResponseEntity(OK)
-    } else {
-      ResponseEntity(NOT_FOUND)
-    }
+  ): ResponseEntity<HttpStatus> = if (applicationService.changeClosedSessionSlotCapacityForApplication(reference, capacity)) {
+    ResponseEntity(OK)
+  } else {
+    ResponseEntity(NOT_FOUND)
   }
 
   @PreAuthorize("hasAnyRole('TEST_VISIT_SCHEDULER')")
@@ -205,9 +199,7 @@ class ApplicationController {
     @Schema(description = "reference", example = "v9-d7-ed-7u", required = true)
     @PathVariable
     reference: String,
-  ): ResponseEntity<Int> {
-    return ResponseEntity.status(OK).body(applicationService.getOpenSessionSlotCapacityForApplication(reference))
-  }
+  ): ResponseEntity<Int> = ResponseEntity.status(OK).body(applicationService.getOpenSessionSlotCapacityForApplication(reference))
 
   @PreAuthorize("hasAnyRole('TEST_VISIT_SCHEDULER')")
   @GetMapping(
@@ -231,9 +223,7 @@ class ApplicationController {
     @Schema(description = "reference", example = "v9-d7-ed-7u", required = true)
     @PathVariable
     reference: String,
-  ): ResponseEntity<Int> {
-    return ResponseEntity.status(OK).body(applicationService.getClosedSessionSlotCapacityForApplication(reference))
-  }
+  ): ResponseEntity<Int> = ResponseEntity.status(OK).body(applicationService.getClosedSessionSlotCapacityForApplication(reference))
 
   @PreAuthorize("hasAnyRole('TEST_VISIT_SCHEDULER')")
   @PutMapping(

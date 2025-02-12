@@ -44,7 +44,5 @@ class PrisonerController {
     @Schema(description = "Prisoner Id", example = "AA123456", required = true)
     @PathVariable
     prisonerId: String,
-  ): VisitBalancesDto {
-    return prisonerService.getVisitBalancesForPrisoner(prisonerId)
-  }
+  ): VisitBalancesDto = prisonerService.getVisitBalancesForPrisoner(prisonerId)
 }

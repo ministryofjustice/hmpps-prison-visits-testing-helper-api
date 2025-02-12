@@ -18,11 +18,9 @@ class LocalstackConfig {
   fun awsSqsClient(
     @Value("\${hmpps.sqs.queues.prisonvisitsevents.endpoint.url}") serviceEndpoint: String,
     @Value("\${hmpps.sqs.queues.prisonvisitsevents.endpoint.region}") region: String,
-  ): SqsAsyncClient {
-    return SqsAsyncClient.builder()
-      .endpointOverride(URI.create(serviceEndpoint))
-      .region(Region.of(region))
-      .credentialsProvider(AnonymousCredentialsProvider.create())
-      .build()
-  }
+  ): SqsAsyncClient = SqsAsyncClient.builder()
+    .endpointOverride(URI.create(serviceEndpoint))
+    .region(Region.of(region))
+    .credentialsProvider(AnonymousCredentialsProvider.create())
+    .build()
 }

@@ -23,15 +23,13 @@ class SessionSlotService(
     sessionEnd: LocalTime,
     sessionDate: LocalDate,
     prisonCode: String,
-  ): Long? {
-    return sessionSlotRepository.selectSessionSlot(
-      startTime = sessionStart,
-      endTime = sessionEnd,
-      slotDate = sessionDate,
-      prisonCode = prisonCode,
-      dayOfWeek = sessionDate.dayOfWeek.name,
-    )
-  }
+  ): Long? = sessionSlotRepository.selectSessionSlot(
+    startTime = sessionStart,
+    endTime = sessionEnd,
+    slotDate = sessionDate,
+    prisonCode = prisonCode,
+    dayOfWeek = sessionDate.dayOfWeek.name,
+  )
 
   private fun createSessionSlot(
     sessionStart: LocalTime,

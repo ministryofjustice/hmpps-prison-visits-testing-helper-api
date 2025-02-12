@@ -150,77 +150,65 @@ class VisitControllerIntegrationTest : IntegrationTestBase() {
     webTestClient: WebTestClient,
     authHttpHeaders: (HttpHeaders) -> Unit,
     reference: String,
-  ): ResponseSpec {
-    return callDelete(
-      webTestClient,
-      "test/visit/$reference",
-      authHttpHeaders,
-    )
-  }
+  ): ResponseSpec = callDelete(
+    webTestClient,
+    "test/visit/$reference",
+    authHttpHeaders,
+  )
 
   private fun callChangeVisitStatus(
     webTestClient: WebTestClient,
     authHttpHeaders: (HttpHeaders) -> Unit,
     reference: String,
     status: VisitStatus,
-  ): ResponseSpec {
-    return callPut(
-      null,
-      webTestClient,
-      "test/visit/$reference/status/$status",
-      authHttpHeaders,
-    )
-  }
+  ): ResponseSpec = callPut(
+    null,
+    webTestClient,
+    "test/visit/$reference/status/$status",
+    authHttpHeaders,
+  )
 
   private fun callChangeVisitPrison(
     webTestClient: WebTestClient,
     authHttpHeaders: (HttpHeaders) -> Unit,
     reference: String,
     prisonCode: String,
-  ): ResponseSpec {
-    return callPut(
-      null,
-      webTestClient,
-      "test/visit/$reference/change/prison/$prisonCode",
-      authHttpHeaders,
-    )
-  }
+  ): ResponseSpec = callPut(
+    null,
+    webTestClient,
+    "test/visit/$reference/change/prison/$prisonCode",
+    authHttpHeaders,
+  )
 
   private fun callDeleteVisitNotificationEvents(
     webTestClient: WebTestClient,
     authHttpHeaders: (HttpHeaders) -> Unit,
     reference: String,
-  ): ResponseSpec {
-    return callDelete(
-      webTestClient,
-      "test/visit/$reference/notifications",
-      authHttpHeaders,
-    )
-  }
+  ): ResponseSpec = callDelete(
+    webTestClient,
+    "test/visit/$reference/notifications",
+    authHttpHeaders,
+  )
 
   private fun callCreateVisitNotificationEvents(
     webTestClient: WebTestClient,
     authHttpHeaders: (HttpHeaders) -> Unit,
     reference: String,
     createNotificationEvent: CreateNotificationEventDto,
-  ): ResponseSpec {
-    return callPut(
-      createNotificationEvent,
-      webTestClient,
-      "test/visit/$reference/notifications",
-      authHttpHeaders,
-    )
-  }
+  ): ResponseSpec = callPut(
+    createNotificationEvent,
+    webTestClient,
+    "test/visit/$reference/notifications",
+    authHttpHeaders,
+  )
 
   private fun callCancelVisit(
     webTestClient: WebTestClient,
     authHttpHeaders: (HttpHeaders) -> Unit,
     reference: String,
-  ): ResponseSpec {
-    return callDelete(
-      webTestClient,
-      "test/visit/$reference/cancel",
-      authHttpHeaders,
-    )
-  }
+  ): ResponseSpec = callDelete(
+    webTestClient,
+    "test/visit/$reference/cancel",
+    authHttpHeaders,
+  )
 }

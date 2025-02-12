@@ -26,9 +26,7 @@ class HealthController {
       ),
     ],
   )
-  fun ping(): String {
-    return "Connected to Web"
-  }
+  fun ping(): String = "Connected to Web"
 
   @GetMapping("$PING_CONTROLLER_PATH/db")
   @Operation(
