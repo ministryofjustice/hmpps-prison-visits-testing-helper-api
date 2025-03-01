@@ -24,8 +24,8 @@ dependencies {
   implementation("com.amazonaws:aws-java-sdk-sts:1.12.782")
   implementation("com.amazonaws:aws-java-sdk-s3:1.12.782")
 
-  implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.18.2")
-  implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.13.2")
+  implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.18.3")
+  implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.13.3")
 
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-api:2.8.5")
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5")
