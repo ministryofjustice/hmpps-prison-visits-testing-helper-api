@@ -86,7 +86,6 @@ class VisitSchedulerClient(
       actionedBy = "testing-helper-api",
       applicationMethodType = "NOT_KNOWN",
       allowOverBooking = true,
-
     )
     return webClient.put()
       .uri("/visits/$applicationReference/book")
