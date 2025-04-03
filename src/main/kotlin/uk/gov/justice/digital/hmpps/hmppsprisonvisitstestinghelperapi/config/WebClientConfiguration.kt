@@ -18,18 +18,28 @@ class WebClientConfiguration(
   @Value("\${visit-scheduler.api.url}")
   private val visitSchedulerBaseUrl: String,
 
+  @Value("\${booker-registry.api.url}")
+  private val bookerRegistryBaseUrl: String,
+
   @Value("\${prison.api.url}")
   private val prisonApiBaseUrl: String,
 ) {
   private enum class HmppsAuthClientRegistrationId(val clientRegistrationId: String) {
     VISIT_SCHEDULER("visit-scheduler"),
     PRISON_API("other-hmpps-apis"),
+    BOOKER_REGISTRY("other-hmpps-apis"),
   }
 
   @Bean
   fun visitSchedulerWebClient(authorizedClientManager: OAuth2AuthorizedClientManager): WebClient {
     val oauth2Client = getOauth2Client(authorizedClientManager, HmppsAuthClientRegistrationId.VISIT_SCHEDULER.clientRegistrationId)
     return getWebClient(visitSchedulerBaseUrl, oauth2Client)
+  }
+
+  @Bean
+  fun bookerRegistryWebClient(authorizedClientManager: OAuth2AuthorizedClientManager): WebClient {
+    val oauth2Client = getOauth2Client(authorizedClientManager, HmppsAuthClientRegistrationId.BOOKER_REGISTRY.clientRegistrationId)
+    return getWebClient(bookerRegistryBaseUrl, oauth2Client)
   }
 
   @Bean

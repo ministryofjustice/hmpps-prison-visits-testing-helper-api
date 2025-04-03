@@ -11,6 +11,7 @@ generic-service:
     HMPPS_AUTH_URL: https://sign-in-dev.hmpps.service.justice.gov.uk/auth
     VISIT-SCHEDULER_API_URL: https://visit-scheduler-staging.prison.service.justice.gov.uk
     PRISON_API_URL: https://prison-api-staging.prison.service.justice.gov.uk
+    BOOKER-REGISTRY_API_URL: https://hmpps-prison-visit-booker-registry-staging.prison.service.justice.gov.uk
     APPLICATIONINSIGHTS_CONFIGURATION_FILE: applicationinsights.dev.json
 
   scheduledDowntime:
