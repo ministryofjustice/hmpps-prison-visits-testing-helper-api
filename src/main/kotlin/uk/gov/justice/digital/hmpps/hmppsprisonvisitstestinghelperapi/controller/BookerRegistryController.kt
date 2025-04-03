@@ -37,7 +37,7 @@ class BookerRegistryController {
     ],
   )
   fun resetBookerDetails(
-    @Schema(description = "bookerReference", example = "v9-d7-ed-7u", required = true)
+    @Schema(description = "bookerReference", example = "bfop-zmmn-njay", required = true)
     @PathVariable
     bookerReference: String,
   ): ResponseEntity<HttpStatus> {

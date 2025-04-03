@@ -18,7 +18,7 @@ class BookerRegistryControllerIntegrationTest : IntegrationTestBase() {
   @Test
   fun `when reset booker reference is called, then status is OK`() {
     // Given
-    val bookerReference = "ab-cd-ef-gh"
+    val bookerReference = "bfop-zmmn-njay"
     bookerRegistryApiMockServer.stubResetBookerDetails(bookerReference)
 
     // When
