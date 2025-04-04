@@ -36,6 +36,10 @@ prison:
     url: http://localhost:8093
     timeout: 10s
 
+booker-registry:
+  api:
+    url: http://localhost:8094
+
 hmpps.auth.url: http://localhost:8090/auth
 
 

@@ -19,6 +19,11 @@ prison:
     timeout: 10s
     url: https://prison-api-dev.prison.service.justice.gov.uk
 
+
+booker-registry:
+  api:
+    url: https://hmpps-prison-visit-booker-registry-dev.prison.service.justice.gov.uk
+
 hmpps:
   sqs:
     provider: localstack
