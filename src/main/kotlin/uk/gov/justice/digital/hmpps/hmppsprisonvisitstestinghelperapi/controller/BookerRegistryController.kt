@@ -15,12 +15,36 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.service.BookerRegistryService
 
 const val BASE_BOOKER_REGISTRY_URI: String = "/test/booker/{bookerReference}"
+const val RESET_BOOKER_REGISTRY_BY_EMAIL_ADDRESS: String = "/test/booker/email/{emailAddress}"
 
 @RestController
 class BookerRegistryController {
 
   @Autowired
   lateinit var bookerRegistryService: BookerRegistryService
+
+  @PreAuthorize("hasAnyRole('TEST_BOOKER_REGISTRY')")
+  @DeleteMapping(
+    RESET_BOOKER_REGISTRY_BY_EMAIL_ADDRESS,
+    produces = [MediaType.TEXT_PLAIN_VALUE],
+  )
+  @Operation(
+    summary = "Reset a booker details by email address",
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        description = "Booker details reset",
+      ),
+    ],
+  )
+  fun resetBookerDetailsByEmailAddress(
+    @Schema(description = "emailAddress", example = "test@example.com", required = true)
+    @PathVariable
+    emailAddress: String,
+  ): ResponseEntity<HttpStatus> {
+    bookerRegistryService.resetBookerDetailsByEmailAddress(emailAddress)
+    return ResponseEntity(OK)
+  }
 
   @PreAuthorize("hasAnyRole('TEST_BOOKER_REGISTRY')")
   @DeleteMapping(
@@ -36,12 +60,12 @@ class BookerRegistryController {
       ),
     ],
   )
-  fun resetBookerDetails(
+  fun resetBookerDetailsByBookerReference(
     @Schema(description = "bookerReference", example = "bfop-zmmn-njay", required = true)
     @PathVariable
     bookerReference: String,
   ): ResponseEntity<HttpStatus> {
-    bookerRegistryService.resetBookerDetails(bookerReference)
+    bookerRegistryService.resetBookerDetailsByBookerReference(bookerReference)
     return ResponseEntity(OK)
   }
 }
