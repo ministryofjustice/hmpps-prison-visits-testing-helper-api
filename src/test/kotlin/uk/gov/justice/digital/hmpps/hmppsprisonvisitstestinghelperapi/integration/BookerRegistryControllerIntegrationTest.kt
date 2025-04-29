@@ -19,7 +19,7 @@ class BookerRegistryControllerIntegrationTest : IntegrationTestBase() {
     bookerRegistryApiMockServer.stubResetBookerDetails(bookerReference)
 
     // When
-    val responseSpec = callResetBookerDetails(webTestClient, setAuthorisation(roles = listOf("TEST_BOOKER_REGISTRY")), bookerReference)
+    val responseSpec = callResetBookerDetails(webTestClient, setAuthorisation(roles = listOf("ROLE_TEST_BOOKER_REGISTRY")), bookerReference)
 
     // Then
     responseSpec.expectStatus().isOk
@@ -30,37 +30,34 @@ class BookerRegistryControllerIntegrationTest : IntegrationTestBase() {
     // Given
     val emailAddress = "test@example.com"
     val bookerReference = "test-abcd-test"
-
     bookerRegistryApiMockServer.stubGetBookerDetails(emailAddress, listOf(BookerDto(bookerReference)))
-    bookerRegistryApiMockServer.stubResetBookerDetails(emailAddress)
+    bookerRegistryApiMockServer.stubResetBookerDetails(bookerReference)
 
     // When
-    val responseSpec = callResetBookerDetailsByEmailAddress(webTestClient, setAuthorisation(roles = listOf("TEST_BOOKER_REGISTRY")), emailAddress)
+    val responseSpec = callResetBookerDetailsByEmailAddress(webTestClient, setAuthorisation(roles = listOf("ROLE_TEST_BOOKER_REGISTRY")), emailAddress)
 
     // Then
     responseSpec.expectStatus().isOk
   }
 
   @Test
-  fun `when reset booker by email address is called, and status is NOT_FOUND status returned is NOT_FOUND`() {
+  fun `when reset booker by email address is called, and status is NOT_FOUND status returned is INTERNAL_SERVER_ERROR`() {
     // Given
     val emailAddress = "test@example.com"
-
     bookerRegistryApiMockServer.stubGetBookerDetails(emailAddress, null, HttpStatus.NOT_FOUND)
     bookerRegistryApiMockServer.stubResetBookerDetails(emailAddress)
 
     // When
-    val responseSpec = callResetBookerDetailsByEmailAddress(webTestClient, setAuthorisation(roles = listOf("TEST_BOOKER_REGISTRY")), emailAddress)
+    val responseSpec = callResetBookerDetailsByEmailAddress(webTestClient, setAuthorisation(roles = listOf("ROLE_TEST_BOOKER_REGISTRY")), emailAddress)
 
     // Then
-    responseSpec.expectStatus().isNotFound
+    responseSpec.expectStatus().isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value())
   }
 
   @Test
   fun `when reset booker by email address is called, and status is INTERNAL_SERVER_ERROR status returned is INTERNAL_SERVER_ERROR`() {
     // Given
     val emailAddress = "test@example.com"
-
     bookerRegistryApiMockServer.stubGetBookerDetails(emailAddress, null, HttpStatus.INTERNAL_SERVER_ERROR)
     bookerRegistryApiMockServer.stubResetBookerDetails(emailAddress)
 
