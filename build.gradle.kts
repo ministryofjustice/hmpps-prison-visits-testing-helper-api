@@ -1,8 +1,8 @@
 plugins {
   id("uk.gov.justice.hmpps.gradle-spring-boot") version "8.1.0"
-  kotlin("plugin.spring") version "2.1.20"
-  id("org.jetbrains.kotlin.plugin.noarg") version "2.1.20"
-  kotlin("plugin.jpa") version "2.1.20"
+  kotlin("plugin.spring") version "2.1.21"
+  id("org.jetbrains.kotlin.plugin.noarg") version "2.1.21"
+  kotlin("plugin.jpa") version "2.1.21"
 }
 
 configurations {
@@ -25,7 +25,7 @@ dependencies {
   implementation("com.amazonaws:aws-java-sdk-s3:1.12.783")
 
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.19.0")
-  implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.15.0")
+  implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.16.0")
 
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-api:2.8.8")
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.8")
