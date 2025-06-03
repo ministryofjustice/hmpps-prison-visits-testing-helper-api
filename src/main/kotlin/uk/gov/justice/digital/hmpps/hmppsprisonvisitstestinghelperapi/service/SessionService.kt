@@ -101,6 +101,8 @@ class SessionService(
       dayOfWeek = dayOfWeek,
       weeklyFrequency = weeklyFrequency,
       includeLocationGroupType = true,
+      includeCategoryGroupType = true,
+      includeIncentiveGroupType = true,
       locationGroupReferences = locationReferenceList,
       categoryGroupReferences = categoryReferenceList,
       incentiveLevelGroupReferences = incentiveReferenceList,
