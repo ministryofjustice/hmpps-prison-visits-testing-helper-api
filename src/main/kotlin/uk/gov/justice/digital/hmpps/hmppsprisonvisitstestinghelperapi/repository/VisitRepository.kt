@@ -38,12 +38,13 @@ interface VisitRepository : JpaRepository<NotUsedVisitEntity, Long> {
   @Transactional(propagation = REQUIRES_NEW)
   @Modifying(clearAutomatically = true, flushAutomatically = true)
   @Query(
-    "UPDATE visit SET visit_status = :status  WHERE reference = :bookingReference",
+    "UPDATE visit SET visit_status = :status, visit_sub_status = :subStatus  WHERE reference = :bookingReference",
     nativeQuery = true,
   )
   fun setVisitStatus(
     bookingReference: String,
     status: String,
+    subStatus: String,
   ): Int
 
   @Query(
@@ -115,8 +116,8 @@ interface VisitRepository : JpaRepository<NotUsedVisitEntity, Long> {
 
   @Modifying
   @Query(
-    "insert into visit_notification_event(booking_reference, type, reference) values (:bookingReference, :notificationType, :reference)",
+    "insert into visit_notification_event(booking_reference, type, reference, visit_id) values (:bookingReference, :notificationType, :reference, :visitId)",
     nativeQuery = true,
   )
-  fun createVisitNotificationEvents(bookingReference: String, notificationType: String, reference: String): Int
+  fun createVisitNotificationEvents(bookingReference: String, notificationType: String, reference: String, visitId: Long): Int
 }

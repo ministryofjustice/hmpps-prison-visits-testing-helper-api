@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.client.VisitSchedulerClient
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.enums.TestDBNotificationEventTypes
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.enums.VisitStatus
+import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.enums.VisitSubStatus
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.visit.scheduler.VisitDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.repository.ActionedByRepository
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.repository.EventAuditRepository
@@ -39,7 +40,13 @@ class VisitService(
 
   fun setVisitStatus(reference: String, status: VisitStatus): Boolean {
     logger.debug("Enter setVisitStatus {} {} ", reference, status)
-    val result = visitRepository.setVisitStatus(reference, status.name)
+    val visitSubStatus = if (status == VisitStatus.BOOKED) {
+      VisitSubStatus.AUTO_APPROVED
+    } else {
+      VisitSubStatus.CANCELLED
+    }
+
+    val result = visitRepository.setVisitStatus(reference, status.name, visitSubStatus.name)
     logger.debug("setVisitStatus result: {}", result)
     return result > 0
   }
@@ -61,7 +68,8 @@ class VisitService(
   fun createVisitNotificationEvents(bookingReference: String, notificationType: TestDBNotificationEventTypes) {
     logger.debug("Create visit notification event {} for booking reference - {}", notificationType, bookingReference)
     val reference = UUID.randomUUID().toString()
-    visitRepository.createVisitNotificationEvents(bookingReference, notificationType.toString(), reference)
+    val visitId = visitRepository.getVisitId(bookingReference) ?: throw RuntimeException("Visit with booking reference - $bookingReference does not exist")
+    visitRepository.createVisitNotificationEvents(bookingReference, notificationType.toString(), reference, visitId)
     logger.debug("Created visit notification event {} for booking reference - {}", notificationType, bookingReference)
   }
 
@@ -100,8 +108,8 @@ class VisitService(
       visitRepository.deleteVisitNotes(it)
       visitRepository.deleteVisitContact(it)
       visitRepository.deleteVisitLegacy(it)
-      visitRepository.deleteVisit(it)
       visitRepository.deleteVisitNotificationEventsByBookingReference(bookingReference)
+      visitRepository.deleteVisit(it)
 
       val applicationReference = applicationService.getApplicationReferenceByVisitId(it)
       applicationService.deleteApplicationAndChildren(applicationReference)

@@ -12,9 +12,11 @@ import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.controller
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.controller.CHANGE_OPEN_SESSION_SLOT_CAPACITY_FOR_APPLICATION
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.controller.GET_CLOSED_SESSION_SLOT_CAPACITY_FOR_APPLICATION
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.controller.GET_OPEN_SESSION_SLOT_CAPACITY_FOR_APPLICATION
+import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.enums.ApplicationStatus.IN_PROGRESS
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.helper.callDelete
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.helper.callGet
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.helper.callPut
+import wiremock.org.apache.commons.lang3.RandomStringUtils
 import java.nio.charset.StandardCharsets
 import java.sql.Timestamp
 import java.time.LocalDate
@@ -57,17 +59,17 @@ class ApplicationControllerIntegrationTest : IntegrationTestBase() {
     val sessionSlotId = dBRepository.getSessionSlotId(sessionSlotReference)
 
     dBRepository.createApplication(
-      prisonId,
-      "AA123",
-      sessionSlotId,
-      true,
-      applicationReference,
-      "SOCIAL",
-      "OPEN",
-      false,
-      "TEST",
-      Timestamp.valueOf(LocalDateTime.now()),
-      "STAFF",
+      prisonId = prisonId,
+      prisonerId = "AA123",
+      sessionSlotId = sessionSlotId,
+      reservedSlot = true,
+      reference = applicationReference,
+      visitType = "SOCIAL",
+      restriction = "OPEN",
+      applicationStatus = IN_PROGRESS.name,
+      createdBy = "TEST",
+      createdTimestamp = Timestamp.valueOf(LocalDateTime.now()),
+      userType = "STAFF",
     )
 
     // When
@@ -86,23 +88,23 @@ class ApplicationControllerIntegrationTest : IntegrationTestBase() {
     val sessionSlotId = dBRepository.getSessionSlotId(sessionSlotReference)
 
     dBRepository.createApplication(
-      prisonId,
-      "AA123",
-      sessionSlotId,
-      true,
-      applicationReference,
-      "SOCIAL",
-      "OPEN",
-      false,
-      "TEST",
-      Timestamp.valueOf(LocalDateTime.now()),
-      "STAFF",
+      prisonId = prisonId,
+      prisonerId = "AA123",
+      sessionSlotId = sessionSlotId,
+      reservedSlot = true,
+      reference = applicationReference,
+      visitType = "SOCIAL",
+      restriction = "OPEN",
+      applicationStatus = IN_PROGRESS.name,
+      createdBy = "TEST",
+      createdTimestamp = Timestamp.valueOf(LocalDateTime.now()),
+      userType = "STAFF",
     )
     dBRepository.createApplicationVisitors(applicationReference, 4776543, true)
     dBRepository.createApplicationSupport(applicationReference, "application support description")
     dBRepository.createApplicationContact(applicationReference, "John", "07777777777")
 
-    dBRepository.createActionedBy("", "ALED", "STAFF")
+    dBRepository.createActionedBy(null, RandomStringUtils.randomAlphabetic(6), "STAFF")
     val actionById = dBRepository.getActionById()
     dBRepository.createEventAudit(null, applicationReference, sessionSlotReference, "RESERVED_VISIT", "NOT_KNOWN", actionById)
 
@@ -122,17 +124,17 @@ class ApplicationControllerIntegrationTest : IntegrationTestBase() {
     val sessionSlotId = dBRepository.getSessionSlotId(sessionSlotReference)
 
     dBRepository.createApplication(
-      prisonId,
-      "AA123",
-      sessionSlotId,
-      true,
-      applicationReference,
-      "SOCIAL",
-      "OPEN",
-      false,
-      "TEST",
-      Timestamp.valueOf(LocalDateTime.now()),
-      "STAFF",
+      prisonId = prisonId,
+      prisonerId = "AA123",
+      sessionSlotId = sessionSlotId,
+      reservedSlot = true,
+      reference = applicationReference,
+      visitType = "SOCIAL",
+      restriction = "OPEN",
+      applicationStatus = IN_PROGRESS.name,
+      createdBy = "TEST",
+      createdTimestamp = Timestamp.valueOf(LocalDateTime.now()),
+      userType = "STAFF",
     )
 
     val responseSpec = callChangeOpenSessionSlotCapacityForApplication(webTestClient, setAuthorisation(roles = listOf("ROLE_TEST_VISIT_SCHEDULER")), applicationReference, 1)
@@ -148,17 +150,17 @@ class ApplicationControllerIntegrationTest : IntegrationTestBase() {
     val sessionSlotId = dBRepository.getSessionSlotId(sessionSlotReference)
 
     dBRepository.createApplication(
-      prisonId,
-      "AA123",
-      sessionSlotId,
-      true,
-      applicationReference,
-      "SOCIAL",
-      "OPEN",
-      false,
-      "TEST",
-      Timestamp.valueOf(LocalDateTime.now()),
-      "STAFF",
+      prisonId = prisonId,
+      prisonerId = "AA123",
+      sessionSlotId = sessionSlotId,
+      reservedSlot = true,
+      reference = applicationReference,
+      visitType = "SOCIAL",
+      restriction = "OPEN",
+      applicationStatus = IN_PROGRESS.name,
+      createdBy = "TEST",
+      createdTimestamp = Timestamp.valueOf(LocalDateTime.now()),
+      userType = "STAFF",
     )
 
     val responseSpec = callChangeClosedSessionSlotCapacityForApplication(webTestClient, setAuthorisation(roles = listOf("ROLE_TEST_VISIT_SCHEDULER")), applicationReference, 1)
@@ -174,17 +176,17 @@ class ApplicationControllerIntegrationTest : IntegrationTestBase() {
     val sessionSlotId = dBRepository.getSessionSlotId(sessionSlotReference)
 
     dBRepository.createApplication(
-      prisonId,
-      "AA123",
-      sessionSlotId,
-      true,
-      applicationReference,
-      "SOCIAL",
-      "OPEN",
-      false,
-      "TEST",
-      Timestamp.valueOf(LocalDateTime.now()),
-      "STAFF",
+      prisonId = prisonId,
+      prisonerId = "AA123",
+      sessionSlotId = sessionSlotId,
+      reservedSlot = true,
+      reference = applicationReference,
+      visitType = "SOCIAL",
+      restriction = "OPEN",
+      applicationStatus = IN_PROGRESS.name,
+      createdBy = "TEST",
+      createdTimestamp = Timestamp.valueOf(LocalDateTime.now()),
+      userType = "STAFF",
     )
 
     val responseSpec = callGetOpenSessionSlotCapacityForApplication(webTestClient, setAuthorisation(roles = listOf("ROLE_TEST_VISIT_SCHEDULER")), applicationReference)
@@ -203,17 +205,17 @@ class ApplicationControllerIntegrationTest : IntegrationTestBase() {
     val sessionSlotId = dBRepository.getSessionSlotId(sessionSlotReference)
 
     dBRepository.createApplication(
-      prisonId,
-      "AA123",
-      sessionSlotId,
-      true,
-      applicationReference,
-      "SOCIAL",
-      "OPEN",
-      false,
-      "TEST",
-      Timestamp.valueOf(LocalDateTime.now()),
-      "STAFF",
+      prisonId = prisonId,
+      prisonerId = "AA123",
+      sessionSlotId = sessionSlotId,
+      reservedSlot = true,
+      reference = applicationReference,
+      visitType = "SOCIAL",
+      restriction = "OPEN",
+      applicationStatus = IN_PROGRESS.name,
+      createdBy = "TEST",
+      createdTimestamp = Timestamp.valueOf(LocalDateTime.now()),
+      userType = "STAFF",
     )
 
     val responseSpec = callGetClosedSessionSlotCapacityForApplication(webTestClient, setAuthorisation(roles = listOf("ROLE_TEST_VISIT_SCHEDULER")), applicationReference)

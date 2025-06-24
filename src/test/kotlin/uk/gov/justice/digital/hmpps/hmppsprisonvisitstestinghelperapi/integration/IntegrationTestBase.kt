@@ -86,6 +86,7 @@ abstract class IntegrationTestBase {
   protected fun clearSession() {
     dBRepository.truncateSessionToLocationGroup()
     dBRepository.truncateSessionSlot()
+    dBRepository.truncateSessionTemplateUserClient()
     dBRepository.truncateSessionTemplate()
   }
 }

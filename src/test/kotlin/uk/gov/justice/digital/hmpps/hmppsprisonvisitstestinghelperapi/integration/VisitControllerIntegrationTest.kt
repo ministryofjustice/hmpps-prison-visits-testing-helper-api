@@ -14,8 +14,10 @@ import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.enums.
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.enums.VisitStatus
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.enums.VisitStatus.BOOKED
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.enums.VisitStatus.CANCELLED
+import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.enums.VisitSubStatus.AUTO_APPROVED
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.helper.callDelete
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.helper.callPut
+import wiremock.org.apache.commons.lang3.RandomStringUtils
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -50,7 +52,7 @@ class VisitControllerIntegrationTest : IntegrationTestBase() {
   fun `when visit status change called visit status is updated`() {
     // Given
     val newStatus = CANCELLED
-    dBRepository.createVisit("AA123", visitReference, "SOCIAL", "ROOM-1", existingStatus, "OPEN", sessionSlotReference)
+    dBRepository.createVisit("AA123", visitReference, "SOCIAL", "ROOM-1", existingStatus.name, "OPEN", sessionSlotReference, AUTO_APPROVED.name)
 
     // When
     val responseSpec = callChangeVisitStatus(webTestClient, setAuthorisation(roles = listOf("ROLE_TEST_VISIT_SCHEDULER")), visitReference, newStatus)
@@ -64,7 +66,7 @@ class VisitControllerIntegrationTest : IntegrationTestBase() {
   @Test
   fun `when visit prison change called visit prison is updated`() {
     // Given
-    dBRepository.createVisit("AA123", visitReference, "SOCIAL", "ROOM-1", existingStatus, "OPEN", sessionSlotReference)
+    dBRepository.createVisit("AA123", visitReference, "SOCIAL", "ROOM-1", existingStatus.name, "OPEN", sessionSlotReference, AUTO_APPROVED.name)
 
     // When
     val responseSpec = callChangeVisitPrison(webTestClient, setAuthorisation(roles = listOf("ROLE_TEST_VISIT_SCHEDULER")), visitReference, prison2Code)
@@ -81,16 +83,16 @@ class VisitControllerIntegrationTest : IntegrationTestBase() {
     val visitNotificationReference = "aa-11-bb-22-aa"
     visitSchedulerMockServer.stubCancelVisit(visitReference)
 
-    dBRepository.createVisit("AA123", visitReference, "SOCIAL", "ROOM-1", existingStatus, "OPEN", sessionSlotReference)
+    dBRepository.createVisit("AA123", visitReference, "SOCIAL", "ROOM-1", existingStatus.name, "OPEN", sessionSlotReference, AUTO_APPROVED.name)
+    val visitId = dBRepository.getVisitIdByReference(visitReference)
     dBRepository.createVisitVisitor(visitReference, 4776543, true)
     dBRepository.createVisitSupport(visitReference, "visit support description")
     dBRepository.createVisitNote(visitReference, VisitNoteType.VISIT_COMMENT, "visit note description")
     dBRepository.createVisitContact(visitReference, "John", "07777777777")
-    dBRepository.createVisitNotification("PRISON_VISITS_BLOCKED_FOR_DATE", visitNotificationReference, visitReference)
-    dBRepository.createActionedBy("", "ALED", "STAFF")
+    dBRepository.createVisitNotification("PRISON_VISITS_BLOCKED_FOR_DATE", visitNotificationReference, visitReference, visitId)
+    dBRepository.createActionedBy(null, userName = RandomStringUtils.randomAlphabetic(6), "STAFF")
     val actionById = dBRepository.getActionById()
     dBRepository.createEventAudit(visitReference, "appRef", sessionSlotReference, "BOOKED_VISIT", "NOT_KNOWN", actionById)
-    val visitId = dBRepository.getVisitIdByReference(visitReference)
 
     // When
     val responseSpec = callDeleteVisitAndAllChildren(webTestClient, setAuthorisation(roles = listOf("ROLE_TEST_VISIT_SCHEDULER")), visitReference)
@@ -103,8 +105,9 @@ class VisitControllerIntegrationTest : IntegrationTestBase() {
   fun `when delete visit notification event called all visit notifications are deleted`() {
     // Given
     val visitNotificationReference = "aa-11-bb-22"
-    dBRepository.createVisit("AA123", visitReference, "SOCIAL", "ROOM-1", existingStatus, "OPEN", sessionSlotReference)
-    dBRepository.createVisitNotification("PRISON_VISITS_BLOCKED_FOR_DATE", visitNotificationReference, visitReference)
+    dBRepository.createVisit("AA123", visitReference, "SOCIAL", "ROOM-1", existingStatus.name, "OPEN", sessionSlotReference, AUTO_APPROVED.name)
+    val visitId = dBRepository.getVisitIdByReference(visitReference)
+    dBRepository.createVisitNotification("PRISON_VISITS_BLOCKED_FOR_DATE", visitNotificationReference, visitReference, visitId)
 
     val hasVisitNotificationsBeforeCall = dBRepository.hasVisitNotificationsByBookingReference(visitReference)
 
@@ -121,7 +124,7 @@ class VisitControllerIntegrationTest : IntegrationTestBase() {
   @Test
   fun `when create visit notification event called visit notification events are created`() {
     // Given
-    dBRepository.createVisit("AA123", visitReference, "SOCIAL", "ROOM-1", existingStatus, "OPEN", sessionSlotReference)
+    dBRepository.createVisit("AA123", visitReference, "SOCIAL", "ROOM-1", existingStatus.name, "OPEN", sessionSlotReference, AUTO_APPROVED.name)
 
     val hasVisitNotificationsBeforeCall = dBRepository.hasVisitNotificationsByBookingReference(visitReference)
 
