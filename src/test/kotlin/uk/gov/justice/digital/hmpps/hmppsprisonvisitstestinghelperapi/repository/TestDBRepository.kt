@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Propagation.REQUIRES_NEW
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.enums.VisitNoteType
-import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.enums.VisitStatus
 import java.sql.Timestamp
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -79,8 +78,8 @@ interface TestDBRepository : JpaRepository<NotUsedEntity, Long> {
   @Transactional(propagation = REQUIRES_NEW)
   @Modifying
   @Query(
-    "insert into visit(prison_id, prisoner_id, session_slot_id, reference, visit_type, visit_room, visit_status, visit_restriction) " +
-      "select prison_id, :prisonerId, id, :reference, :visitType, :visitRoom, :visitStatus, :visitRestriction from session_slot where reference = :sessionSlotReference",
+    "insert into visit(prison_id, prisoner_id, session_slot_id, reference, visit_type, visit_room, visit_status, visit_restriction, visit_sub_status) " +
+      "select prison_id, :prisonerId, id, :reference, :visitType, :visitRoom, :visitStatus, :visitRestriction, :visitSubStatus from session_slot where reference = :sessionSlotReference",
     nativeQuery = true,
   )
   fun createVisit(
@@ -88,9 +87,10 @@ interface TestDBRepository : JpaRepository<NotUsedEntity, Long> {
     reference: String,
     visitType: String,
     visitRoom: String,
-    visitStatus: VisitStatus,
+    visitStatus: String,
     visitRestriction: String,
     sessionSlotReference: String,
+    visitSubStatus: String,
   )
 
   @Transactional(propagation = REQUIRES_NEW)
@@ -185,8 +185,8 @@ interface TestDBRepository : JpaRepository<NotUsedEntity, Long> {
   @Transactional(propagation = REQUIRES_NEW)
   @Modifying
   @Query(
-    "insert into application(prison_id, prisoner_id, session_slot_id, reserved_slot, reference, visit_type, restriction, completed, created_by, create_timestamp, modify_timestamp, user_type) " +
-      "values (:prisonId, :prisonerId, :sessionSlotId, :reservedSlot, :reference, :visitType, :restriction, :completed, :createdBy, :createdTimestamp, :createdTimestamp, :userType)",
+    "insert into application(prison_id, prisoner_id, session_slot_id, reserved_slot, reference, visit_type, restriction, application_status, created_by, create_timestamp, modify_timestamp, user_type) " +
+      "values (:prisonId, :prisonerId, :sessionSlotId, :reservedSlot, :reference, :visitType, :restriction, :applicationStatus, :createdBy, :createdTimestamp, :createdTimestamp, :userType)",
     nativeQuery = true,
   )
   fun createApplication(
@@ -197,7 +197,7 @@ interface TestDBRepository : JpaRepository<NotUsedEntity, Long> {
     reference: String,
     visitType: String,
     restriction: String,
-    completed: Boolean,
+    applicationStatus: String,
     createdBy: String,
     createdTimestamp: Timestamp,
     userType: String,
@@ -206,14 +206,15 @@ interface TestDBRepository : JpaRepository<NotUsedEntity, Long> {
   @Transactional(propagation = REQUIRES_NEW)
   @Modifying
   @Query(
-    "insert into visit_notification_event(booking_reference, type, reference) " +
-      "values (:visitReference, :type, :reference)",
+    "insert into visit_notification_event(booking_reference, type, reference, visit_id) " +
+      "values (:visitReference, :type, :reference, :visitId)",
     nativeQuery = true,
   )
   fun createVisitNotification(
     type: String,
     reference: String,
     visitReference: String,
+    visitId: Long,
   )
 
   @Transactional(propagation = REQUIRES_NEW)
@@ -240,7 +241,7 @@ interface TestDBRepository : JpaRepository<NotUsedEntity, Long> {
     nativeQuery = true,
   )
   fun createActionedBy(
-    bookerReference: String,
+    bookerReference: String? = null,
     userName: String,
     userType: String,
   )
@@ -454,6 +455,14 @@ interface TestDBRepository : JpaRepository<NotUsedEntity, Long> {
     nativeQuery = true,
   )
   fun truncateSessionSlot()
+
+  @Transactional(propagation = REQUIRES_NEW)
+  @Modifying
+  @Query(
+    "delete from session_template_user_client",
+    nativeQuery = true,
+  )
+  fun truncateSessionTemplateUserClient()
 
   @Transactional(propagation = REQUIRES_NEW)
   @Modifying
