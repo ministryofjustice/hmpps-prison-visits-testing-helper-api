@@ -1,5 +1,5 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "8.3.2"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "8.3.4"
   kotlin("plugin.spring") version "2.2.0"
   id("org.jetbrains.kotlin.plugin.noarg") version "2.2.0"
   kotlin("plugin.jpa") version "2.2.0"
@@ -20,12 +20,12 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-security")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
-  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:5.4.8")
+  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:5.4.9")
   implementation("com.amazonaws:aws-java-sdk-sts:1.12.788")
   implementation("com.amazonaws:aws-java-sdk-s3:1.12.788")
 
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.19.2")
-  implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.18.0")
+  implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.18.1")
 
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-api:2.8.9")
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9")
