@@ -127,9 +127,9 @@ class VisitService(
     visitSchedulerClient.cancelVisitByBookingReference(bookingReference)
   }
 
-  fun bookVisit(applicationReference: String): VisitDto {
+  fun bookVisit(applicationReference: String, isRequestBooking: Boolean): VisitDto {
     logger.debug("book visit called for application with reference - {}", applicationReference)
-    val visit = visitSchedulerClient.bookVisit(applicationReference) ?: throw RuntimeException("Unble to book visit.")
+    val visit = visitSchedulerClient.bookVisit(applicationReference, isRequestBooking) ?: throw RuntimeException("Unble to book visit.")
     logger.debug("booked visit with visit reference - {}", visit.reference)
     return visit
   }

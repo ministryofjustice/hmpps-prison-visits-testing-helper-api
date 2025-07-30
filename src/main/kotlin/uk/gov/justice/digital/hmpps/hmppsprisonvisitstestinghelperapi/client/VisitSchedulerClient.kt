@@ -79,13 +79,14 @@ class VisitSchedulerClient(
     LOG.info("Finished calling the visit scheduler to cancel a visit with reference - $reference")
   }
 
-  fun bookVisit(applicationReference: String): VisitDto? {
+  fun bookVisit(applicationReference: String, isRequestBooking: Boolean): VisitDto? {
     LOG.info("Calling the visit scheduler to book a visit for application with reference - $applicationReference")
 
     val body = BookingRequestDto(
       actionedBy = "testing-helper-api",
       applicationMethodType = "NOT_KNOWN",
       allowOverBooking = true,
+      isRequestBooking = isRequestBooking,
     )
     return webClient.put()
       .uri("/visits/$applicationReference/book")

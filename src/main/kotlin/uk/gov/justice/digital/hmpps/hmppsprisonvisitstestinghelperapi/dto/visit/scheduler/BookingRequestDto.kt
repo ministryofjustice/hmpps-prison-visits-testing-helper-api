@@ -7,4 +7,5 @@ data class BookingRequestDto(
   val applicationMethodType: String,
   val allowOverBooking: Boolean = true,
   val userType: UserType = UserType.STAFF,
+  val isRequestBooking: Boolean? = false,
 )

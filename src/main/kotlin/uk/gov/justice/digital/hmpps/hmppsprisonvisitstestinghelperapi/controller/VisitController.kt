@@ -246,8 +246,11 @@ class VisitController {
     @Schema(description = "applicationReference", example = "v9-d7-ed-7u", required = true)
     @PathVariable
     applicationReference: String,
+    @Schema(description = "is this a request booking?", example = "true", required = false)
+    @PathVariable
+    isRequestBooking: Boolean? = false,
   ): ResponseEntity<String> {
-    val visit = visitService.bookVisit(applicationReference)
+    val visit = visitService.bookVisit(applicationReference, isRequestBooking == true)
     return ResponseEntity.status(OK).body(visit.reference)
   }
 }
