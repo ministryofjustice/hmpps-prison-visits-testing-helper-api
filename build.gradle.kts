@@ -27,9 +27,9 @@ dependencies {
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.19.2")
   implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.19.0")
 
-  implementation("org.springdoc:springdoc-openapi-starter-webmvc-api:2.8.9")
-  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9")
-  implementation("org.springdoc:springdoc-openapi-starter-common:2.8.9")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-api:2.8.10")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.10")
+  implementation("org.springdoc:springdoc-openapi-starter-common:2.8.10")
 
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   runtimeOnly("org.postgresql:postgresql:42.7.7")
@@ -37,7 +37,7 @@ dependencies {
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
   testImplementation("org.springframework.boot:spring-boot-starter-test")
-  testImplementation("io.jsonwebtoken:jjwt:0.12.7")
+  testImplementation("io.jsonwebtoken:jjwt:0.13.0")
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("com.github.tomakehurst:wiremock-jre8-standalone:3.0.1")
 }
