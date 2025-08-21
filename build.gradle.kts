@@ -3,6 +3,7 @@ plugins {
   kotlin("plugin.spring") version "2.2.10"
   id("org.jetbrains.kotlin.plugin.noarg") version "2.2.10"
   kotlin("plugin.jpa") version "2.2.10"
+  id("org.owasp.dependencycheck") version "12.1.3"
 }
 
 configurations {
@@ -59,4 +60,8 @@ tasks {
       exclude("**/*Integration*")
     }
   }
+}
+
+dependencyCheck {
+  nvd.datafeedUrl = "file:///opt/vulnz/cache"
 }
