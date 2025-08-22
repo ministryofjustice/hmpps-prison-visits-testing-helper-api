@@ -133,7 +133,7 @@ interface ApplicationRepository : JpaRepository<NotUsedApplicationEntity, Long> 
   @Modifying(clearAutomatically = true, flushAutomatically = true)
   @Query(
     "insert into application(prison_id, prisoner_id, session_slot_id, reference, user_type, visit_type, restriction, create_timestamp, modify_timestamp, application_status)" +
-      " select p.id, :prisonerId, ss.id, :applicationReference, :userType, 'SOCIAL', :visitRestriction, now(), now(), 'ACCEPTED' from prison p left join session_slot ss " +
+      " select p.id, :prisonerId, ss.id, :applicationReference, :userType, 'SOCIAL', :visitRestriction, now(), now(), 'IN_PROGRESS' from prison p left join session_slot ss " +
       " ON p.id =  ss.prison_id " +
       " where ss.slot_start = :sessionSlotStart " +
       " and ss.slot_end = :sessionSlotEnd " +
