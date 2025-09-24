@@ -5,7 +5,7 @@ generic-service:
   replicaCount: 1
 
   image:
-    repository: quay.io/hmpps/hmpps-prison-visits-testing-helper-api
+    repository: ghcr.io/ministryofjustice/hmpps-prison-visits-testing-helper-api
     tag: app_version # override at deployment time
     port: 8080
 
@@ -32,7 +32,6 @@ generic-service:
     application-insights:
       APPLICATIONINSIGHTS_CONNECTION_STRING: "APPLICATIONINSIGHTS_CONNECTION_STRING"
     hmpps-prison-visits-testing-helper-api:
-      APPINSIGHTS_INSTRUMENTATIONKEY: "APPINSIGHTS_INSTRUMENTATIONKEY"
       SYSTEM_CLIENT_ID: "SYSTEM_CLIENT_ID"
       SYSTEM_CLIENT_SECRET: "SYSTEM_CLIENT_SECRET"
     visit-scheduler-rds:
@@ -51,7 +50,6 @@ generic-service:
   allowlist:
     groups:
       - internal
-      - circleci
 
 generic-prometheus-alerts:
   targetApplication: hmpps-prison-visits-testing-helper-api
