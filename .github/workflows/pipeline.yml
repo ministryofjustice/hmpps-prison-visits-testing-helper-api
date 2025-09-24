@@ -33,13 +33,8 @@ jobs:
       environment: ${{ matrix.environments }}
   kotlin_validate:
     name: Validate the kotlin
-    uses: ministryofjustice/hmpps-github-actions/.github/workflows/gradle_localstack_postgres_verify.yml@v2 # WORKFLOW_VERSION
+    uses: ministryofjustice/hmpps-github-actions/.github/workflows/gradle_verify.yml@v2 # WORKFLOW_VERSION
     secrets: inherit
-    with:
-      localstack-tag: "3"
-      postgres-tag: "17"
-      postgres-username: visit_scheduler
-      postgres-password: visit_scheduler
   build:
     name: Build docker image from hmpps-github-actions
     uses: ministryofjustice/hmpps-github-actions/.github/workflows/docker_build.yml@v2 # WORKFLOW_VERSION
