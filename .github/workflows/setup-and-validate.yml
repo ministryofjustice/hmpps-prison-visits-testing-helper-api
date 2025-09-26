@@ -20,6 +20,31 @@ jobs:
     name: validate the Kotlin app
     runs-on: ubuntu-latest
 
+    services:
+      localstack:
+        image: localstack/localstack:latest
+        env:
+          SERVICES: sqs, sns
+          DEFAULT_REGION: us-east-1
+          AWS_ACCESS_KEY_ID: test
+          AWS_SECRET_ACCESS_KEY: test
+        ports:
+          - 4566:4566
+          - 4571:4571
+      postgres:
+        image: postgres:17.4
+        env:
+          POSTGRES_USER: visit_scheduler
+          POSTGRES_PASSWORD: visit_scheduler
+          POSTGRES_DB: visit_scheduler
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres -d visit_scheduler"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
     steps:
       - uses: actions/checkout@v5
       - name: refresh cache
