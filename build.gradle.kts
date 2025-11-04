@@ -25,12 +25,12 @@ dependencies {
   implementation("com.amazonaws:aws-java-sdk-sts:1.12.793")
   implementation("com.amazonaws:aws-java-sdk-s3:1.12.793")
 
-  implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.20.0")
+  implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.20.1")
   implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.21.0")
 
-  implementation("org.springdoc:springdoc-openapi-starter-webmvc-api:2.8.13")
-  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.13")
-  implementation("org.springdoc:springdoc-openapi-starter-common:2.8.13")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-api:2.8.14")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.14")
+  implementation("org.springdoc:springdoc-openapi-starter-common:2.8.14")
 
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   runtimeOnly("org.postgresql:postgresql:42.7.8")
