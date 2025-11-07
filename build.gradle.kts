@@ -64,5 +64,4 @@ tasks {
 
 dependencyCheck {
   nvd.datafeedUrl = "file:///opt/vulnz/cache"
-  analyzers.ossIndex.enabled = false
 }
