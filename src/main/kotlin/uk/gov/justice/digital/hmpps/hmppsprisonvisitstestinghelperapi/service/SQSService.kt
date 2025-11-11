@@ -18,8 +18,8 @@ import java.util.concurrent.CompletableFuture
 
 @Service
 class SQSService(
-  @Qualifier("awsSqsClient") private val amazonSqs: SqsAsyncClient,
-  @Value("\${hmpps.sqs.queues.prisonvisitsevents.queue.url}") private val queueUrl: String,
+  @param:Qualifier("awsSqsClient") private val amazonSqs: SqsAsyncClient,
+  @param:Value("\${hmpps.sqs.queues.prisonvisitsevents.queue.url}") private val queueUrl: String,
 ) {
   companion object {
     val LOG: Logger = LoggerFactory.getLogger(this::class.java)

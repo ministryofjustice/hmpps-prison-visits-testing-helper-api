@@ -5,9 +5,9 @@ import java.time.LocalDate
 
 @Schema(description = "Prison exclude date")
 data class PrisonExcludeDateDto(
-  @Schema(description = "exclude date", required = true)
+  @param:Schema(description = "exclude date", required = true)
   var excludeDate: LocalDate,
 
-  @Schema(description = "actioned by", required = true)
+  @param:Schema(description = "actioned by", required = true)
   var actionedBy: String,
 )

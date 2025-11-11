@@ -3,10 +3,10 @@ package uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto
 import jakarta.validation.constraints.NotBlank
 
 data class PrisonerReleasedNotificationDto(
-  @NotBlank
+  @field:NotBlank
   val prisonerCode: String,
-  @NotBlank
+  @field:NotBlank
   val prisonCode: String,
-  @NotBlank
+  @field:NotBlank
   val reason: String,
 )

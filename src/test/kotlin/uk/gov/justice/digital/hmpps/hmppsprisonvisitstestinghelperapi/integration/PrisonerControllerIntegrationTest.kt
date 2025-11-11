@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Test
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.mock.mockito.SpyBean
 import org.springframework.http.HttpHeaders
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.client.PrisonApiClient
@@ -19,9 +19,9 @@ import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.helper.cal
 class PrisonerControllerIntegrationTest : IntegrationTestBase() {
 
   @Autowired
-  protected lateinit var objectMapper: ObjectMapper
+  private lateinit var objectMapper: ObjectMapper
 
-  @SpyBean
+  @MockitoSpyBean
   lateinit var prisonApiClient: PrisonApiClient
 
   @Test
