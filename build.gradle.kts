@@ -3,7 +3,7 @@ plugins {
   kotlin("plugin.spring") version "2.2.21"
   id("org.jetbrains.kotlin.plugin.noarg") version "2.2.21"
   kotlin("plugin.jpa") version "2.2.21"
-  id("org.owasp.dependencycheck") version "12.1.8"
+  id("org.owasp.dependencycheck") version "12.1.9"
 }
 
 configurations {
