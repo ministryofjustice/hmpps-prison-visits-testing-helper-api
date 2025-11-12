@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import io.swagger.v3.oas.annotations.media.Schema
 
 class BookerDto(
-  @JsonProperty("reference")
-  @Schema(name = "reference", description = "booker reference", required = true)
+  @param:JsonProperty("reference")
+  @param:Schema(name = "reference", description = "booker reference", required = true)
   val reference: String,
 )

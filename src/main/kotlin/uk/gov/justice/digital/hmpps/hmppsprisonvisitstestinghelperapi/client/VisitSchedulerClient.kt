@@ -24,8 +24,8 @@ import java.time.LocalDate
 
 @Component
 class VisitSchedulerClient(
-  @Qualifier("visitSchedulerWebClient") private val webClient: WebClient,
-  @Value("\${visit-scheduler.api.timeout:10s}") val apiTimeout: Duration,
+  @param:Qualifier("visitSchedulerWebClient") private val webClient: WebClient,
+  @param:Value("\${visit-scheduler.api.timeout:10s}") val apiTimeout: Duration,
 ) {
 
   companion object {
@@ -175,7 +175,7 @@ class VisitSchedulerClient(
     return if (node != null) node.asText() else ""
   }
 
-  fun deleteSessionTemplate(reference: String): String {
+  fun deleteSessionTemplate(reference: String): String? {
     LOG.info("Delete session template - $reference")
 
     val message = webClient.delete()

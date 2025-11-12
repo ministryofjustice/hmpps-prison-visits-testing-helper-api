@@ -3,12 +3,12 @@ package uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto
 import com.fasterxml.jackson.annotation.JsonProperty
 
 data class SQSMessage(
-  @JsonProperty("Type")
+  @param:JsonProperty("Type")
   val type: String,
 
-  @JsonProperty("Message")
+  @param:JsonProperty("Message")
   val message: String,
 
-  @JsonProperty("MessageId")
+  @param:JsonProperty("MessageId")
   val messageId: String? = null,
 )

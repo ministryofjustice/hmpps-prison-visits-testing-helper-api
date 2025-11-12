@@ -5,10 +5,10 @@ import jakarta.validation.constraints.NotNull
 import java.time.LocalDate
 
 data class VisitorRestrictionEventDto(
-  @NotBlank
+  @field:NotBlank
   val visitorId: String,
 
-  @NotNull
+  @field:NotNull
   val startDate: LocalDate,
 
   val endDate: LocalDate?,
