@@ -30,7 +30,7 @@ dependencies {
 
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-api:2.8.15")
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.15")
-  implementation("org.springdoc:springdoc-openapi-starter-common:2.8.15")
+  implementation("org.springdoc:springdoc-openapi-starter-common:3.0.1")
 
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   runtimeOnly("org.postgresql:postgresql:42.7.8")
