@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.integration
 
+import org.apache.commons.lang3.RandomStringUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -16,7 +17,6 @@ import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.enums.
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.helper.callDelete
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.helper.callGet
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.helper.callPut
-import wiremock.org.apache.commons.lang3.RandomStringUtils
 import java.nio.charset.StandardCharsets
 import java.sql.Timestamp
 import java.time.LocalDate

@@ -19,7 +19,7 @@ class SpringCloudAwsConfig {
   ): SqsAsyncClient {
     val amazonSQSAsync = SqsAsyncClient.builder()
       .region(Region.of(region))
-      .credentialsProvider(DefaultCredentialsProvider.create())
+      .credentialsProvider(DefaultCredentialsProvider.builder().build())
       .build()
 
     return amazonSQSAsync
