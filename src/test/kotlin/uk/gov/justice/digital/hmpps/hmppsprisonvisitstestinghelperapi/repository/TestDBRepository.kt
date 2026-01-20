@@ -42,8 +42,8 @@ interface TestDBRepository : JpaRepository<NotUsedEntity, Long> {
   @Transactional(propagation = REQUIRES_NEW)
   @Modifying
   @Query(
-    "insert into session_template(visit_room, visit_type, open_capacity, closed_capacity, start_time, end_time, valid_from_date, day_of_week, prison_id, name, reference, active) " +
-      "select :visitRoom, :visitType, :openCapacity, :closedCapacity, :startTime, :endTime, :validFromDate, :dayOfWeek, id, :name, :reference, true from prison where code = :prisonCode",
+    "insert into session_template(visit_room, visit_type, open_capacity, closed_capacity, start_time, end_time, valid_from_date, day_of_week, prison_id, name, reference, active, visit_order_restriction) " +
+      "select :visitRoom, :visitType, :openCapacity, :closedCapacity, :startTime, :endTime, :validFromDate, :dayOfWeek, id, :name, :reference, true, 'VO_PVO' from prison where code = :prisonCode",
     nativeQuery = true,
   )
   fun createSessionTemplate(
