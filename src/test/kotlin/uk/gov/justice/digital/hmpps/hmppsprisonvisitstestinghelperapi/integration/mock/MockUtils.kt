@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.integration.mock
 
-import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.json.JsonMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
@@ -14,9 +13,6 @@ class MockUtils {
     private val objectMapper: ObjectMapper = JsonMapper.builder()
       .addModule(JavaTimeModule())
       .addModule(kotlinModule())
-      .defaultPropertyInclusion(
-        JsonInclude.Value.construct(JsonInclude.Include.NON_NULL, JsonInclude.Include.NON_NULL),
-      )
       .build()
 
     fun getJsonString(obj: Any): String = objectMapper.writer().writeValueAsString(obj)
