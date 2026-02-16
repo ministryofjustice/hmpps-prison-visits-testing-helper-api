@@ -1,8 +1,8 @@
 plugins {
   id("uk.gov.justice.hmpps.gradle-spring-boot") version "10.0.3"
-  kotlin("plugin.spring") version "2.3.0"
-  id("org.jetbrains.kotlin.plugin.noarg") version "2.3.0"
-  kotlin("plugin.jpa") version "2.3.0"
+  kotlin("plugin.spring") version "2.3.10"
+  id("org.jetbrains.kotlin.plugin.noarg") version "2.3.10"
+  kotlin("plugin.jpa") version "2.3.10"
   id("org.owasp.dependencycheck") version "12.2.0"
 }
 
@@ -29,14 +29,14 @@ dependencies {
   implementation("com.amazonaws:aws-java-sdk-sts:1.12.797")
   implementation("com.amazonaws:aws-java-sdk-s3:1.12.797")
 
-  implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.24.0")
+  implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.25.0")
 
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-api:3.0.1")
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.1")
   implementation("org.springdoc:springdoc-openapi-starter-common:3.0.1")
 
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-  runtimeOnly("org.postgresql:postgresql:42.7.9")
+  runtimeOnly("org.postgresql:postgresql:42.7.10")
 
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
