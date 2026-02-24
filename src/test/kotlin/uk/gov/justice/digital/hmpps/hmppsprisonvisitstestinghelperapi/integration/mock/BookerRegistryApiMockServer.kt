@@ -1,7 +1,5 @@
 package uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.integration.mock
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.client.WireMock.delete
@@ -9,6 +7,7 @@ import com.github.tomakehurst.wiremock.client.WireMock.equalToJson
 import com.github.tomakehurst.wiremock.client.WireMock.post
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
+import tools.jackson.module.kotlin.jacksonObjectMapper
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.booker.registry.BookerDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.booker.registry.SearchBookerDto
 
@@ -41,9 +40,6 @@ class BookerRegistryApiMockServer : WireMockServer(8094) {
     )
   }
 
-  private fun getJsonString(obj: Any): String = ObjectMapper()
-    .registerModule(JavaTimeModule())
-    .writer()
-    .withDefaultPrettyPrinter()
+  private fun getJsonString(obj: Any): String = jacksonObjectMapper()
     .writeValueAsString(obj)
 }
