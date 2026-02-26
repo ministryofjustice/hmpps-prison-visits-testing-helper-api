@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.integration
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -11,6 +10,7 @@ import org.springframework.http.HttpHeaders
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec
+import tools.jackson.databind.ObjectMapper
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.client.PrisonApiClient
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.prison.api.VisitBalancesDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.helper.callGet

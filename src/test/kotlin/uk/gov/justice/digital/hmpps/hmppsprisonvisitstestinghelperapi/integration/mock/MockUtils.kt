@@ -1,19 +1,14 @@
 package uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.integration.mock
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.json.JsonMapper
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.kotlinModule
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder
 import com.github.tomakehurst.wiremock.client.WireMock
 import org.springframework.http.MediaType
+import tools.jackson.databind.ObjectMapper
+import tools.jackson.module.kotlin.jacksonObjectMapper
 
 class MockUtils {
   companion object {
-    private val objectMapper: ObjectMapper = JsonMapper.builder()
-      .addModule(JavaTimeModule())
-      .addModule(kotlinModule())
-      .build()
+    private val objectMapper: ObjectMapper = jacksonObjectMapper()
 
     fun getJsonString(obj: Any): String = objectMapper.writer().writeValueAsString(obj)
 

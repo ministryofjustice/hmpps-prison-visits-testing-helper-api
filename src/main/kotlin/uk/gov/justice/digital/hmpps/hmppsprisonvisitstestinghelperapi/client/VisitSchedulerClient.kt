@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.client
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Qualifier
@@ -9,6 +8,7 @@ import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
+import tools.jackson.databind.ObjectMapper
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.CancelVisitDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.OutcomeDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.PrisonExcludeDateDto
@@ -25,6 +25,7 @@ import java.time.LocalDate
 @Component
 class VisitSchedulerClient(
   @param:Qualifier("visitSchedulerWebClient") private val webClient: WebClient,
+  @param:Qualifier("objectMapper") private val objectMapper: ObjectMapper,
   @param:Value("\${visit-scheduler.api.timeout:10s}") val apiTimeout: Duration,
 ) {
 
@@ -114,7 +115,7 @@ class VisitSchedulerClient(
 
     LOG.info("Finished calling the visit scheduler to creatSessionTemplate - ${creatSessionTemplate.name}")
 
-    val node = ObjectMapper().readTree(jsonValue).findValue("reference")
+    val node = objectMapper.readTree(jsonValue).findValue("reference")
     return if (node != null) node.asText() else ""
   }
 

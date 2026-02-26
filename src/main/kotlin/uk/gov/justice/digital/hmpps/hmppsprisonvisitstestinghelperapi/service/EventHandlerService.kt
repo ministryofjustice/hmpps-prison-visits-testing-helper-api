@@ -1,9 +1,10 @@
 package uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.service
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
+import tools.jackson.databind.ObjectMapper
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.DomainEvent
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.NonAssociationEventDto
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.PrisonerAlertCreatedUpdatedEventDto
@@ -18,7 +19,7 @@ import java.util.*
 @Service
 class EventHandlerService(
   private val sqsService: SQSService,
-  private val objectMapper: ObjectMapper,
+  @param:Qualifier("objectMapper") private val objectMapper: ObjectMapper,
 ) {
   companion object {
     private const val NOTIFICATION_TYPE = "Notification"

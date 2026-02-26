@@ -1,10 +1,5 @@
 package uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.service
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.databind.util.StdDateFormat
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.KotlinModule
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Qualifier
@@ -13,23 +8,18 @@ import org.springframework.stereotype.Service
 import software.amazon.awssdk.services.sqs.SqsAsyncClient
 import software.amazon.awssdk.services.sqs.model.SendMessageRequest
 import software.amazon.awssdk.services.sqs.model.SendMessageResponse
+import tools.jackson.databind.ObjectMapper
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.SQSMessage
 import java.util.concurrent.CompletableFuture
 
 @Service
 class SQSService(
   @param:Qualifier("awsSqsClient") private val amazonSqs: SqsAsyncClient,
+  @param:Qualifier("objectMapper") private val objectMapper: ObjectMapper,
   @param:Value("\${hmpps.sqs.queues.prisonvisitsevents.queue.url}") private val queueUrl: String,
 ) {
   companion object {
     val LOG: Logger = LoggerFactory.getLogger(this::class.java)
-  }
-
-  private val objectMapper = ObjectMapper().apply {
-    registerModule(KotlinModule.Builder().build())
-    dateFormat = StdDateFormat()
-    disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-    registerModule(JavaTimeModule())
   }
 
   fun sendDomainEvent(payload: SQSMessage) {
