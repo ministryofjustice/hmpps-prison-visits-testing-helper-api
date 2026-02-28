@@ -17,7 +17,7 @@ repositories {
 
 dependencies {
 
-  implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:2.0.0")
+  implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:2.0.2")
   implementation("org.springframework.boot:spring-boot-starter-webclient")
   implementation("org.springframework.boot:spring-boot-starter-webflux")
   implementation("org.springframework.boot:spring-boot-starter-security")
@@ -31,9 +31,9 @@ dependencies {
 
   implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.25.0")
 
-  implementation("org.springdoc:springdoc-openapi-starter-webmvc-api:3.0.1")
-  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.1")
-  implementation("org.springdoc:springdoc-openapi-starter-common:3.0.1")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-api:3.0.2")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.2")
+  implementation("org.springdoc:springdoc-openapi-starter-common:3.0.2")
 
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   runtimeOnly("org.postgresql:postgresql:42.7.10")
