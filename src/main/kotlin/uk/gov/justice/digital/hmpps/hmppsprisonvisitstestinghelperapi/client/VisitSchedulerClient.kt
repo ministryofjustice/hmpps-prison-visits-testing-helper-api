@@ -116,7 +116,7 @@ class VisitSchedulerClient(
     LOG.info("Finished calling the visit scheduler to creatSessionTemplate - ${creatSessionTemplate.name}")
 
     val node = objectMapper.readTree(jsonValue).findValue("reference")
-    return if (node != null) node.asText() else ""
+    return if (node != null) node.asString() else ""
   }
 
   fun createLocationGroup(createLocationGroup: CreateLocationGroupDto): String {
@@ -135,7 +135,7 @@ class VisitSchedulerClient(
     LOG.info("Finished calling the visit scheduler to createLocationGroup - ${createLocationGroup.name}")
 
     val node = ObjectMapper().readTree(jsonValue).findValue("reference")
-    return if (node != null) node.asText() else ""
+    return if (node != null) node.asString() else ""
   }
 
   fun createIncentiveGroup(createIncentiveGroupDto: CreateIncentiveGroupDto): String {
@@ -154,7 +154,7 @@ class VisitSchedulerClient(
     LOG.info("Finished calling the visit scheduler to createIncentiveGroup - ${createIncentiveGroupDto.name}")
 
     val node = ObjectMapper().readTree(jsonValue).findValue("reference")
-    return if (node != null) node.asText() else ""
+    return if (node != null) node.asString() else ""
   }
 
   fun createCategoryGroup(createCategoryGroupDto: CreateCategoryGroupDto): String {
@@ -173,7 +173,7 @@ class VisitSchedulerClient(
     LOG.info("Finished calling the visit scheduler to createCategoryGroup - ${createCategoryGroupDto.name}")
 
     val node = ObjectMapper().readTree(jsonValue).findValue("reference")
-    return if (node != null) node.asText() else ""
+    return if (node != null) node.asString() else ""
   }
 
   fun deleteSessionTemplate(reference: String): String? {
