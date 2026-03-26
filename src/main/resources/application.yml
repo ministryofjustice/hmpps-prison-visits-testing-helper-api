@@ -109,3 +109,5 @@ hmpps:
       prisonvisitsevents:
         endpoint:
           region: eu-west-2
+
+springdoc.swagger-ui.version: 5.32.1
