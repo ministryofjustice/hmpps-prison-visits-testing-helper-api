@@ -116,6 +116,13 @@ interface VisitRepository : JpaRepository<NotUsedVisitEntity, Long> {
 
   @Modifying
   @Query(
+    "delete from visit_notify_history where event_audit_id IN (select id from event_audit where booking_reference = :bookingReference)",
+    nativeQuery = true,
+  )
+  fun deleteVisitNotifyHistoryByBookingReference(bookingReference: String): Int
+
+  @Modifying
+  @Query(
     "insert into visit_notification_event(booking_reference, type, reference, visit_id) values (:bookingReference, :notificationType, :reference, :visitId)",
     nativeQuery = true,
   )
