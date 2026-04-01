@@ -108,6 +108,7 @@ class VisitService(
       visitRepository.deleteVisitNotes(it)
       visitRepository.deleteVisitContact(it)
       visitRepository.deleteVisitLegacy(it)
+      visitRepository.deleteVisitNotifyHistoryByBookingReference(bookingReference)
       visitRepository.deleteVisitNotificationEventsByBookingReference(bookingReference)
       visitRepository.deleteVisit(it)
 
