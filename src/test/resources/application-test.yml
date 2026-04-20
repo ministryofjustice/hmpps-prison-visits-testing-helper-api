@@ -65,3 +65,9 @@ hmpps:
     topics:
       domainevents:
         arn: arn:aws:sns:eu-west-2:000000000000:${random.uuid}
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
