@@ -34,3 +34,9 @@ hmpps:
         endpoint:
           url: http://localhost:4566
           region: eu-west-2
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
