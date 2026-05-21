@@ -17,7 +17,7 @@ repositories {
 
 dependencies {
 
-  implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:2.3.0")
+  implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:2.4.0")
   implementation("org.springframework.boot:spring-boot-starter-webclient")
   implementation("org.springframework.boot:spring-boot-starter-webflux")
   implementation("org.springframework.boot:spring-boot-starter-security")
@@ -29,7 +29,7 @@ dependencies {
   implementation("com.amazonaws:aws-java-sdk-sts:1.12.797")
   implementation("com.amazonaws:aws-java-sdk-s3:1.12.797")
 
-  implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.28.0")
+  implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.28.1")
 
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-api:3.0.3")
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3")
