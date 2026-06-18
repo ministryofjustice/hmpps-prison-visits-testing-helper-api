@@ -1,5 +1,5 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "10.3.1"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "10.5.0"
   kotlin("plugin.spring") version "2.4.0"
   id("org.jetbrains.kotlin.plugin.noarg") version "2.4.0"
   kotlin("plugin.jpa") version "2.4.0"
@@ -25,7 +25,7 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
   implementation("org.springframework.boot:spring-boot-starter-flyway")
-  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:7.3.2")
+  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:7.4.0")
   implementation("com.amazonaws:aws-java-sdk-sts:1.12.797")
   implementation("com.amazonaws:aws-java-sdk-s3:1.12.797")
 
