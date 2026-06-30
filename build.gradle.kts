@@ -36,7 +36,7 @@ dependencies {
   implementation("org.springdoc:springdoc-openapi-starter-common:3.0.3")
 
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-  runtimeOnly("org.postgresql:postgresql:42.7.11")
+  runtimeOnly("org.postgresql:postgresql:42.7.12")
 
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
