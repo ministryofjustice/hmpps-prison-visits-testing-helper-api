@@ -71,7 +71,3 @@ tasks {
     }
   }
 }
-
-dependencyCheck {
-  nvd.datafeedUrl = "file:///opt/vulnz/cache"
-}
