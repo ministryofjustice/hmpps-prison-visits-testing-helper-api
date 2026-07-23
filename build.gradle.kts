@@ -29,7 +29,7 @@ dependencies {
   implementation("com.amazonaws:aws-java-sdk-sts:1.12.797")
   implementation("com.amazonaws:aws-java-sdk-s3:1.12.797")
 
-  implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.29.0")
+  implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.30.0")
 
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-api:3.0.3")
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3")
