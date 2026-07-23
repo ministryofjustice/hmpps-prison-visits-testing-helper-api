@@ -10,12 +10,12 @@ import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTest
 import org.springframework.http.HttpHeaders
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
-import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.helper.JwtAuthHelper
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.integration.mock.BookerRegistryApiMockServer
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.integration.mock.HmppsAuthExtension
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.integration.mock.PrisonApiMockServer
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.integration.mock.VisitSchedulerMockServer
 import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.repository.TestDBRepository
+import uk.gov.justice.hmpps.test.kotlin.auth.JwtAuthorisationHelper
 
 @ExtendWith(HmppsAuthExtension::class)
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -30,7 +30,7 @@ abstract class IntegrationTestBase {
   protected lateinit var dBRepository: TestDBRepository
 
   @Autowired
-  protected lateinit var jwtAuthHelper: JwtAuthHelper
+  protected lateinit var jwtAuthHelper: JwtAuthorisationHelper
 
   companion object {
     val visitSchedulerMockServer = VisitSchedulerMockServer()
@@ -58,7 +58,12 @@ abstract class IntegrationTestBase {
     user: String = "AUTH_ADM",
     roles: List<String> = listOf(),
     scopes: List<String> = listOf(),
-  ): (HttpHeaders) -> Unit = jwtAuthHelper.setAuthorisation(user, roles, scopes)
+  ): (HttpHeaders) -> Unit = jwtAuthHelper.setAuthorisationHeader(
+    clientId = "hmpps-prison-visits-testing-helper-api-client",
+    username = user,
+    scope = scopes,
+    roles = roles,
+  )
 
   protected fun clearDb() {
     dBRepository.truncateVisitNotificationEvent()
