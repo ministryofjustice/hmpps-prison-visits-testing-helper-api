@@ -22,6 +22,9 @@ generic-service:
     APPLICATIONINSIGHTS_CONFIGURATION_FILE: applicationinsights.json
     HMPPS_SQS_USE_WEB_TOKEN: "true"
     HMPPS_SQS_ENABLED: "true"
+    APPLICATIONINSIGHTS_STATSBEAT_DISABLED: "true"
+    JAVA_TOOL_OPTIONS: "$(JAVA_PROXY_TOOL_OPTIONS) -XX:+ExitOnOutOfMemoryError -XX:MaxRAMPercentage=50.0"
+
 
   # Pre-existing kubernetes secrets to load as environment variables in the deployment.
   # namespace_secrets:
@@ -46,6 +49,11 @@ generic-service:
       HMPPS_SQS_QUEUES_PRISONVISITSEVENTS_QUEUE_URL: "sqs_queue_url"
     sqs-hmpps-prison-visits-event-dlq-secret:
       HMPPS_SQS_QUEUES_PRISONVISITSEVENTS_DLQ_NAME: "sqs_queue_name"
+    hmpps-envoy-https-proxy-env:
+      HTTP_PROXY: "HTTP_PROXY"
+      HTTPS_PROXY: "HTTPS_PROXY"
+      NO_PROXY: "NO_PROXY"
+      JAVA_PROXY_TOOL_OPTIONS: "JAVA_PROXY_TOOL_OPTIONS"
 
   allowlist:
     groups:
