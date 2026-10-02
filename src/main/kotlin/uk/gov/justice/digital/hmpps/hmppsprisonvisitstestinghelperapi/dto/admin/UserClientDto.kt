@@ -2,14 +2,14 @@ package uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.admin
 
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotNull
-import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.enums.UserType
+import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.enums.PrisonClientType
 
 @Schema(description = "Prison / Session Template user client dto")
 data class UserClientDto(
 
   @param:Schema(description = "User type", example = "STAFF", required = true)
   @field:NotNull
-  val userType: UserType,
+  val clientType: PrisonClientType,
 
   @param:Schema(description = "is prison user client active", example = "true", required = true)
   @field:NotNull

@@ -7,7 +7,8 @@ import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
-import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.enums.UserType
+import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.enums.PrisonClientType
+import uk.gov.justice.digital.hmpps.hmppsprisonvisitstestinghelperapi.dto.enums.SessionTemplateVisitOrderRestrictionType
 import java.time.DayOfWeek
 
 data class CreateSessionTemplateDto(
@@ -57,11 +58,20 @@ data class CreateSessionTemplateDto(
   val includeLocationGroupType: Boolean,
 
   @param:Schema(description = "Session template user clients.", required = false)
-  val clients: List<UserClientDto> = listOf(UserClientDto(UserType.STAFF, true), UserClientDto(UserType.PUBLIC, true)),
+  val clients: List<UserClientDto> = listOf(UserClientDto(PrisonClientType.STAFF, true), UserClientDto(PrisonClientType.PUBLIC, true)),
 
   @param:Schema(description = "Determines behaviour of category groups. True equates to these category groups being included, false equates to them being excluded.", required = true)
   val includeCategoryGroupType: Boolean,
 
   @param:Schema(description = "Determines behaviour of incentive groups. True equates to these incentive groups being included, false equates to them being excluded.", required = true)
   val includeIncentiveGroupType: Boolean,
+
+  @param:Schema(description = "The type of visit order restriction, defaults to VO_PVO (Either allowed)", example = "PVO", implementation = SessionTemplateVisitOrderRestrictionType::class, required = false)
+  val visitOrderRestriction: SessionTemplateVisitOrderRestrictionType = SessionTemplateVisitOrderRestrictionType.VO_PVO,
+
+  @param:Schema(description = "Determines if the age restriction is enabled for this session", example = "true", required = false)
+  val isAgeRestricted: Boolean?,
+
+  @param:Schema(description = "Minimum required age for attending the session", example = "18", required = false)
+  val ageRestriction: Int?,
 )
