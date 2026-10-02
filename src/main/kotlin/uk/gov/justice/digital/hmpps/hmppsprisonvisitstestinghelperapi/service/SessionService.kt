@@ -45,6 +45,8 @@ class SessionService(
     category: String?,
     disableAllOtherSessionsForSlotAndPrison: Boolean,
     customSessionName: String? = null,
+    isAgeRestricted: Boolean = false,
+    ageRestriction: Int = 18,
   ): String {
     logger.debug(
       "createSessionTemplate for slot:{} prison:{}, slotDate:{}, validToDate: {}, openCapacity: {}, closedCapacity: {}, incentive:{}, category: {}",
@@ -106,6 +108,8 @@ class SessionService(
       locationGroupReferences = locationReferenceList,
       categoryGroupReferences = categoryReferenceList,
       incentiveLevelGroupReferences = incentiveReferenceList,
+      isAgeRestricted = isAgeRestricted,
+      ageRestriction = ageRestriction,
     )
 
     val sessionTemplateReference = visitSchedulerClient.creatSessionTemplate(creatSessionTemplate)
