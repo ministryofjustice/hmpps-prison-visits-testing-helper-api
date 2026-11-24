@@ -26,7 +26,7 @@ dependencies {
 
   implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.34.0")
 
-  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.2.0")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.2.1")
 
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   runtimeOnly("org.postgresql:postgresql:42.7.15")
